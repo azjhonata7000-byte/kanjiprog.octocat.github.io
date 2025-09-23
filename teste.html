@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nihongo Master - SRS Moderno</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #111827;
+            --bg-secondary: #1F2937;
+            --bg-tertiary: #374151;
+            --text-primary: #F9FAFB;
+            --text-secondary: #D1D5DB;
+            --accent-primary: #4f46e5;
+            --accent-hover: #4338ca;
+            --success: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --font-jp: 'Noto Sans JP', sans-serif;
+            --font-en: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-en);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            overscroll-behavior-y: contain;
+        }
+        
+        /* --- ESTRUTURA E LAYOUT --- */
+        .main-container {
+            max-width: 768px;
+            margin: auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        /* --- CARD DE REVISÃO --- */
+        .review-card-container {
+            perspective: 1000px;
+        }
+        
+        .review-card {
+            background: linear-gradient(145deg, rgba(31, 41, 55, 0.7), rgba(55, 65, 81, 0.7));
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+            transition: transform 0.6s, box-shadow 0.3s ease;
+            transform-style: preserve-3d;
+            position: relative;
+            min-height: 500px;
+            display: flex;
+        }
+        .review-card.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            width: 100%;
+            height: 100%; /* GARANTE QUE A FACE OCUPE TODA A ALTURA */
+            padding: 2rem;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .card-face-back {
+            transform: rotateY(180deg);
+            position: absolute;
+            top: 0;
+            left: 0;
+            justify-content: flex-start;
+            text-align: left;
+            overflow: hidden;
+            align-items: stretch; /* GARANTE QUE OS ITENS FLEX ESTIQUEM */
+        }
+
+        .question-text {
+            font-family: var(--font-jp);
+            font-size: clamp(3rem, 15vw, 6rem);
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .question-hint {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+        
+        .back-kanji {
+            font-family: var(--font-jp);
+            font-size: 3.5rem;
+            font-weight: 700;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .back-sentence-section {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .back-sentence-pronunciation {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+        .back-sentence-jp {
+            font-family: var(--font-jp);
+            font-size: clamp(2rem, 6vw, 2.5rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 0.25rem;
+        }
+        .back-sentence-meaning {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+        .info-section {
+            width: 100%;
+            margin-top: 1.25rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--bg-tertiary);
+        }
+        .info-title {
+            font-weight: 700;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+        .info-content {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            word-break: break-word; /* EVITA QUEBRA DE LAYOUT COM PALAVRAS LONGAS */
+        }
+        .info-content ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .info-content li {
+            margin-bottom: 0.5rem;
+        }
+        .info-content strong {
+            font-family: var(--font-jp);
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+
+        /* --- BOTÕES E INTERAÇÕES --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: none;
+            cursor: pointer;
+            color: white;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-primary { background-color: var(--accent-primary); }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+        .btn-secondary { background-color: var(--bg-tertiary); }
+        .btn-secondary:hover { background-color: #4B5563; }
+        .btn-success { background-color: var(--success); }
+        .btn-success:hover { background-color: #059669; }
+        .btn-danger { background-color: var(--danger); }
+        .btn-danger:hover { background-color: #DC2626; }
+        .btn-warning { background-color: var(--warning); }
+        .btn-warning:hover { background-color: #D97706; }
+        
+        .mc-option {
+            background-color: var(--bg-secondary);
+            border: 2px solid var(--bg-tertiary);
+            width: 100%;
+            margin-bottom: 0.75rem;
+        }
+        .mc-option.correct {
+            background-color: var(--success);
+            border-color: #059669;
+        }
+        .mc-option.incorrect {
+            background-color: var(--danger);
+            border-color: #B91C1C;
+        }
+
+        .tts-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            margin-left: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+        .tts-button:hover {
+            color: var(--text-primary);
+        }
+        .tts-button svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        /* --- MODAIS --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .modal-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background-color: var(--bg-secondary);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.visible .modal-content {
+            transform: scale(1);
+        }
+
+        /* --- INPUTS --- */
+        .input, .textarea, .select {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background-color: var(--bg-tertiary);
+            border: 2px solid transparent;
+            color: var(--text-primary);
+            width: 100%;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+        .input:focus, .textarea:focus, .select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background-color: var(--bg-primary);
+        }
+        .input.text-center { text-align: center; }
+
+
+        /* --- OUTROS --- */
+        .srs-level-badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+            color: white;
+        }
+        .srs-level-0 { background-color: #f87171; }
+        .srs-level-1 { background-color: #facc15; }
+        .srs-level-2 { background-color: #a3e635; }
+        .srs-level-3 { background-color: #22c55e; }
+        .srs-level-4 { background-color: #16a34a; }
+        .srs-level-5 { background-color: #0d9488; }
+        .srs-level-6 { background-color: #4f46e5; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center">
+
+    <!-- CABEÇALHO -->
+    <header class="w-full flex justify-between items-center p-4 max-w-3xl mx-auto">
+        <div class="flex items-center space-x-2">
+            <label for="mode-select" class="text-gray-300 text-sm">Modo:</label>
+            <select id="mode-select" class="select text-sm p-1">
+                <option value="kanji">Kanji</option>
+                <option value="hiragana">Hiragana</option>
+                <option value="katakana">Katakana</option>
+            </select>
+        </div>
+        <!-- BOTÃO ESTUDAR MAIS -->
+        <div>
+            <button id="studyMoreBtn" class="btn btn-primary text-sm px-4 py-2">Estudar Mais</button>
+        </div>
+        <div id="userInfo" class="flex items-center space-x-4">
+            <span id="userEmailDisplay" class="text-gray-300 text-sm hidden md:block"></span>
+            <button id="logoutBtn" class="btn btn-secondary text-xs px-3 py-1" style="display:none;">Sair</button>
+        </div>
+    </header>
+
+    <!-- TELA DE CARREGAMENTO -->
+    <div id="loading-overlay" class="modal-overlay visible">
+        <div class="text-center">
+            <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-500"></div>
+            <p class="mt-4 text-white text-lg">Carregando...</p>
+        </div>
+    </div>
+    
+    <!-- MODAL DE AUTENTICAÇÃO -->
+    <div id="auth-modal" class="modal-overlay">
+        <div class="modal-content text-center">
+             <h2 class="text-3xl font-bold mb-6" id="auth-modal-title">Entrar</h2>
+            <div class="flex flex-col space-y-4">
+                <input type="email" id="emailInput" placeholder="Email" class="input">
+                <input type="password" id="passwordInput" placeholder="Senha" class="input">
+                <input type="password" id="confirmPasswordInput" placeholder="Confirmar Senha" class="input" style="display: none;">
+                <button id="authBtn" class="btn btn-primary w-full">Entrar</button>
+                <p id="toggleAuthMode" class="text-sm cursor-pointer hover:underline text-gray-400">Ainda não tem uma conta? Crie uma.</p>
+            </div>
+            <p id="auth-status-message" class="mt-4 text-sm text-gray-400"></p>
+        </div>
+    </div>
+    
+    <!-- MODAL DE ADICIONAR CARD -->
+    <div id="add-card-modal" class="modal-overlay">
+         <div class="modal-content">
+            <h2 class="text-3xl font-bold mb-6">Adicionar Novo Card</h2>
+            <div id="kanji-inputs" class="flex flex-col space-y-4">
+                <input type="text" id="kanjiInput" placeholder="Kanji" class="input">
+                <input type="text" id="kanjiPronunciationInput" placeholder="Pronúncia da Frase (Gerado por IA)" class="input">
+                <input type="text" id="kanjiMeaningInput" placeholder="Significado da Frase (Gerado por IA)" class="input">
+                <textarea id="kanjiSentenceInput" placeholder="Frase de Exemplo (Gerado por IA)" class="textarea h-24 resize-none"></textarea>
+                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                    <button id="kanjiSaveCardBtn" class="btn btn-primary flex-1">Salvar</button>
+                    <button id="kanjiGenerateBtn" class="btn btn-success flex-1">Gerar com IA</button>
+                </div>
+            </div>
+            <div id="kana-inputs" class="flex flex-col space-y-4" style="display: none;">
+                <input type="text" id="characterInput" placeholder="Caractere (あ, ア)" class="input">
+                <input type="text" id="romajiInput" placeholder="Romanji (a)" class="input">
+                <button id="kanaSaveCardBtn" class="btn btn-primary w-full">Salvar</button>
+            </div>
+            <button id="closeModalBtn" class="btn btn-danger mt-4 w-full">Cancelar</button>
+            <p id="statusMessage" class="mt-4 text-sm text-center text-gray-400"></p>
+        </div>
+    </div>
+    
+    <!-- MODAL DE GERENCIAR CARDS -->
+    <div id="card-list-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="text-3xl font-bold mb-6">Gerenciar Cards</h2>
+            <div id="cardsList" class="flex flex-col space-y-3 max-h-96 overflow-y-auto pr-2"></div>
+            <button id="addNewCardBtn" class="btn btn-primary mt-6 w-full">Adicionar Novo Card</button>
+            <button id="closeListModalBtn" class="btn btn-secondary mt-2 w-full">Fechar</button>
+        </div>
+    </div>
+    
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-container" style="display: none;">
+        <div class="flex flex-col items-center">
+            <!-- CARD DE REVISÃO -->
+            <div id="review-card-container" class="review-card-container w-full mb-6">
+                <div id="review-card" class="review-card">
+                    <!-- FRENTE DO CARD -->
+                    <div id="card-front" class="card-face card-face-front">
+                        <!-- Conteúdo dinâmico aqui -->
+                    </div>
+                    <!-- VERSO DO CARD -->
+                    <div id="card-back" class="card-face card-face-back">
+                        <!-- Conteúdo dinâmico aqui -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- BARRA DE PROGRESSO -->
+            <div class="w-full mt-2">
+                <div class="h-2 bg-gray-700 rounded-full">
+                    <div id="progress-bar" class="h-2 bg-indigo-500 rounded-full transition-all duration-300 ease-in-out" style="width: 0%;"></div>
+                </div>
+                <p id="progress-text" class="text-right text-xs text-gray-400 mt-1">0 / 0</p>
+            </div>
+            
+            <!-- BOTÕES DE AÇÃO -->
+            <div id="action-buttons" class="mt-6 flex flex-col space-y-4 items-center w-full max-w-md">
+                <div id="feedback-buttons-container" class="grid grid-cols-2 gap-4 w-full">
+                    <!-- Botões de feedback serão inseridos aqui -->
+                </div>
+                <button id="manageCardsBtn" class="btn btn-secondary w-full">Gerenciar Cards</button>
+            </div>
+        </div>
+        <p id="userIdDisplay" class="text-xs text-gray-600 text-center mt-8"></p>
+    </main>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getDatabase, ref, get, set, push, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = {
+            apiKey: "AIzaSyAl4OJcZJlkn809EPdv7VUchU0ObuhcwHs",
+            authDomain: "kanjis-b38b4.firebaseapp.com",
+            projectId: "kanjis-b38b4",
+            storageBucket: "kanjis-b38b4.firebasestorage.app",
+            messagingSenderId: "794836504781",
+            appId: "1:794836504781:web:b83d4bfb5e3b44ebda5984",
+            databaseURL: "https://kanjis-b38b4-default-rtdb.firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        // --- VARIÁVEIS DE ESTADO ---
+        let allCards = { kanji: [], hiragana: [], katakana: [] };
+        let dueCards = [];
+        let currentCard = null;
+        let currentReviewType = null;
+        let userId = null;
+        let currentMode = 'kanji';
+        let isCardFlipped = false;
+        let tempAiData = {}; // Para armazenar dados da IA temporariamente
+        let isStudyMoreSession = false; // Controla se a sessão é "Estudar Mais"
+        let sessionInitialCount = 0; // Contagem inicial de cards na sessão atual
+
+        const srsIntervals = [0, 1, 2, 4, 7, 15, 30, 90]; // Dias
+
+        // --- ELEMENTOS DO DOM ---
+        const dom = {
+            mainContainer: document.querySelector('.main-container'),
+            loadingOverlay: document.getElementById('loading-overlay'),
+            authModal: document.getElementById('auth-modal'),
+            addCardModal: document.getElementById('add-card-modal'),
+            cardListModal: document.getElementById('card-list-modal'),
+            reviewCard: document.getElementById('review-card'),
+            cardFront: document.getElementById('card-front'),
+            cardBack: document.getElementById('card-back'),
+            progressBar: document.getElementById('progress-bar'),
+            progressText: document.getElementById('progress-text'),
+            actionButtons: document.getElementById('action-buttons'),
+            feedbackButtons: document.getElementById('feedback-buttons-container'),
+            manageCardsBtn: document.getElementById('manageCardsBtn'),
+            studyMoreBtn: document.getElementById('studyMoreBtn'),
+            modeSelect: document.getElementById('mode-select'),
+            userEmailDisplay: document.getElementById('userEmailDisplay'),
+            logoutBtn: document.getElementById('logoutBtn'),
+            userIdDisplay: document.getElementById('userIdDisplay'),
+            cardsList: document.getElementById('cardsList')
+        };
+        
+        const authElements = {
+            emailInput: document.getElementById('emailInput'),
+            passwordInput: document.getElementById('passwordInput'),
+            confirmPasswordInput: document.getElementById('confirmPasswordInput'),
+            authBtn: document.getElementById('authBtn'),
+            toggleAuthMode: document.getElementById('toggleAuthMode'),
+            authModalTitle: document.getElementById('auth-modal-title'),
+            authStatusMessage: document.getElementById('auth-status-message')
+        };
+
+        // --- LÓGICA DE AUTENTICAÇÃO E INICIALIZAÇÃO ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                userId = user.uid;
+                dom.userEmailDisplay.textContent = user.email;
+                dom.userIdDisplay.textContent = `ID de Usuário: ${userId}`;
+                dom.logoutBtn.style.display = 'inline-flex';
+                toggleUI(true);
+                await loadAllCards();
+            } else {
+                userId = null;
+                dom.userEmailDisplay.textContent = '';
+                dom.logoutBtn.style.display = 'none';
+                toggleUI(false);
+            }
+        });
+
+        function toggleUI(isAuthenticated) {
+            if(isAuthenticated) {
+                dom.mainContainer.style.display = 'flex';
+                dom.authModal.classList.remove('visible');
+                dom.loadingOverlay.classList.remove('visible');
+            } else {
+                dom.mainContainer.style.display = 'none';
+                dom.loadingOverlay.classList.remove('visible');
+                dom.authModal.classList.add('visible');
+            }
+        }
+
+        // --- LÓGICA DO REALTIME DATABASE (CRUD) ---
+        const getCollectionRef = (mode) => ref(db, `artifacts/${appId}/users/${userId}/${mode}Cards`);
+
+        async function loadAllCards() {
+            if (!userId) return;
+            dom.loadingOverlay.classList.add('visible');
+            try {
+                const modes = ['kanji', 'hiragana', 'katakana'];
+                for (const mode of modes) {
+                    const collectionRef = getCollectionRef(mode);
+                    const snapshot = await get(collectionRef);
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        allCards[mode] = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    } else {
+                        allCards[mode] = [];
+                    }
+                }
+                filterCardsDueToday();
+            } catch (error) {
+                console.error("Erro ao carregar cards:", error);
+            } finally {
+                dom.loadingOverlay.classList.remove('visible');
+            }
+        }
+        
+        async function saveCard(cardData, mode, cardId = null) {
+             try {
+                if (cardId) {
+                    const cardRef = ref(db, `artifacts/${appId}/users/${userId}/${mode}Cards/${cardId}`);
+                    await set(cardRef, cardData);
+                } else {
+                    const collectionRef = getCollectionRef(mode);
+                    await push(collectionRef, cardData);
+                }
+            } catch (error) {
+                console.error("Erro ao salvar card:", error);
+            }
+        }
+        
+        // --- LÓGICA DO SRS E REVISÃO ---
+        function filterCardsDueToday() {
+            isStudyMoreSession = false; // Garante que é uma sessão de revisão normal
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+            
+            const cardsInCurrentMode = allCards[currentMode] || [];
+
+            dueCards = cardsInCurrentMode.filter(card => {
+                if (!card.lastReview || card.srsLevel === 0) return true;
+                const lastReviewDate = new Date(card.lastReview);
+                lastReviewDate.setHours(0,0,0,0);
+                const interval = srsIntervals[card.srsLevel] || 0;
+                lastReviewDate.setDate(lastReviewDate.getDate() + interval);
+                return now >= lastReviewDate;
+            });
+            
+            dueCards.sort(() => Math.random() - 0.5);
+            sessionInitialCount = dueCards.length;
+            updateProgress();
+            nextCard();
+        }
+
+        function startStudyMoreSession() {
+            const allCurrentCards = allCards[currentMode];
+            if (!allCurrentCards || allCurrentCards.length === 0) {
+                dom.cardFront.innerHTML = `<p class="text-lg text-gray-300">Não há cards neste baralho para iniciar uma sessão de estudo.</p>`;
+                dom.cardBack.innerHTML = '';
+                dom.feedbackButtons.innerHTML = '';
+                return;
+            }
+
+            const shuffled = [...allCurrentCards].sort(() => 0.5 - Math.random());
+            const sessionCards = shuffled.slice(0, 10);
+
+            if (sessionCards.length === 0) {
+                 dom.cardFront.innerHTML = `<p class="text-lg text-gray-300">Não há cards suficientes para estudar.</p>`;
+                 return;
+            };
+
+            dueCards = sessionCards;
+            sessionInitialCount = dueCards.length;
+            isStudyMoreSession = true;
+
+            updateProgress();
+            nextCard();
+        }
+
+
+        function updateProgress() {
+            const reviewed = sessionInitialCount - dueCards.length;
+            const total = sessionInitialCount;
+            const percentage = total > 0 ? (reviewed / total) * 100 : 0;
+            
+            dom.progressBar.style.width = `${percentage}%`;
+            dom.progressText.textContent = `${reviewed} / ${total}`;
+        }
+        
+        function nextCard() {
+            isCardFlipped = false;
+            dom.reviewCard.classList.remove('is-flipped');
+            
+            if (dueCards.length === 0) {
+                currentCard = null;
+                displayCompletion();
+                return;
+            }
+            
+            currentCard = dueCards[0];
+            selectReviewTypeAndDisplay();
+        }
+        
+        function selectReviewTypeAndDisplay() {
+            currentReviewType = 'flip';
+            displayCard();
+        }
+
+        // --- RENDERIZAÇÃO DOS CARDS E INTERFACE ---
+        function displayCard() {
+            dom.cardFront.innerHTML = '';
+            dom.cardBack.innerHTML = '';
+            dom.feedbackButtons.innerHTML = '';
+            
+            renderFlipReview();
+            addTtsListener();
+        }
+        
+        function renderFlipReview() {
+            const isKanaMode = currentMode !== 'kanji';
+            
+            if (isStudyMoreSession && !isKanaMode) {
+                // Modo "Estudar Mais" para Kanji
+                dom.cardFront.innerHTML = `
+                    <p class="question-text">${currentCard.kanji}</p>
+                    <p class="question-hint">${currentCard.meaning || ''}</p>
+                `;
+            } else {
+                // Revisão normal para todos os modos
+                const question = isKanaMode ? currentCard.character : currentCard.kanji;
+                const hint = isKanaMode ? 'Pense no Romaji e vire o card' : 'Pense na resposta e vire o card';
+                dom.cardFront.innerHTML = `
+                    <p class="question-text">${question}</p>
+                    <p class="question-hint">${hint}</p>
+                `;
+            }
+            
+            dom.cardBack.innerHTML = renderAnswerContent();
+            
+            renderCheckButton('Mostrar Resposta', () => {
+                isCardFlipped = true;
+                dom.reviewCard.classList.add('is-flipped');
+                setTimeout(setupBackButtonListener, 50);
+            });
+        }
+
+        function playSentenceAudio(sentence) {
+            if (!sentence || typeof sentence !== 'string') return;
+            const encodedSentence = encodeURIComponent(sentence);
+            const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodedSentence}&tl=ja`;
+            try {
+                const audio = new Audio(audioUrl);
+                audio.play();
+            } catch (error) {
+                console.error("Erro ao tocar áudio:", error);
+            }
+        }
+
+        function addTtsListener() {
+            const ttsBtn = document.getElementById('tts-btn');
+            if (ttsBtn) {
+                ttsBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (currentCard && currentCard.sentence) {
+                        playSentenceAudio(currentCard.sentence);
+                    }
+                });
+            }
+        }
+
+        function renderAnswerContent() {
+             if (currentMode === 'kanji') {
+                let keywordsHtml = '';
+                try {
+                    const keywords = currentCard.keywords ? JSON.parse(currentCard.keywords) : [];
+                    if (keywords && keywords.length > 0) {
+                        const listItems = keywords.map(kw => `
+                            <li><strong>${kw.word} (${kw.reading})</strong>: ${kw.meaning}</li>
+                        `).join('');
+
+                        keywordsHtml = `
+                            <div class="info-section">
+                                <h3 class="info-title">Palavras-chave</h3>
+                                <div class="info-content">
+                                    <ul>${listItems}</ul>
+                                </div>
+                            </div>
+                        `;
+                    }
+                } catch (e) {
+                    console.error("Erro ao analisar palavras-chave:", e);
+                    keywordsHtml = '';
+                }
+
+                let aiAnalysisHtml = '';
+                if (currentCard.aiAnalysis) {
+                    aiAnalysisHtml = `
+                        <div class="info-section">
+                            <h3 class="info-title">Análise da IA</h3>
+                            <p class="info-content italic">${currentCard.aiAnalysis}</p>
+                        </div>
+                    `;
+                }
+
+                const speakerIconSvg = `
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M16.364 12a4.492 4.492 0 0 1-4.364 4.472V18c2.206 0 4-1.794 4-4a4.492 4.492 0 0 1-4.364-4.472V6c2.206 0 4 1.794 4 4ZM12 4V2c-4.411 0-8 3.589-8 8s3.589 8 8 8v-2c-3.309 0-6-2.691-6-6s2.691-6 6-6Z"></path>
+                        <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"></path>
+                        <path d="M19.071 4.929a10.021 10.021 0 0 1 0 14.142l-1.414-1.414a8.016 8.016 0 0 0 0-11.314l1.414-1.414Z"></path>
+                    </svg>
+                `;
+
+                return `
+                    <div class="flex-grow w-full overflow-y-auto pr-3 -mr-3">
+                        <div class="text-center w-full">
+                            <p class="back-kanji">${currentCard.kanji}</p>
+                            <div class="back-sentence-section">
+                                <p class="back-sentence-pronunciation">${currentCard.pronunciation || ''}</p>
+                                <div class="flex items-center justify-center">
+                                    <p class="back-sentence-jp">${currentCard.sentence || ''}</p>
+                                    <button id="tts-btn" class="tts-button" title="Ouvir a frase">
+                                        ${speakerIconSvg}
+                                    </button>
+                                </div>
+                                <p class="back-sentence-meaning">${currentCard.meaning || ''}</p>
+                            </div>
+                        </div>
+                        ${keywordsHtml}
+                        ${aiAnalysisHtml}
+                    </div>
+                    <div id="back-card-buttons" class="w-full mt-4 pt-2 flex-shrink-0 border-t border-gray-700">
+                        <button id="ok-btn" class="btn btn-primary w-full">Ok</button>
+                    </div>
+                `;
+            } else {
+                 return `
+                    <div class="flex flex-col items-center justify-center h-full">
+                         <p class="question-text">${currentCard.character}</p>
+                         <p class="text-4xl font-bold mt-4">${currentCard.romaji}</p>
+                    </div>
+                     <div id="back-card-buttons" class="w-full mt-4 pt-2 flex-shrink-0 border-t border-gray-700">
+                        <button id="ok-btn" class="btn btn-primary w-full">Ok</button>
+                    </div>
+                 `;
+            }
+        }
+
+        function setupBackButtonListener() {
+            const okBtn = document.getElementById('ok-btn');
+            if (okBtn) {
+                okBtn.addEventListener('click', () => {
+                    const backButtonsContainer = document.getElementById('back-card-buttons');
+                    if (backButtonsContainer) {
+                        backButtonsContainer.innerHTML = `
+                            <div class="grid grid-cols-2 gap-4 w-full">
+                                <button class="btn btn-danger" id="hard-btn-back">Difícil</button>
+                                <button class="btn btn-success" id="easy-btn-back">Fácil</button>
+                            </div>
+                        `;
+                        document.getElementById('hard-btn-back').addEventListener('click', () => handleFeedback(false));
+                        document.getElementById('easy-btn-back').addEventListener('click', () => handleFeedback(true));
+                    }
+                }, { once: true });
+            }
+        }
+        
+        function renderCheckButton(text, onClick) {
+             dom.feedbackButtons.innerHTML = `<button id="check-btn" class="btn btn-primary col-span-2">${text}</button>`;
+             document.getElementById('check-btn').addEventListener('click', onClick);
+        }
+
+        function displayCompletion() {
+            const message = isStudyMoreSession 
+                ? "Sessão de estudo extra finalizada!" 
+                : "Nenhuma revisão restante para hoje neste modo.";
+            
+            dom.cardFront.innerHTML = `
+                <p class="text-3xl font-bold text-green-400">Parabéns! ✨</p>
+                <p class="text-lg mt-2 text-gray-300">${message}</p>
+            `;
+            dom.cardBack.innerHTML = '';
+            dom.feedbackButtons.innerHTML = '';
+        }
+        
+        window.handleFeedback = async function(isCorrect) {
+            if (!currentCard) return;
+
+            const cardToUpdate = { ...currentCard };
+            dueCards.shift();
+            
+            // Apenas atualiza o SRS na sessão de revisão normal
+            if (!isStudyMoreSession) {
+                let newSrsLevel = cardToUpdate.srsLevel;
+                if (isCorrect) {
+                    newSrsLevel = Math.min(cardToUpdate.srsLevel + 1, srsIntervals.length - 1);
+                } else {
+                    newSrsLevel = Math.max(0, cardToUpdate.srsLevel - 1);
+                    dueCards.push(cardToUpdate); // Reenfileirar se errar
+                }
+                
+                const cardRef = ref(db, `artifacts/${appId}/users/${userId}/${currentMode}Cards/${cardToUpdate.id}`);
+                const updatedData = { ...cardToUpdate, srsLevel: newSrsLevel, lastReview: new Date().toISOString() };
+                delete updatedData.id;
+                await set(cardRef, updatedData);
+                
+                const cardIndexInAll = allCards[currentMode].findIndex(c => c.id === cardToUpdate.id);
+                if (cardIndexInAll > -1) {
+                    allCards[currentMode][cardIndexInAll] = { ...allCards[currentMode][cardIndexInAll], srsLevel: newSrsLevel, lastReview: new Date().toISOString() };
+                }
+            } else if (!isCorrect) {
+                dueCards.push(cardToUpdate); // Na sessão "Estudar Mais", apenas reenfileira se errar
+            }
+
+            updateProgress();
+            nextCard();
+        }
+
+        // --- EVENT LISTENERS GLOBAIS ---
+        dom.logoutBtn.addEventListener('click', () => signOut(auth));
+        dom.studyMoreBtn.addEventListener('click', startStudyMoreSession);
+        
+        let isSignInMode = true;
+        authElements.toggleAuthMode.addEventListener('click', () => {
+            isSignInMode = !isSignInMode;
+            authElements.authModalTitle.textContent = isSignInMode ? 'Entrar' : 'Criar Conta';
+            authElements.authBtn.textContent = isSignInMode ? 'Entrar' : 'Criar Conta';
+            authElements.toggleAuthMode.textContent = isSignInMode ? 'Ainda não tem uma conta? Crie uma.' : 'Já tem uma conta? Entrar.';
+            authElements.confirmPasswordInput.style.display = isSignInMode ? 'none' : 'block';
+            authElements.authStatusMessage.textContent = '';
+        });
+
+        authElements.authBtn.addEventListener('click', async () => {
+            const email = authElements.emailInput.value;
+            const password = authElements.passwordInput.value;
+            authElements.authStatusMessage.textContent = 'Processando...';
+
+            try {
+                if (isSignInMode) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                } else {
+                    const confirmPassword = authElements.confirmPasswordInput.value;
+                    if (password !== confirmPassword) {
+                        authElements.authStatusMessage.textContent = 'As senhas não coincidem.';
+                        return;
+                    }
+                    if (password.length < 6) {
+                        authElements.authStatusMessage.textContent = 'A senha deve ter pelo menos 6 caracteres.';
+                        return;
+                    }
+                    await createUserWithEmailAndPassword(auth, email, password);
+                }
+            } catch (error) {
+                authElements.authStatusMessage.textContent = "Falha na autenticação. Verifique suas credenciais.";
+                console.error("Auth Error:", error.message);
+            }
+        });
+
+        dom.modeSelect.addEventListener('change', async (e) => {
+            currentMode = e.target.value;
+            await loadAllCards();
+        });
+        
+        dom.manageCardsBtn.addEventListener('click', () => {
+            renderCardsList();
+            document.getElementById('card-list-modal').classList.add('visible');
+        });
+
+        // --- MODAIS DE GERENCIAMENTO DE CARDS ---
+        const addModalElements = {
+            modal: document.getElementById('add-card-modal'),
+            closeBtn: document.getElementById('closeModalBtn'),
+            kanjiInputs: document.getElementById('kanji-inputs'),
+            kanaInputs: document.getElementById('kana-inputs'),
+            kanji: document.getElementById('kanjiInput'),
+            pronunciation: document.getElementById('kanjiPronunciationInput'),
+            meaning: document.getElementById('kanjiMeaningInput'),
+            sentence: document.getElementById('kanjiSentenceInput'),
+            character: document.getElementById('characterInput'),
+            romaji: document.getElementById('romajiInput'),
+            saveKanji: document.getElementById('kanjiSaveCardBtn'),
+            saveKana: document.getElementById('kanaSaveCardBtn'),
+            generate: document.getElementById('kanjiGenerateBtn'),
+            status: document.getElementById('statusMessage')
+        };
+        
+        const listModalElements = {
+            modal: document.getElementById('card-list-modal'),
+            closeBtn: document.getElementById('closeListModalBtn'),
+            addBtn: document.getElementById('addNewCardBtn'),
+            list: document.getElementById('cardsList')
+        };
+        
+        let editingCardId = null;
+
+        function openAddModal(card = null) {
+            editingCardId = card ? card.id : null;
+            addModalElements.status.textContent = '';
+            tempAiData = {};
+            
+            const isKana = currentMode === 'hiragana' || currentMode === 'katakana';
+            addModalElements.kanjiInputs.style.display = isKana ? 'none' : 'flex';
+            addModalElements.kanaInputs.style.display = isKana ? 'flex' : 'none';
+
+            if (isKana) {
+                addModalElements.character.value = card ? card.character : '';
+                addModalElements.romaji.value = card ? card.romaji : '';
+            } else {
+                addModalElements.kanji.value = card ? card.kanji : '';
+                addModalElements.pronunciation.value = card ? card.pronunciation : '';
+                addModalElements.meaning.value = card ? card.meaning : '';
+                addModalElements.sentence.value = card ? card.sentence : '';
+                if(card && card.keywords) tempAiData.keywords = JSON.parse(card.keywords);
+                if(card && card.aiAnalysis) tempAiData.aiAnalysis = card.aiAnalysis;
+            }
+            addModalElements.modal.classList.add('visible');
+        }
+
+        async function generateSentenceWithAI() {
+            const kanji = addModalElements.kanji.value.trim();
+            const statusMsg = addModalElements.status;
+            const generateBtn = addModalElements.generate;
+
+            if (!kanji || kanji.length !== 1) {
+                statusMsg.textContent = "Por favor, insira um único kanji válido.";
+                return;
+            }
+
+            statusMsg.textContent = "Gerando com IA...";
+            generateBtn.disabled = true;
+
+            const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=AIzaSyCpNSwWWEbyWhklPL96AAweF2qhjeLrWlM";
+            
+            const prompt = `Crie uma frase em japonês para iniciantes usando o kanji "${kanji}". A frase deve ser simples. Forneça a resposta em formato JSON com os seguintes campos: 1. "sentence": a frase em japonês. 2. "pronunciation": a pronúncia da frase inteira em hiragana. 3. "meaning": a tradução da frase para o português. 4. "keywords": uma array de objetos. Cada objeto deve analisar uma palavra ou partícula chave da frase e ter os campos "word", "reading" e "meaning". 5. "aiAnalysis": Uma string com uma análise curta (1-2 frases) e informativa sobre a gramática ou vocabulário da frase, explicando o contexto.`;
+
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: { responseMimeType: "application/json" }
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                const result = await response.json();
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!text) throw new Error("Resposta da API inválida.");
+
+                const data = JSON.parse(text);
+                addModalElements.pronunciation.value = data.pronunciation || '';
+                addModalElements.meaning.value = data.meaning || '';
+                addModalElements.sentence.value = data.sentence || '';
+                tempAiData = { 
+                    keywords: data.keywords || [],
+                    aiAnalysis: data.aiAnalysis || ''
+                };
+                statusMsg.textContent = "Frase gerada com sucesso!";
+
+            } catch (error) {
+                console.error("Erro ao gerar frase:", error);
+                statusMsg.textContent = "Erro ao gerar a frase.";
+            } finally {
+                generateBtn.disabled = false;
+            }
+        }
+
+        addModalElements.generate.addEventListener('click', generateSentenceWithAI);
+        addModalElements.closeBtn.addEventListener('click', () => addModalElements.modal.classList.remove('visible'));
+        listModalElements.closeBtn.addEventListener('click', () => listModalElements.modal.classList.remove('visible'));
+        listModalElements.addBtn.addEventListener('click', () => {
+            listModalElements.modal.classList.remove('visible');
+            openAddModal();
+        });
+        
+        addModalElements.saveKanji.addEventListener('click', async () => {
+             const cardData = {
+                kanji: addModalElements.kanji.value.trim(),
+                pronunciation: addModalElements.pronunciation.value.trim(),
+                meaning: addModalElements.meaning.value.trim(),
+                sentence: addModalElements.sentence.value.trim(),
+                srsLevel: 0,
+                lastReview: new Date(0).toISOString(),
+                keywords: tempAiData.keywords ? JSON.stringify(tempAiData.keywords) : '[]',
+                aiAnalysis: tempAiData.aiAnalysis || ''
+             };
+             if (!cardData.kanji) {
+                 addModalElements.status.textContent = 'O campo Kanji é obrigatório.';
+                 return;
+             }
+             await saveCard(cardData, 'kanji', editingCardId);
+             await loadAllCards();
+             addModalElements.modal.classList.remove('visible');
+        });
+        
+        addModalElements.saveKana.addEventListener('click', async () => {
+             const cardData = {
+                character: addModalElements.character.value.trim(),
+                romaji: addModalElements.romaji.value.trim(),
+                srsLevel: 0,
+                lastReview: new Date(0).toISOString(),
+             };
+              if (!cardData.character || !cardData.romaji) {
+                 addModalElements.status.textContent = 'Preencha todos os campos.';
+                 return;
+             }
+             await saveCard(cardData, currentMode, editingCardId);
+             await loadAllCards();
+             addModalElements.modal.classList.remove('visible');
+        });
+        
+        function renderCardsList() {
+            listModalElements.list.innerHTML = '';
+            const cardsToRender = allCards[currentMode];
+            if (!cardsToRender || cardsToRender.length === 0) {
+                 listModalElements.list.innerHTML = '<p class="text-center text-gray-400">Nenhum card adicionado.</p>';
+                 return;
+            }
+            
+            cardsToRender.forEach(card => {
+                const cardItem = document.createElement('div');
+                cardItem.className = 'flex justify-between items-center p-3 bg-gray-700 rounded-lg';
+                
+                const srsBadge = `<span class="srs-level-badge ${'srs-level-' + Math.min(card.srsLevel, 6)}">${card.srsLevel}</span>`;
+                const mainText = currentMode === 'kanji' ? `${card.kanji} - ${card.meaning || card.pronunciation}` : `${card.character} - ${card.romaji}`;
+
+                cardItem.innerHTML = `
+                    <span class="truncate">${mainText} ${srsBadge}</span>
+                    <div class="flex space-x-2">
+                         <button class="btn btn-warning text-xs px-2 py-1 edit-btn">E</button>
+                         <button class="btn btn-danger text-xs px-2 py-1 delete-btn">X</button>
+                    </div>
+                `;
+                cardItem.querySelector('.edit-btn').addEventListener('click', () => {
+                    listModalElements.modal.classList.remove('visible');
+                    openAddModal(card);
+                });
+                cardItem.querySelector('.delete-btn').addEventListener('click', async () => {
+                    const cardRef = ref(db, `artifacts/${appId}/users/${userId}/${currentMode}Cards/${card.id}`);
+                    await remove(cardRef);
+                    await loadAllCards();
+                    renderCardsList();
+                });
+                listModalElements.list.appendChild(cardItem);
+            });
+        }
+    </script>
+</body>
+</html>

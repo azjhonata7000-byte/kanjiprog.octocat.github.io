@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nihongo Master - SRS Moderno</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Lexend:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/phosphor-icons"></script>
+    <style>
+        :root {
+            /* Paleta de Cores Renovada */
+            --bg-primary: #F8F7FF;      /* Um lilás muito sutil, quase branco */
+            --bg-secondary: #FFFFFF;
+            --bg-accent: #EFEBFD;       /* Lilás bem claro para fundos de destaque */
+            --text-primary: #1E1B39;    /* Um roxo bem escuro, quase preto */
+            --text-secondary: #6B688E;  /* Roxo acinzentado para textos secundários */
+            --accent-primary: #7F56D9;  /* Roxo vibrante principal */
+            --accent-primary-dark: #6941C6;
+            --accent-primary-light: #BDB0F2;
+            --success: #027A48;         /* Verde escuro e acessível */
+            --success-light: #ECFDF3;   /* Verde pastel para fundos */
+            --danger: #B42318;          /* Vermelho escuro e acessível */
+            --danger-light: #FEF3F2;    /* Vermelho pastel para fundos */
+            --border-color: #E9D7FE;    /* Borda lilás clara */
+            
+            /* Tipografia Renovada */
+            --font-jp: 'Noto Sans JP', sans-serif;
+            --font-ui: 'Lexend', sans-serif;
+
+            /* Cores para Ligas */
+            --gold: #FFD700;
+            --silver: #C0C0C0;
+            --bronze: #CD7F32;
+            --promotion-bg: rgba(74, 192, 117, 0.1);
+            --demotion-bg: rgba(240, 68, 56, 0.1);
+        }
+
+        body {
+            font-family: var(--font-ui);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            overscroll-behavior-y: contain;
+        }
+        
+        /* --- ESTRUTURA E LAYOUT --- */
+        .main-container, .game-container {
+            width: 100%;
+            max-width: 768px;
+            margin: auto;
+            min-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        /* --- HEADER E NAVEGAÇÃO --- */
+        header {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky; top: 0; z-index: 500; height: 80px;
+        }
+        .nav-link {
+            font-weight: 500; color: var(--text-secondary);
+            transition: all 0.2s; padding: 0.5rem 1rem;
+            border-radius: 0.5rem; border: 2px solid transparent;
+        }
+        .nav-link:hover { color: var(--accent-primary); background-color: var(--bg-accent); }
+        .nav-link.active {
+            color: var(--accent-primary); font-weight: 700;
+            border-bottom: 2px solid var(--accent-primary);
+            border-radius: 0; padding-bottom: calc(0.5rem - 2px);
+            background-color: transparent;
+        }
+
+        /* --- MENU MÓVEL --- */
+        .nav-link-mobile {
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem; /* Espaço entre ícone e texto */
+        }
+        .nav-link-mobile:hover {
+            color: var(--accent-primary);
+            background-color: var(--bg-accent);
+        }
+        .nav-link-mobile.active {
+            color: var(--accent-primary);
+            font-weight: 700;
+            background-color: var(--bg-accent);
+        }
+        .caret-icon.open {
+            transform: rotate(180deg);
+        }
+
+
+        /* --- DROPDOWNS --- */
+        .dropdown { position: relative; }
+        .dropdown-content {
+            display: none; position: absolute; top: calc(100% + 15px); left: 50%;
+            transform: translateX(-50%); background-color: var(--bg-secondary);
+            min-width: 220px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            z-index: 10; border-radius: 0.75rem; padding: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+        .dropdown-content.visible { display: block; } /* Controlado por JS */
+        .dropdown-content a, .dropdown-content button {
+            color: var(--text-primary); padding: 0.75rem 1rem; text-decoration: none;
+            display: block; border-radius: 0.5rem; font-weight: 500;
+            width: 100%; text-align: left;
+        }
+        .dropdown-content a:hover, .dropdown-content button:hover { background-color: var(--bg-accent); color: var(--accent-primary); }
+        .dropdown-content .active {
+             background-color: var(--bg-accent); color: var(--accent-primary); font-weight: 700;
+        }
+        #user-menu-dropdown { right: 0; left: auto; transform: none; min-width: 200px; }
+        
+        /* --- CARD DE REVISÃO --- */
+        .review-card-container { perspective: 1000px; }
+        .review-card {
+            background: var(--bg-secondary); border-radius: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 10px -2px rgba(127, 86, 217, 0.05);
+            transition: transform 0.6s, box-shadow 0.3s ease;
+            transform-style: preserve-3d; position: relative;
+            min-height: 450px; display: flex;
+        }
+        .review-card.is-flipped { transform: rotateY(180deg); }
+
+        .card-face {
+            width: 100%; height: 100%; padding: 1.5rem;
+            backface-visibility: hidden; -webkit-backface-visibility: hidden;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            position: absolute; top: 0; left: 0;
+        }
+        .card-face-back { 
+            transform: rotateY(180deg); 
+            justify-content: flex-start;
+            overflow-y: auto;
+        }
+
+        .question-text {
+            font-family: var(--font-jp); font-size: clamp(3rem, 15vw, 6rem);
+            font-weight: 700; line-height: 1.1; text-align: center;
+        }
+        .question-hint {
+            font-size: 1.25rem; color: var(--text-secondary);
+            margin-top: 0.5rem; text-align: center;
+        }
+        
+        .gemini-info-section h3 {
+             font-size: 0.875rem; font-weight: 700; color: var(--accent-primary);
+             text-transform: uppercase; letter-spacing: 0.05em; margin-top: 1rem;
+             padding-bottom: 0.25rem; border-bottom: 2px solid var(--bg-accent);
+        }
+        .gemini-info-section p, .gemini-info-section li {
+            font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;
+        }
+        .gemini-info-section ul { list-style-position: inside; padding-left: 0.5rem; }
+        .gemini-info-section .sentence { margin-bottom: 0.75rem; }
+        .gemini-info-section .sentence .jp { font-family: var(--font-jp); font-size: 1.2rem; color: var(--text-primary); }
+        .gemini-info-section .sentence .reading { font-size: 0.85rem; color: var(--text-secondary); font-style: italic;}
+
+        /* --- BOTÕES E INTERAÇÕES --- */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+            padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700;
+            font-size: 0.875rem; transition: all 0.2s ease-in-out;
+            border: 1px solid transparent; cursor: pointer;
+        }
+        .btn:disabled { cursor: not-allowed; opacity: 0.6; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .btn-primary { 
+            background-color: var(--accent-primary); color: white;
+        }
+        .btn-primary:hover:not(:disabled) { background-color: var(--accent-primary-dark); }
+        .btn-secondary { 
+            background-color: var(--bg-accent); color: var(--accent-primary);
+            border: 1px solid var(--border-color);
+         }
+        .btn-secondary:hover:not(:disabled) { background-color: var(--border-color); }
+        .btn-success { background-color: var(--success-light); color: var(--success); border-color: #A6F4C5; }
+        .btn-success:hover { background-color: #D1FADF; }
+        .btn-danger { background-color: var(--danger-light); color: var(--danger); border-color: #FECDCA; }
+        .btn-danger:hover { background-color: #FEE4E2; }
+        
+        .sound-btn {
+            position: absolute; top: 1.5rem; right: 1.5rem;
+            background: none; border: none; cursor: pointer; color: var(--text-secondary);
+            padding: 0.5rem; border-radius: 50%; z-index: 10;
+        }
+        .sound-btn:hover { color: var(--accent-primary); background-color: var(--bg-accent); }
+        .sound-btn i { font-size: 1.5rem; vertical-align: middle; }
+        .sound-btn-sentence {
+            background: none; border: none; cursor: pointer; color: var(--text-secondary);
+            padding: 0.25rem; border-radius: 50%; flex-shrink: 0;
+        }
+        .sound-btn-sentence:hover { color: var(--accent-primary); background-color: var(--bg-accent); }
+
+        /* --- TELAS DE JOGO --- */
+        .game-board { display: grid; gap: 1rem; width: 100%; }
+        .game-option {
+            padding: 1rem; background-color: var(--bg-secondary);
+            border: 2px solid var(--border-color); border-radius: 0.75rem; cursor: pointer;
+            transition: all 0.2s; text-align: center;
+            font-size: 1.25rem; font-weight: 500;
+        }
+        .game-option.kanji { font-family: var(--font-jp); font-size: 1.5rem; }
+        .game-option:hover { border-color: var(--accent-primary-light); transform: scale(1.05); }
+        .game-option.selected { background-color: var(--accent-primary-light); border-color: var(--accent-primary); color: white; }
+        .game-option.correct { background-color: var(--success-light); color: var(--success); border-color: #6CE9A6; cursor: not-allowed; transform: scale(1); }
+        .game-option.incorrect { background-color: var(--danger-light); color: var(--danger); border-color: #FDA29B; animation: shake 0.5s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); }
+        }
+        
+        .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+        .memory-card {
+            border: 2px solid var(--border-color);
+            border-radius: 0.75rem;
+            aspect-ratio: 1/1;
+            cursor: pointer;
+            transition: transform 0.5s, box-shadow 0.3s;
+            transform-style: preserve-3d;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+        }
+        .memory-card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 0.6rem;
+            overflow: hidden;
+        }
+        .memory-card-front {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-light));
+        }
+        .memory-card-back {
+            background-color: var(--bg-accent);
+            color: var(--text-primary);
+            transform: rotateY(180deg);
+        }
+        .memory-card .kanji { font-family: var(--font-jp); font-size: 2rem; }
+        .memory-card.flipped {
+            transform: rotateY(180deg);
+        }
+        .memory-card.matched {
+            transform: rotateY(180deg);
+            box-shadow: 0 0 15px var(--success);
+            border-color: #6CE9A6;
+            cursor: not-allowed;
+        }
+        .memory-card.matched .memory-card-back {
+            background-color: var(--success-light);
+            color: var(--success);
+        }
+        .memory-card-gogo {
+            width: 80%;
+            height: 80%;
+            opacity: 0.7;
+        }
+        .memory-card-gogo .glow {
+            animation: none;
+            fill: #FFF7B3;
+        }
+        .memory-card-gogo .body, .memory-card-gogo .head {
+            fill: #fff;
+        }
+        .memory-card-gogo .wings {
+            fill: rgba(255, 255, 255, 0.5);
+        }
+
+        /* --- TELA DE PONTOS ANIMADA --- */
+        .game-completion-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .completion-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--success);
+            animation: slideInDown 0.6s ease-out;
+        }
+        @keyframes slideInDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .completion-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            animation: slideInDown 0.6s 0.2s ease-out backwards;
+        }
+        .score-display {
+            margin-top: 2rem;
+            animation: popIn 0.7s 0.4s ease-out backwards;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .score-display .label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        .score-display .score-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+            line-height: 1;
+            margin-top: 0.25rem;
+        }
+        .score-details {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+        #play-again-btn {
+            margin-top: 2.5rem;
+            animation: popIn 0.7s 0.6s ease-out backwards;
+        }
+
+        /* --- NOVO PLACAR (LIGAS) --- */
+        #leaderboard-modal .modal-content {
+            padding: 0;
+            overflow: hidden;
+            background: linear-gradient(180deg, #D6C6FF 0%, var(--bg-primary) 30%);
+        }
+        #gogo-chan-mascot {
+            width: 100px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+            animation: float 4s ease-in-out infinite;
+        }
+        #gogo-chan-mascot .glow {
+            animation: glow 2s ease-in-out infinite;
+        }
+        @keyframes float { 
+            0%, 100% { transform: translateY(0) rotate(-5deg); } 
+            50% { transform: translateY(-15px) rotate(5deg); } 
+        }
+        @keyframes glow {
+            0%, 100% { fill: #FDE047; }
+            50% { fill: #FFF7B3; }
+        }
+        #league-header {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-primary);
+            position: relative;
+        }
+        #close-leaderboard-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        #league-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+        #patent-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        #patent-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        #league-timer {
+            margin-top: 0.25rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        #leaderboard-list {
+            padding: 0 1rem 1rem 1rem;
+            max-height: 55vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        /* Custom scrollbar */
+        #leaderboard-list::-webkit-scrollbar { width: 6px; }
+        #leaderboard-list::-webkit-scrollbar-track { background: transparent; }
+        #leaderboard-list::-webkit-scrollbar-thumb { background: var(--accent-primary-light); border-radius: 3px; }
+        
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .leaderboard-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+        }
+
+        .leaderboard-item .rank {
+            font-weight: 800;
+            width: 2.5rem;
+            text-align: center;
+            flex-shrink: 0;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .leaderboard-item .medal { font-size: 1.5rem; }
+        .leaderboard-item .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--bg-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-left: 0.5rem;
+            margin-right: 1rem;
+            overflow: hidden; /* Para imagens futuras */
+        }
+        .leaderboard-item .user-info {
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .leaderboard-item .user-name {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .leaderboard-item .user-score {
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-left: 1rem;
+        }
+        .leaderboard-item.current-user {
+            background-color: var(--bg-accent);
+            border: 2px solid var(--accent-primary);
+        }
+        .leaderboard-item.current-user .user-name {
+            font-weight: 700;
+        }
+        
+        .league-zone {
+            border-radius: 1rem;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+        }
+        .league-zone-promotion {
+            background: var(--promotion-bg);
+            border: 1px solid rgba(74, 192, 117, 0.3);
+        }
+         .league-zone-demotion {
+            background: var(--demotion-bg);
+            border: 1px solid rgba(240, 68, 56, 0.3);
+        }
+        .league-zone .zone-title {
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.5rem;
+        }
+        .league-zone-promotion .zone-title { color: #17592C; }
+        .league-zone-demotion .zone-title { color: #912018; }
+        .league-zone .leaderboard-item {
+             background-color: #fff; /* Garante que os itens dentro da zona fiquem brancos */
+        }
+
+
+        /* --- OUTROS --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(30, 27, 57, 0.5);
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+        }
+        .modal-overlay.visible { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            background-color: var(--bg-secondary); border-radius: 1.5rem;
+            padding: 2rem; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto;
+            transform: scale(0.95); transition: transform 0.3s ease;
+        }
+        .modal-overlay.visible .modal-content { transform: scale(1); }
+
+        .input, .textarea, .select {
+            padding: 0.75rem; border-radius: 0.75rem;
+            background-color: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary); width: 100%;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+        .input:focus, .textarea:focus, .select:focus {
+            outline: none; border-color: var(--accent-primary);
+            background-color: var(--bg-secondary);
+        }
+
+        #loading-overlay { z-index: 1001; }
+        .loader-icon {
+            font-family: var(--font-jp); font-size: 4rem; color: var(--accent-primary);
+            animation: bounce 1.5s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-30px); } 60% { transform: translateY(-15px); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center">
+    
+    <!-- MENU LATERAL PARA DISPOSITIVOS MÓVEIS -->
+    <div id="menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[998] transition-opacity duration-300" style="display: none; opacity: 0;"></div>
+    <aside id="mobile-menu" class="fixed top-0 left-0 h-full w-72 bg-white shadow-xl z-[999] p-6 transform -translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="flex justify-between items-center mb-10">
+            <div class="font-black text-2xl" style="color: var(--accent-primary);">語</div>
+            <button id="close-mobile-menu-btn" class="p-1 rounded-full hover:bg-gray-100">
+                <i class="ph ph-x text-2xl"></i>
+            </button>
+        </div>
+        <nav class="flex flex-col space-y-2">
+            <div>
+                 <button id="nav-study-mobile-toggle" class="w-full text-left nav-link-mobile flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <i class="ph ph-book-open w-6"></i>
+                        <span id="study-mode-text-mobile">Estudar: Kanji</span>
+                    </div>
+                    <i id="study-caret-mobile" class="ph ph-caret-down transition-transform caret-icon"></i>
+                </button>
+                 <div id="nav-study-mobile-dropdown" class="pl-8 mt-1 space-y-1" style="display: none;">
+                    <button data-mode="kanji" class="mode-select-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left active">Kanji</button>
+                    <button data-mode="hiragana" class="mode-select-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left">Hiragana</button>
+                    <button data-mode="katakana" class="mode-select-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left">Katakana</button>
+                </div>
+            </div>
+
+            <div>
+                <button id="nav-games-mobile-toggle" class="w-full text-left nav-link-mobile flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <i class="ph ph-game-controller w-6"></i>
+                        <span>Jogos</span>
+                    </div>
+                    <i id="games-caret-mobile" class="ph ph-caret-down transition-transform caret-icon"></i>
+                </button>
+                <div id="nav-games-mobile-dropdown" class="pl-8 mt-1 space-y-1" style="display: none;">
+                    <a href="#" class="block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3" id="game-match-kanji-mobile">Combine</a>
+                    <a href="#" class="block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3" id="game-quiz-kanji-mobile">Quiz</a>
+                    <a href="#" class="block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3" id="game-type-kanji-mobile">Digite a Leitura</a>
+                    <a href="#" class="block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3" id="game-memory-kanji-mobile">Jogo da Memória</a>
+                </div>
+            </div>
+            <a href="#" class="nav-link-mobile" id="nav-manage-mobile">
+                <i class="ph ph-cards w-6"></i>
+                <span>Gerenciar</span>
+            </a>
+            <a href="#" class="nav-link-mobile" id="nav-leaderboard-mobile">
+                <i class="ph ph-trophy w-6"></i>
+                <span>Ligas</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- CABEÇALHO -->
+    <header class="w-full flex justify-center items-center p-4">
+        <div class="w-full max-w-4xl flex justify-between items-center">
+            <div class="font-black text-3xl" style="color: var(--accent-primary);">
+                <a href="#" id="home-logo">語</a>
+            </div>
+            <nav class="hidden md:flex items-center space-x-2">
+                 <div class="dropdown">
+                    <a href="#" class="nav-link active flex items-center gap-2" id="nav-study">
+                        <span id="study-mode-text">Estudar: Kanji</span>
+                        <i class="ph ph-caret-down"></i>
+                    </a>
+                    <div id="study-mode-dropdown" class="dropdown-content">
+                        <button data-mode="kanji" class="mode-select-btn active">Kanji</button>
+                        <button data-mode="hiragana" class="mode-select-btn">Hiragana</button>
+                        <button data-mode="katakana" class="mode-select-btn">Katakana</button>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#" class="nav-link" id="nav-games">Jogos</a>
+                    <div class="dropdown-content">
+                        <a href="#" id="game-match-kanji">Combine</a>
+                        <a href="#" id="game-quiz-kanji">Quiz</a>
+                        <a href="#" id="game-type-kanji">Digite a Leitura</a>
+                        <a href="#" id="game-memory-kanji">Jogo da Memória</a>
+                    </div>
+                </div>
+                <a href="#" class="nav-link" id="nav-manage">Gerenciar</a>
+                <a href="#" class="nav-link" id="nav-leaderboard">Ligas</a>
+            </nav>
+            <div class="flex items-center space-x-2">
+                <div id="userInfoContainer" class="relative">
+                    <div id="auth-links" style="display: none;">
+                         <button id="login-nav-btn" class="btn btn-secondary text-sm">Entrar</button>
+                    </div>
+                    <div id="user-menu" class="relative" style="display: none;">
+                        <button id="user-menu-btn" class="flex items-center space-x-2 text-sm font-medium text-gray-600 hover:text-accent-primary">
+                            <span id="user-email-display" class="truncate max-w-[150px]"></span>
+                            <i class="ph ph-caret-down"></i>
+                        </button>
+                        <div id="user-menu-dropdown" class="dropdown-content">
+                            <a href="#" id="manage-account-btn">Gerenciar Conta</a>
+                            <a href="#" id="logoutBtn">Sair</a>
+                        </div>
+                    </div>
+                </div>
+                 <!-- Botão Hamburger -->
+                <div class="md:hidden">
+                    <button id="hamburger-btn" class="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500">
+                        <i class="ph ph-list text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- TELA DE CARREGAMENTO -->
+    <div id="loading-overlay" class="modal-overlay visible">
+        <div class="text-center">
+            <div class="loader-icon">語</div>
+            <p id="loading-text" class="mt-4 text-lg font-bold" style="color: var(--text-primary);">Carregando seu aprendizado...</p>
+        </div>
+    </div>
+    
+    <!-- MODAL DE AUTENTICAÇÃO -->
+    <div id="auth-modal" class="modal-overlay">
+        <div class="modal-content text-center">
+             <h2 class="text-3xl font-bold mb-6" id="auth-modal-title">Entrar</h2>
+            <div class="flex flex-col space-y-4">
+                <input type="email" id="emailInput" placeholder="Email" class="input">
+                <input type="password" id="passwordInput" placeholder="Senha" class="input">
+                <input type="password" id="confirmPasswordInput" placeholder="Confirmar Senha" class="input" style="display: none;">
+                <button id="authBtn" class="btn btn-primary w-full">Entrar</button>
+                <p id="toggleAuthMode" class="text-sm cursor-pointer hover:underline text-gray-500">Ainda não tem uma conta? Crie uma.</p>
+            </div>
+            <p id="auth-status-message" class="mt-4 text-sm text-red-500"></p>
+        </div>
+    </div>
+    
+    <!-- CONTEÚDO PRINCIPAL (ESTUDO) -->
+    <main class="main-container" style="display: none;">
+        <div class="flex flex-col items-center">
+            <div id="review-card-container" class="review-card-container w-full mb-6">
+                <div id="review-card" class="review-card">
+                    <div id="card-front" class="card-face card-face-front"></div>
+                    <div id="card-back" class="card-face card-face-back"></div>
+                </div>
+            </div>
+
+            <div class="w-full mt-2">
+                <div class="h-2 rounded-full" style="background-color: var(--bg-accent);">
+                    <div id="progress-bar" class="h-2 bg-green-500 rounded-full transition-all duration-300 ease-in-out" style="width: 0%; background-color: var(--accent-primary);"></div>
+                </div>
+                <p id="progress-text" class="text-right text-sm text-gray-500 mt-1 font-bold">0 / 0</p>
+            </div>
+            
+            <div id="action-buttons" class="mt-6 flex flex-col space-y-4 items-center w-full max-w-md">
+                <div id="feedback-buttons-container" class="grid grid-cols-2 gap-4 w-full"></div>
+                <button id="studyMoreBtn" class="btn btn-secondary w-full">Estudar Mais</button>
+            </div>
+        </div>
+        <p id="userIdDisplay" class="text-xs text-gray-400 text-center mt-8"></p>
+    </main>
+    
+    <!-- CONTEÚDO DO JOGO -->
+    <div id="game-container" class="game-container" style="display: none;">
+        <!-- O conteúdo do jogo será renderizado aqui pelo JS -->
+    </div>
+
+    <!-- MODAL DE GERENCIAMENTO DE CARDS -->
+    <div id="manage-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="manage-modal-title" class="text-3xl font-bold">Gerenciar Cards</h2>
+                <button id="close-manage-modal" class="text-2xl font-bold p-2 leading-none">&times;</button>
+            </div>
+            <button id="add-new-card-btn" class="btn btn-primary w-full mb-6">Adicionar Novo Card</button>
+            <div id="card-list-container" class="space-y-3 max-h-[60vh] overflow-y-auto p-1">
+                <!-- Lista de cards será inserida aqui -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL DO PLACAR (LIGAS) -->
+    <div id="leaderboard-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div id="mascot-container" class="pt-4">
+                <!-- Gogo-chan Mascot SVG -->
+                <svg id="gogo-chan-mascot" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <filter id="glow-effect" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <g transform="translate(50, 50)">
+                        <!-- Glowing Abdomen -->
+                        <ellipse class="glow" cx="0" cy="25" rx="15" ry="20" fill="#FDE047" filter="url(#glow-effect)"/>
+                        <!-- Body -->
+                        <path d="M0,-20 Q15,-15 15,5 Q15,30 0,35 Q-15,30 -15,5 Q-15,-15 0,-20 Z" fill="#6D28D9"/>
+                        <!-- Head -->
+                        <circle cx="0" cy="-25" r="12" fill="#4C1D95"/>
+                        <!-- Eyes -->
+                        <circle cx="-4" cy="-27" r="2" fill="white"/>
+                        <circle cx="4" cy="-27" r="2" fill="white"/>
+                         <!-- Wings -->
+                        <path d="M-10,-10 C-30,-25 -25,5 -10,0 Z" fill="rgba(235, 226, 255, 0.8)" transform="rotate(-10)"/>
+                        <path d="M10,-10 C30,-25 25,5 10,0 Z" fill="rgba(235, 226, 255, 0.8)" transform="rotate(10)"/>
+                    </g>
+                </svg>
+            </div>
+            <div id="league-header">
+                <button id="close-leaderboard-modal">&times;</button>
+                <h2>Liga Semanal</h2>
+                <div id="patent-info">
+                    <div id="patent-icon-container"></div>
+                    <span id="patent-name">--</span>
+                </div>
+                <p id="league-timer" class="text-sm text-gray-500">Termina em: --</p>
+            </div>
+            <div id="leaderboard-list">
+                <!-- Lista da liga será inserida aqui -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL DE GERENCIAR CONTA -->
+    <div id="user-manage-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="text-3xl font-bold mb-6">Gerenciar Conta</h2>
+            <form id="update-password-form" class="flex flex-col space-y-4">
+                <h3 class="text-lg font-semibold">Alterar Senha</h3>
+                <div>
+                    <label for="new-password-input" class="font-bold text-sm">Nova Senha</label>
+                    <input type="password" id="new-password-input" class="input mt-1" required>
+                </div>
+                 <div>
+                    <label for="confirm-new-password-input" class="font-bold text-sm">Confirmar Nova Senha</label>
+                    <input type="password" id="confirm-new-password-input" class="input mt-1" required>
+                </div>
+                <div class="flex justify-end space-x-4 mt-4">
+                    <button type="button" id="cancel-user-manage-btn" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Atualizar Senha</button>
+                </div>
+                <p id="update-password-status" class="text-sm mt-2 h-4"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE ADICIONAR/EDITAR CARD -->
+    <div id="add-edit-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="text-3xl font-bold mb-6" id="add-edit-modal-title">Adicionar Card</h2>
+            <form id="add-edit-form" class="flex flex-col space-y-4">
+                <input type="hidden" id="card-id-input">
+                 <div class="flex items-end space-x-2">
+                    <div class="flex-grow">
+                        <label for="kanji-input" id="main-char-label" class="font-bold text-sm">Kanji</label>
+                        <input type="text" id="kanji-input" class="input mt-1" required>
+                    </div>
+                    <button type="button" id="generate-ai-btn" class="btn btn-secondary flex-shrink-0">
+                        <span id="ai-btn-text">Gerar com IA</span>
+                         <svg id="ai-btn-spinner" class="animate-spin h-5 w-5 text-purple-500" style="display: none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div>
+                    <label for="pronunciation-input" class="font-bold text-sm">Leitura (Romaji)</label>
+                    <input type="text" id="pronunciation-input" class="input mt-1" required>
+                </div>
+                <div>
+                    <label for="meaning-input" class="font-bold text-sm">Significado</label>
+                    <input type="text" id="meaning-input" class="input mt-1" required>
+                </div>
+                <input type="hidden" id="gemini-data-input">
+                <div class="flex justify-end space-x-4 mt-4">
+                    <button type="button" id="cancel-edit-btn" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" id="save-card-btn" class="btn btn-primary">
+                        <span id="save-btn-text">Salvar</span>
+                        <svg id="save-btn-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" style="display: none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getDatabase, ref, onValue, set, push, remove, get } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+        // Configuração do Firebase
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = {
+            apiKey: "AIzaSyAl4OJcZJlkn809EPdv7VUchU0ObuhcwHs",
+            authDomain: "kanjis-b38b4.firebaseapp.com",
+            projectId: "kanjis-b38b4",
+            storageBucket: "kanjis-b38b4.firebasestorage.app",
+            messagingSenderId: "794836504781",
+            appId: "1:794836504781:web:b83d4bfb5e3b44ebda5984",
+            databaseURL: "https://kanjis-b38b4-default-rtdb.firebaseio.com"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        // --- DEFINIÇÕES DO JOGO (PATENTES) ---
+        const patents = [
+            { name: 'Bronze I', color: '#A97142', shadow: '#6E4220' }, { name: 'Bronze II', color: '#A97142', shadow: '#6E4220' }, { name: 'Bronze III', color: '#A97142', shadow: '#6E4220' },
+            { name: 'Prata I', color: '#BCC6D0', shadow: '#808C99' }, { name: 'Prata II', color: '#BCC6D0', shadow: '#808C99' }, { name: 'Prata III', color: '#BCC6D0', shadow: '#808C99' },
+            { name: 'Ouro I', color: '#FFD700', shadow: '#B3A125' }, { name: 'Ouro II', color: '#FFD700', shadow: '#B3A125' }, { name: 'Ouro III', color: '#FFD700', shadow: '#B3A125' },
+            { name: 'Platina I', color: '#E5E4E2', shadow: '#A8A6A4' }, { name: 'Platina II', color: '#E5E4E2', shadow: '#A8A6A4' }, { name: 'Diamante', color: '#B9F2FF', shadow: '#53B3C7' }
+        ];
+
+        // Estado da aplicação
+        let allCards = {};
+        let userProfile = { totalScore: 0, weeklyScore: 0, patentLevel: 0, leagueId: null, email: '' };
+        let dueCards = [];
+        let currentCard = null;
+        let userId = null;
+        let unsubscribeCards;
+        let unsubscribeProfile;
+        let isCardFlipped = false;
+        let isStudyMoreSession = false; 
+        let sessionInitialCount = 0; 
+        let currentLearningMode = 'kanji';
+        let leagueTimerInterval;
+
+        // Elementos do DOM (restante dos elementos omitido para brevidade)
+        const dom = {
+            mainContainer: document.querySelector('.main-container'), gameContainer: document.getElementById('game-container'), loadingOverlay: document.getElementById('loading-overlay'), authModal: document.getElementById('auth-modal'), reviewCard: document.getElementById('review-card'), cardFront: document.getElementById('card-front'), cardBack: document.getElementById('card-back'), progressBar: document.getElementById('progress-bar'), progressText: document.getElementById('progress-text'), feedbackButtons: document.getElementById('feedback-buttons-container'), studyMoreBtn: document.getElementById('studyMoreBtn'), navStudy: document.getElementById('nav-study'), studyModeText: document.getElementById('study-mode-text'), studyModeDropdown: document.getElementById('study-mode-dropdown'), navGames: document.getElementById('nav-games'), navManage: document.getElementById('nav-manage'), navLeaderboard: document.getElementById('nav-leaderboard'), homeLogo: document.getElementById('home-logo'), navGamesDropdown: document.querySelector('#nav-games + .dropdown-content'), gameMatchKanji: document.getElementById('game-match-kanji'), gameQuizKanji: document.getElementById('game-quiz-kanji'), gameTypeKanji: document.getElementById('game-type-kanji'), gameMemoryKanji: document.getElementById('game-memory-kanji'), manageModal: document.getElementById('manage-modal'), manageModalTitle: document.getElementById('manage-modal-title'), closeManageModalBtn: document.getElementById('close-manage-modal'), addNewCardBtn: document.getElementById('add-new-card-btn'), cardListContainer: document.getElementById('card-list-container'), leaderboardModal: document.getElementById('leaderboard-modal'), closeLeaderboardModalBtn: document.getElementById('close-leaderboard-modal'), leaderboardList: document.getElementById('leaderboard-list'), leagueHeader: document.getElementById('league-header'), patentIconContainer: document.getElementById('patent-icon-container'), patentName: document.getElementById('patent-name'), leagueTimer: document.getElementById('league-timer'), addEditModal: document.getElementById('add-edit-modal'), addEditForm: document.getElementById('add-edit-form'), addEditModalTitle: document.getElementById('add-edit-modal-title'), mainCharLabel: document.getElementById('main-char-label'), cancelEditBtn: document.getElementById('cancel-edit-btn'), cardIdInput: document.getElementById('card-id-input'), kanjiInput: document.getElementById('kanji-input'), pronunciationInput: document.getElementById('pronunciation-input'), meaningInput: document.getElementById('meaning-input'), saveCardBtn: document.getElementById('save-card-btn'), authLinks: document.getElementById('auth-links'), loginNavBtn: document.getElementById('login-nav-btn'), userMenu: document.getElementById('user-menu'), userMenuBtn: document.getElementById('user-menu-btn'), userEmailDisplay: document.getElementById('user-email-display'), userMenuDropdown: document.getElementById('user-menu-dropdown'), logoutBtn: document.getElementById('logoutBtn'), manageAccountBtn: document.getElementById('manage-account-btn'), userManageModal: document.getElementById('user-manage-modal'), cancelUserManageBtn: document.getElementById('cancel-user-manage-btn'), updatePasswordForm: document.getElementById('update-password-form'), updatePasswordStatus: document.getElementById('update-password-status'), generateAiBtn: document.getElementById('generate-ai-btn'), aiBtnText: document.getElementById('ai-btn-text'), aiBtnSpinner: document.getElementById('ai-btn-spinner'), geminiDataInput: document.getElementById('gemini-data-input'), hamburgerBtn: document.getElementById('hamburger-btn'), mobileMenu: document.getElementById('mobile-menu'), menuOverlay: document.getElementById('menu-overlay'), closeMobileMenuBtn: document.getElementById('close-mobile-menu-btn'), navStudyMobileToggle: document.getElementById('nav-study-mobile-toggle'), studyModeTextMobile: document.getElementById('study-mode-text-mobile'), navStudyMobileDropdown: document.getElementById('nav-study-mobile-dropdown'), studyCaretMobile: document.getElementById('study-caret-mobile'), navGamesMobileToggle: document.getElementById('nav-games-mobile-toggle'), navGamesMobileDropdown: document.getElementById('nav-games-mobile-dropdown'), gamesCaretMobile: document.getElementById('games-caret-mobile'), navManageMobile: document.getElementById('nav-manage-mobile'), navLeaderboardMobile: document.getElementById('nav-leaderboard-mobile'), gameMatchKanjiMobile: document.getElementById('game-match-kanji-mobile'), gameQuizKanjiMobile: document.getElementById('game-quiz-kanji-mobile'), gameTypeKanjiMobile: document.getElementById('game-type-kanji-mobile'), gameMemoryKanjiMobile: document.getElementById('game-memory-kanji-mobile')
+        };
+
+
+        // --- INICIALIZAÇÃO E AUTENTICAÇÃO ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                userId = user.uid;
+                toggleUI(true, user.email);
+                setupRealtimeListeners(user.email);
+            } else {
+                userId = null;
+                if(unsubscribeCards) unsubscribeCards();
+                if(unsubscribeProfile) unsubscribeProfile();
+                allCards = {};
+                userProfile = { totalScore: 0, weeklyScore: 0, patentLevel: 0, leagueId: null, email: '' };
+                toggleUI(false);
+            }
+        });
+
+        function toggleUI(isAuthenticated, userEmail = '') {
+            dom.loadingOverlay.classList.add('visible');
+            if(isAuthenticated) {
+                showView('srs');
+                dom.authModal.classList.remove('visible');
+                dom.authLinks.style.display = 'none';
+                dom.userMenu.style.display = 'block';
+                dom.userEmailDisplay.textContent = userEmail;
+                dom.userEmailDisplay.title = userEmail;
+            } else {
+                dom.mainContainer.style.display = 'none';
+                dom.gameContainer.style.display = 'none';
+                dom.authLinks.style.display = 'block';
+                dom.userMenu.style.display = 'none';
+                dom.authModal.classList.add('visible');
+            }
+            setTimeout(() => {
+                window.speechSynthesis.getVoices();
+                dom.loadingOverlay.classList.remove('visible');
+            }, 1000);
+        }
+        
+        // --- SINCRONIZAÇÃO COM FIREBASE ---
+        function setupRealtimeListeners(email) {
+            setupRealtimeCardListener();
+            setupRealtimeProfileListener(email);
+        }
+
+        function getDbPath(type = 'cards') {
+             const modePaths = { kanji: 'kanjiCards', hiragana: 'hiraganaCards', katakana: 'katakanaCards' };
+             if (type === 'cards') return `artifacts/${appId}/users/${userId}/${modePaths[currentLearningMode]}`;
+             if (type === 'profile') return `artifacts/${appId}/userProfiles/${userId}`;
+             if (type === 'leagues') return `artifacts/${appId}/leagues`;
+             return `artifacts/${appId}`;
+        }
+
+        function getCurrentDeck() { return allCards[currentLearningMode] || []; }
+        
+        function setupRealtimeCardListener() {
+            if (unsubscribeCards) unsubscribeCards();
+            if (!userId) return;
+            const cardsRef = ref(db, getDbPath('cards'));
+            unsubscribeCards = onValue(cardsRef, (snapshot) => {
+                const data = snapshot.val();
+                allCards[currentLearningMode] = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+                filterCardsDueToday();
+                if (dom.manageModal.classList.contains('visible')) renderManageView();
+            }, (error) => console.error("Erro ao ouvir cards:", error));
+        }
+        
+        function setupRealtimeProfileListener(email) {
+            if (unsubscribeProfile) unsubscribeProfile();
+            if (!userId) return;
+            const profileRef = ref(db, getDbPath('profile'));
+            unsubscribeProfile = onValue(profileRef, async (snapshot) => {
+                if (snapshot.exists()) {
+                    userProfile = snapshot.val();
+                    await checkAndAssignLeague();
+                } else {
+                    const newProfile = { totalScore: 0, weeklyScore: 0, patentLevel: 0, leagueId: null, email: email, lastLeagueUpdate: 0 };
+                    await set(profileRef, newProfile);
+                    userProfile = newProfile;
+                    await checkAndAssignLeague();
+                }
+            });
+        }
+
+        // --- SISTEMA DE PONTUAÇÃO ---
+        async function updateScore(points, correct = 0, incorrect = 0) {
+            if (!userId) return;
+
+            const newWeeklyScore = (userProfile.weeklyScore || 0) + points;
+            const newTotalScore = (userProfile.totalScore || 0) + points;
+            const newCorrectAnswers = (userProfile.correctAnswers || 0) + correct;
+            const newIncorrectAnswers = (userProfile.incorrectAnswers || 0) + incorrect;
+
+            // Update main user profile
+            const profileRef = ref(db, getDbPath('profile'));
+            await set(profileRef, {
+                ...userProfile,
+                totalScore: newTotalScore,
+                weeklyScore: newWeeklyScore,
+                correctAnswers: newCorrectAnswers,
+                incorrectAnswers: newIncorrectAnswers
+            });
+
+            // Also update the score within the league's member list
+            if (userProfile.leagueId && userProfile.leagueWeek) {
+                const leagueMemberRef = ref(db, `${getDbPath('leagues')}/${userProfile.leagueWeek}/${userProfile.leagueId}/members/${userId}`);
+                await set(leagueMemberRef, {
+                    uid: userId,
+                    email: userProfile.email,
+                    weeklyScore: newWeeklyScore
+                });
+            }
+        }
+
+        // --- SISTEMA DE LIGAS ---
+        function getWeekId(date = new Date()) {
+            const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+            const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+            return `${date.getFullYear()}-${Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)}`;
+        }
+
+        async function checkAndAssignLeague() {
+            const currentWeekId = getWeekId();
+            if (userProfile.leagueId && userProfile.leagueWeek === currentWeekId) {
+                return; // Já está em uma liga para esta semana
+            }
+            
+            if (userProfile.leagueWeek && userProfile.leagueWeek !== currentWeekId) {
+                 const oldLeagueRef = ref(db, `${getDbPath('leagues')}/${userProfile.leagueWeek}/${userProfile.leagueId}`);
+                 const oldLeagueSnap = await get(oldLeagueRef);
+                 if(oldLeagueSnap.exists()){
+                     const members = oldLeagueSnap.val().members;
+                     if (members) { // Check if members exist
+                        const sortedMembers = Object.values(members).sort((a,b) => b.weeklyScore - a.weeklyScore);
+                        const userRank = sortedMembers.findIndex(m => m.uid === userId);
+                        if (userRank !== -1) {
+                            if (userRank < 5) userProfile.patentLevel = Math.min(patents.length - 1, userProfile.patentLevel + 1);
+                            else if (userRank >= 25) userProfile.patentLevel = Math.max(0, userProfile.patentLevel - 1);
+                        }
+                     }
+                 }
+            }
+
+            userProfile.weeklyScore = 0;
+            
+            const leaguesRef = ref(db, `${getDbPath('leagues')}/${currentWeekId}`);
+            const snapshot = await get(leaguesRef);
+            const leagues = snapshot.val() || {};
+            let assigned = false;
+            
+            for (const leagueId in leagues) {
+                const league = leagues[leagueId];
+                if (league.patentLevel === userProfile.patentLevel && league.members && Object.keys(league.members).length < 30) {
+                    userProfile.leagueId = leagueId;
+                    assigned = true;
+                    break;
+                }
+            }
+
+            if (!assigned) {
+                const newLeagueRef = push(leaguesRef);
+                userProfile.leagueId = newLeagueRef.key;
+                const newLeague = {
+                    patentLevel: userProfile.patentLevel,
+                    members: {},
+                    createdAt: Date.now()
+                };
+                await set(newLeagueRef, newLeague);
+            }
+            
+            userProfile.leagueWeek = currentWeekId;
+            const userInLeagueRef = ref(db, `${getDbPath('leagues')}/${currentWeekId}/${userProfile.leagueId}/members/${userId}`);
+            await set(userInLeagueRef, { uid: userId, email: userProfile.email, weeklyScore: userProfile.weeklyScore });
+            await set(ref(db, getDbPath('profile')), userProfile);
+        }
+
+        // --- NAVEGAÇÃO E UI GERAL ---
+        dom.loginNavBtn.addEventListener('click', () => dom.authModal.classList.add('visible')); dom.userMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); dom.userMenuDropdown.classList.toggle('visible'); }); window.addEventListener('click', (e) => { if (!dom.userMenu.contains(e.target)) dom.userMenuDropdown.classList.remove('visible'); if (!dom.navGames.parentElement.contains(e.target)) dom.navGamesDropdown.classList.remove('visible'); if (!dom.navStudy.parentElement.contains(e.target)) dom.studyModeDropdown.classList.remove('visible'); }); function showView(viewName) { dom.mainContainer.style.display = 'none'; dom.gameContainer.style.display = 'none'; document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active')); if (viewName === 'srs') { dom.mainContainer.style.display = 'flex'; dom.navStudy.classList.add('active'); } else if (viewName.startsWith('game-')) { dom.gameContainer.style.display = 'flex'; dom.navGames.classList.add('active'); } else if (viewName === 'manage') { dom.mainContainer.style.display = 'flex'; dom.navManage.classList.add('active'); dom.manageModal.classList.add('visible'); renderManageView(); } else if (viewName === 'leaderboard') { dom.mainContainer.style.display = 'flex'; dom.navLeaderboard.classList.add('active'); openLeaderboard(); } } dom.homeLogo.addEventListener('click', (e) => { e.preventDefault(); showView('srs'); filterCardsDueToday(); }); dom.navGames.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); dom.navGamesDropdown.classList.toggle('visible'); }); dom.gameMatchKanji.addEventListener('click', (e) => { e.preventDefault(); startMatchingGame(); }); dom.gameQuizKanji.addEventListener('click', (e) => { e.preventDefault(); startQuizGame(); }); dom.gameTypeKanji.addEventListener('click', (e) => { e.preventDefault(); startTypingGame(); }); dom.gameMemoryKanji.addEventListener('click', (e) => { e.preventDefault(); startMemoryGame(); }); dom.navStudy.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); if(e.target.closest('.dropdown')) { dom.studyModeDropdown.classList.toggle('visible'); } else { showView('srs'); filterCardsDueToday(); } }); function setLearningMode(mode) { currentLearningMode = mode; const modeName = mode.charAt(0).toUpperCase() + mode.slice(1); dom.studyModeText.textContent = `Estudar: ${modeName}`; dom.studyModeTextMobile.textContent = `Estudar: ${modeName}`; document.querySelectorAll('.mode-select-btn, .mode-select-btn-mobile').forEach(btn => { btn.classList.toggle('active', btn.dataset.mode === mode); }); dom.studyModeDropdown.classList.remove('visible'); showView('srs'); setupRealtimeCardListener(); } document.querySelectorAll('.mode-select-btn, .mode-select-btn-mobile').forEach(btn => { btn.addEventListener('click', () => { setLearningMode(btn.dataset.mode); if (btn.classList.contains('mode-select-btn-mobile')) { closeMobileMenu(); } }); }); function openMobileMenu() { dom.mobileMenu.classList.remove('-translate-x-full'); dom.menuOverlay.style.display = 'block'; setTimeout(() => dom.menuOverlay.style.opacity = '1', 10); } function closeMobileMenu() { dom.mobileMenu.classList.add('-translate-x-full'); dom.menuOverlay.style.opacity = '0'; setTimeout(() => dom.menuOverlay.style.display = 'none', 300); } dom.hamburgerBtn.addEventListener('click', openMobileMenu); dom.closeMobileMenuBtn.addEventListener('click', closeMobileMenu); dom.menuOverlay.addEventListener('click', closeMobileMenu); function toggleMobileDropdown(dropdownEl, caretEl) { const isHidden = dropdownEl.style.display === 'none' || dropdownEl.style.display === ''; dropdownEl.style.display = isHidden ? 'block' : 'none'; caretEl.classList.toggle('open', isHidden); } dom.navStudyMobileToggle.addEventListener('click', () => toggleMobileDropdown(dom.navStudyMobileDropdown, dom.studyCaretMobile)); dom.navGamesMobileToggle.addEventListener('click', () => toggleMobileDropdown(dom.navGamesMobileDropdown, dom.gamesCaretMobile)); dom.navManageMobile.addEventListener('click', (e) => { e.preventDefault(); showView('manage'); closeMobileMenu(); }); dom.navLeaderboardMobile.addEventListener('click', (e) => { e.preventDefault(); showView('leaderboard'); closeMobileMenu(); }); [dom.gameMatchKanjiMobile, dom.gameQuizKanjiMobile, dom.gameTypeKanjiMobile, dom.gameMemoryKanjiMobile].forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); const gameType = e.target.id.split('-')[1]; const gameFunctions = { 'match': startMatchingGame, 'quiz': startQuizGame, 'type': startTypingGame, 'memory': startMemoryGame }; if(gameFunctions[gameType]) gameFunctions[gameType](); closeMobileMenu(); }); }); function speak(text, lang = 'ja-JP') { if ('speechSynthesis' in window) { const utterance = new SpeechSynthesisUtterance(text); utterance.lang = lang; const voices = window.speechSynthesis.getVoices(); utterance.voice = voices.find(voice => voice.lang === lang && voice.name.includes('Google')) || voices.find(voice => voice.lang === lang) || voices.find(voice => voice.lang.startsWith('ja')) || null; utterance.rate = 0.9; window.speechSynthesis.cancel(); window.speechSynthesis.speak(utterance); } }
+        
+        // --- LÓGICA DO SRS ---
+        function filterCardsDueToday() { isStudyMoreSession = false; const now = new Date(); now.setHours(0, 0, 0, 0); const deck = getCurrentDeck(); dueCards = deck.filter(card => { if (!card.lastReview || card.srsLevel === 0) return true; const lastReviewDate = new Date(card.lastReview); lastReviewDate.setHours(0,0,0,0); const interval = [0, 1, 2, 4, 7, 15, 30, 90][card.srsLevel] || 0; lastReviewDate.setDate(lastReviewDate.getDate() + interval); return now >= lastReviewDate; }); dueCards.sort(() => Math.random() - 0.5); sessionInitialCount = dueCards.length; updateProgress(); nextCard(); } function nextCard() { isCardFlipped = false; dom.reviewCard.classList.remove('is-flipped'); if (dueCards.length === 0) { currentCard = null; displayCompletion(); return; } currentCard = dueCards[0]; displayCard(); } function displayCard() { const mainChar = currentCard.kanji; dom.cardFront.innerHTML = `<button class="sound-btn" onclick="window.speak('${mainChar}')"><i class="ph-speaker-high"></i></button><p class="question-text">${mainChar}</p><p class="question-hint">${currentCard.meaning}</p>`; dom.cardBack.innerHTML = renderAnswerContent(currentCard); renderCheckButton('Mostrar Resposta', () => { isCardFlipped = true; dom.reviewCard.classList.add('is-flipped'); setTimeout(setupBackButtonListener, 50); }); } function renderAnswerContent(card) { const mainChar = card.kanji; let geminiContent = ''; if (card.geminiInfo) { const info = card.geminiInfo; geminiContent += `<div class="w-full text-left mt-4 gemini-info-section">`; if (info.sentences && info.sentences.length > 0) { geminiContent += `<h3>Frases de Exemplo</h3><ul>`; info.sentences.forEach(s => { const escapedSentence = JSON.stringify(s.japanese); geminiContent += `<li class="sentence"><div class="flex items-center gap-2"><div class="flex-grow"><p class="jp">${s.japanese}</p><p class="reading">${s.reading}</p><p>${s.portuguese}</p></div><button class="sound-btn-sentence" onclick='window.speak(${escapedSentence})'><i class="ph-speaker-high text-lg"></i></button></div></li>`; }); geminiContent += `</ul>`; } if (info.curiosities) { geminiContent += `<h3>Curiosidades</h3><p>${info.curiosities}</p>`; } if (info.grammar) { geminiContent += `<h3>Dica Gramatical</h3><p>${info.grammar}</p>`; } geminiContent += `</div>`; } return `<button class="sound-btn" onclick="window.speak('${mainChar}')"><i class="ph-speaker-high"></i></button><div class="flex-grow w-full flex flex-col items-center justify-start text-center"><p style="font-size: 3rem; font-family: var(--font-jp);">${mainChar}</p><p class="text-xl mt-2">${card.pronunciation}</p><p class="text-2xl mt-4 font-bold">${card.meaning}</p>${geminiContent}</div><div id="back-card-buttons" class="w-full mt-auto pt-4 flex-shrink-0"></div>`; } function setupBackButtonListener() { const backButtonsContainer = document.getElementById('back-card-buttons'); if (backButtonsContainer) { backButtonsContainer.innerHTML = `<div class="grid grid-cols-2 gap-4 w-full"><button class="btn btn-danger" id="hard-btn-back">Difícil</button><button class="btn btn-success" id="easy-btn-back">Fácil</button></div>`; document.getElementById('hard-btn-back').addEventListener('click', () => handleFeedback(false)); document.getElementById('easy-btn-back').addEventListener('click', () => handleFeedback(true)); } } function renderCheckButton(text, onClick) { dom.feedbackButtons.innerHTML = `<button id="check-btn" class="btn btn-primary col-span-2">${text}</button>`; document.getElementById('check-btn').addEventListener('click', onClick); } function displayCompletion() { const message = isStudyMoreSession ? "Sessão de estudo extra finalizada!" : `Nenhuma revisão de ${currentLearningMode} restante para hoje.`; dom.cardFront.innerHTML = `<div class="text-center"><p class="text-3xl">🎉</p><p class="text-2xl font-bold mt-4" style="color: var(--success);">Parabéns!</p><p class="text-lg mt-2">${message}</p></div>`; dom.cardBack.innerHTML = ''; dom.feedbackButtons.innerHTML = ''; } function startStudyMoreSession() { const deck = getCurrentDeck(); if (!deck || deck.length === 0) return; const shuffled = [...deck].sort(() => 0.5 - Math.random()); dueCards = shuffled.slice(0, 10); sessionInitialCount = dueCards.length; isStudyMoreSession = true; updateProgress(); nextCard(); } dom.studyMoreBtn.addEventListener('click', startStudyMoreSession); function updateProgress() { const reviewed = sessionInitialCount - dueCards.length; const total = sessionInitialCount; const percentage = total > 0 ? (reviewed / total) * 100 : 0; dom.progressBar.style.width = `${percentage}%`; dom.progressText.textContent = `${reviewed} / ${total}`; }
+        async function handleFeedback(isCorrect) {
+            if (!currentCard) return;
+            updateScore(isCorrect ? 10 : 0, isCorrect ? 1 : 0, isCorrect ? 0 : 1);
+            const cardToUpdate = { ...currentCard };
+            dueCards.shift();
+            if (!isStudyMoreSession) {
+                let newSrsLevel = cardToUpdate.srsLevel || 0;
+                newSrsLevel = isCorrect ? Math.min(newSrsLevel + 1, 7) : Math.max(0, newSrsLevel - 1);
+                if (!isCorrect) dueCards.push(cardToUpdate);
+                const cardRef = ref(db, `${getDbPath('cards')}/${cardToUpdate.id}`);
+                const updatedData = { ...cardToUpdate, srsLevel: newSrsLevel, lastReview: new Date().toISOString() };
+                delete updatedData.id;
+                await set(cardRef, updatedData);
+            } else if (!isCorrect) {
+                dueCards.push(cardToUpdate);
+            }
+            updateProgress();
+            nextCard();
+        }
+        window.speak = speak;
+        
+        // --- JOGOS ---
+        function renderGameUI(title, description, content) { dom.gameContainer.innerHTML = `<div class="text-center mb-8"><h2 class="text-3xl font-bold">${title}</h2><p class="text-gray-500 mt-2">${description}</p></div><div id="game-content">${content}</div>`; } 
+        
+        function renderGameCompletion(playAgainFunction, correct, incorrect, points) {
+            const totalPoints = points + 50; // Add bonus points
+            updateScore(totalPoints, correct, incorrect); // Call update score here
+
+            dom.gameContainer.innerHTML = `
+                <div class="game-completion-container">
+                    <h2 class="completion-title">Parabéns!</h2>
+                    <p class="completion-subtitle">Você completou o desafio.</p>
+                    <div class="score-display">
+                        <div class="label">Pontos Ganhos</div>
+                        <div class="score-value" id="animated-score">0</div>
+                        <div class="score-details">(${correct} acertos, ${incorrect} erros + 50 bônus)</div>
+                    </div>
+                    <button id="play-again-btn" class="btn btn-primary">Jogar Novamente</button>
+                </div>
+            `;
+            document.getElementById('play-again-btn').addEventListener('click', playAgainFunction);
+
+            // Animate the score
+            const scoreElement = document.getElementById('animated-score');
+            let currentScore = 0;
+            const increment = Math.max(1, Math.ceil(totalPoints / 60)); // Animate over ~1 second (60 frames)
+
+            function animateScore() {
+                currentScore += increment;
+                if (currentScore >= totalPoints) {
+                    scoreElement.textContent = totalPoints;
+                } else {
+                    scoreElement.textContent = currentScore;
+                    requestAnimationFrame(animateScore);
+                }
+            }
+            
+            setTimeout(() => { // Delay start of animation slightly
+                requestAnimationFrame(animateScore);
+            }, 600);
+        }
+
+        function getGameCards(count = 5) { const deck = getCurrentDeck(); if (deck.length < count) { dom.gameContainer.innerHTML = `<div class="text-center"><h2 class="text-2xl font-bold">Cards Insuficientes</h2><p>Você precisa de pelo menos ${count} cards de ${currentLearningMode} para jogar este modo.</p></div>`; return null; } return [...deck].sort(() => 0.5 - Math.random()).slice(0, count); }
+        function startMatchingGame() { showView('game-match'); const gameCards = getGameCards(5); if (!gameCards) return; let sessionCorrect = 0, sessionIncorrect = 0; const kanjis = gameCards.map(c => ({ id: c.id, text: c.kanji })).sort(() => 0.5 - Math.random()); const meanings = gameCards.map(c => ({ id: c.id, text: c.meaning })).sort(() => 0.5 - Math.random()); const content = `<div class="game-board" style="grid-template-columns: 1fr 1fr;"><div id="kanji-column">${kanjis.map(k => `<div class="game-option kanji" data-id="${k.id}">${k.text}</div>`).join('')}</div><div id="meaning-column">${meanings.map(m => `<div class="game-option" data-id="${m.id}">${m.text}</div>`).join('')}</div></div>`; renderGameUI('Combine', 'Clique em um caractere e no seu significado correspondente.', content); let selectedKanji = null, selectedMeaning = null, correctPairs = 0; const kanjiItems = document.querySelectorAll('#kanji-column .game-option'); const meaningItems = document.querySelectorAll('#meaning-column .game-option'); function handleSelection(items, selectedItem, currentSelection) { if (currentSelection === selectedItem) { selectedItem.classList.remove('selected'); return null; } items.forEach(i => i.classList.remove('selected')); selectedItem.classList.add('selected'); return selectedItem; } function checkMatch() { if (!selectedKanji || !selectedMeaning) return; if (selectedKanji.dataset.id === selectedMeaning.dataset.id) { selectedKanji.classList.add('correct'); selectedMeaning.classList.add('correct'); selectedKanji = null; selectedMeaning = null; correctPairs++; sessionCorrect++; if (correctPairs === gameCards.length) { setTimeout(() => renderGameCompletion(startMatchingGame, sessionCorrect, sessionIncorrect, sessionCorrect * 5), 500); } } else { sessionIncorrect++; selectedKanji.classList.add('incorrect'); selectedMeaning.classList.add('incorrect'); setTimeout(() => { selectedKanji?.classList.remove('incorrect', 'selected'); selectedMeaning?.classList.remove('incorrect', 'selected'); selectedKanji = null; selectedMeaning = null; }, 500); } } kanjiItems.forEach(item => item.addEventListener('click', () => { if (item.classList.contains('correct')) return; selectedKanji = handleSelection(kanjiItems, item, selectedKanji); checkMatch(); })); meaningItems.forEach(item => item.addEventListener('click', () => { if (item.classList.contains('correct')) return; selectedMeaning = handleSelection(meaningItems, item, selectedMeaning); checkMatch(); })); }
+        function startQuizGame() { showView('game-quiz'); const gameCards = getGameCards(10); if (!gameCards || gameCards.length < 4) { return; } let currentQuestionIndex = 0; let sessionCorrect = 0, sessionIncorrect = 0; function displayQuestion() { const card = gameCards[currentQuestionIndex]; const incorrectAnswers = getCurrentDeck().filter(c => c.id !== card.id).sort(() => 0.5 - Math.random()).slice(0, 3).map(c => c.meaning); const options = [card.meaning, ...incorrectAnswers].sort(() => 0.5 - Math.random()); const content = `<div class="text-center text-7xl font-bold font-['Noto_Sans_JP'] mb-8">${card.kanji}</div><div class="game-board" style="grid-template-columns: repeat(2, 1fr);">${options.map(opt => `<div class="game-option" data-correct="${opt === card.meaning}">${opt}</div>`).join('')}</div>`; renderGameUI('Quiz', `Qual o significado deste caractere? (${currentQuestionIndex + 1}/${gameCards.length})`, content); document.querySelectorAll('.game-option').forEach(option => { option.addEventListener('click', () => { document.querySelectorAll('.game-option').forEach(btn => btn.style.pointerEvents = 'none'); const isCorrect = option.dataset.correct === 'true'; option.classList.add(isCorrect ? 'correct' : 'incorrect'); if(isCorrect) sessionCorrect++; else sessionIncorrect++; if (!isCorrect) { document.querySelector('.game-option[data-correct="true"]').classList.add('correct'); } setTimeout(() => { currentQuestionIndex++; if (currentQuestionIndex < gameCards.length) { displayQuestion(); } else { renderGameCompletion(startQuizGame, sessionCorrect, sessionIncorrect, sessionCorrect * 5); } }, 1500); }); }); } displayQuestion(); }
+        function startTypingGame() { showView('game-type'); const gameCards = getGameCards(10); if (!gameCards) { return; } let currentQuestionIndex = 0; let sessionCorrect = 0, sessionIncorrect = 0; function displayQuestion() { const card = gameCards[currentQuestionIndex]; const content = `<div class="text-center"><div class="text-7xl font-bold font-['Noto_Sans_JP']">${card.kanji}</div><div class="text-2xl text-gray-500 mt-2">${card.meaning}</div><input type="text" id="typing-input" class="input mt-8 text-2xl text-center" placeholder="Digite a leitura (romaji)" autocomplete="off" autocorrect="off" spellcheck="false"><p id="typing-feedback" class="mt-4 h-6 font-bold"></p></div>`; renderGameUI('Digite a Leitura', `Escreva a pronúncia e pressione Enter (${currentQuestionIndex + 1}/${gameCards.length})`, content); const input = document.getElementById('typing-input'); input.focus(); input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { const feedback = document.getElementById('typing-feedback'); const isCorrect = input.value.toLowerCase().trim() === card.pronunciation.toLowerCase().trim(); if (isCorrect) { sessionCorrect++; input.classList.add('correct'); feedback.textContent = 'Correto!'; feedback.style.color = 'var(--success)'; } else { sessionIncorrect++; input.classList.add('incorrect'); feedback.innerHTML = `Incorreto. A resposta era: <strong>${card.pronunciation}</strong>`; feedback.style.color = 'var(--danger)'; } input.disabled = true; setTimeout(() => { currentQuestionIndex++; if (currentQuestionIndex < gameCards.length) { displayQuestion(); } else { renderGameCompletion(startTypingGame, sessionCorrect, sessionIncorrect, sessionCorrect * 5); } }, 1500); } }); } displayQuestion(); }
+        
+        function startMemoryGame() {
+            showView('game-memory');
+            const gameCards = getGameCards(8);
+            if (!gameCards) { return; }
+            let sessionCorrect = 0, sessionIncorrect = 0;
+            let items = [];
+            gameCards.forEach(card => {
+                items.push({ type: 'kanji', text: card.kanji, id: card.id });
+                items.push({ type: 'meaning', text: card.meaning, id: card.id });
+            });
+            items.sort(() => 0.5 - Math.random());
+            
+            const gogoChanSVG = `
+                <svg class="memory-card-gogo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="translate(50, 50)">
+                        <ellipse class="glow" cx="0" cy="25" rx="15" ry="20" />
+                        <path class="body" d="M0,-20 Q15,-15 15,5 Q15,30 0,35 Q-15,30 -15,5 Q-15,-15 0,-20 Z" />
+                        <circle class="head" cx="0" cy="-25" r="12" />
+                        <circle cx="-4" cy="-27" r="2" fill="#6D28D9"/>
+                        <circle cx="4" cy="-27" r="2" fill="#6D28D9"/>
+                        <path class="wings" d="M-10,-10 C-30,-25 -25,5 -10,0 Z" transform="rotate(-10)"/>
+                        <path class="wings" d="M10,-10 C30,-25 25,5 10,0 Z" transform="rotate(10)"/>
+                    </g>
+                </svg>`;
+
+            const content = `<div class="memory-grid">${items.map((item, index) => `
+                <div class="memory-card" data-id="${item.id}" data-index="${index}">
+                    <div class="memory-card-face memory-card-front">${gogoChanSVG}</div>
+                    <div class="memory-card-face memory-card-back ${item.type === 'kanji' ? 'kanji' : ''}">${item.text}</div>
+                </div>`).join('')}
+            </div>`;
+            
+            renderGameUI('Jogo da Memória', 'Encontre os pares de caractere e significado.', content);
+            
+            let flippedCards = [];
+            let matchedPairs = 0;
+            let canFlip = true;
+
+            document.querySelectorAll('.memory-card').forEach(card => card.addEventListener('click', () => {
+                if (!canFlip || flippedCards.length >= 2 || card.classList.contains('flipped') || card.classList.contains('matched')) {
+                    return;
+                }
+                
+                card.classList.add('flipped');
+                flippedCards.push(card);
+                
+                if (flippedCards.length === 2) {
+                    canFlip = false;
+                    const [card1, card2] = flippedCards;
+                    if (card1.dataset.id === card2.dataset.id) {
+                        sessionCorrect++;
+                        setTimeout(() => {
+                             card1.classList.add('matched');
+                             card2.classList.add('matched');
+                             matchedPairs++;
+                             flippedCards = [];
+                             canFlip = true;
+                             if (matchedPairs === gameCards.length) {
+                                setTimeout(() => renderGameCompletion(startMemoryGame, sessionCorrect, sessionIncorrect, sessionCorrect * 10), 500);
+                             }
+                        }, 500);
+                    } else {
+                        sessionIncorrect++;
+                        setTimeout(() => {
+                            card1.classList.remove('flipped');
+                            card2.classList.remove('flipped');
+                            flippedCards = [];
+                            canFlip = true;
+                        }, 1200);
+                    }
+                }
+            }));
+        }
+        
+        // --- GERENCIAMENTO ---
+        dom.navManage.addEventListener('click', (e) => { e.preventDefault(); showView('manage'); }); dom.closeManageModalBtn.addEventListener('click', () => dom.manageModal.classList.remove('visible')); dom.addNewCardBtn.addEventListener('click', () => openAddEditModal()); dom.cancelEditBtn.addEventListener('click', () => dom.addEditModal.classList.remove('visible')); dom.manageAccountBtn.addEventListener('click', (e) => { e.preventDefault(); dom.userManageModal.classList.add('visible'); dom.userMenuDropdown.classList.remove('visible'); }); dom.cancelUserManageBtn.addEventListener('click', () => dom.userManageModal.classList.remove('visible')); function renderManageView() { const modeName = currentLearningMode.charAt(0).toUpperCase() + currentLearningMode.slice(1); dom.manageModalTitle.textContent = `Gerenciar ${modeName}`; const deck = getCurrentDeck(); dom.cardListContainer.innerHTML = ''; if (deck.length === 0) { dom.cardListContainer.innerHTML = `<p class="text-center text-gray-500">Você ainda não tem cards de ${currentLearningMode}.</p>`; return; } const sortedCards = [...deck].sort((a, b) => a.kanji.localeCompare(b.kanji, 'ja')); sortedCards.forEach(card => { const cardElement = document.createElement('div'); cardElement.className = 'flex items-center justify-between p-4 rounded-lg bg-white border border-gray-200'; cardElement.innerHTML = `<div><p class="text-xl font-bold font-['Noto_Sans_JP']">${card.kanji}</p><p class="text-sm text-gray-600">${card.meaning}</p></div><div class="space-x-2"><button class="edit-btn btn btn-secondary text-xs p-2"><i class="ph-pencil-simple"></i></button><button class="delete-btn btn btn-danger text-xs p-2"><i class="ph-trash"></i></button></div>`; cardElement.querySelector('.edit-btn').addEventListener('click', () => openAddEditModal(card)); cardElement.querySelector('.delete-btn').addEventListener('click', () => deleteCard(card.id)); dom.cardListContainer.appendChild(cardElement); }); } function openAddEditModal(card = null) { dom.addEditForm.reset(); const modeName = currentLearningMode.charAt(0).toUpperCase() + currentLearningMode.slice(1); const charType = currentLearningMode === 'kanji' ? 'Kanji' : 'Caractere'; dom.mainCharLabel.textContent = charType; if (card) { dom.addEditModalTitle.textContent = `Editar ${modeName}`; dom.cardIdInput.value = card.id; dom.kanjiInput.value = card.kanji; dom.pronunciationInput.value = card.pronunciation; dom.meaningInput.value = card.meaning; dom.geminiDataInput.value = card.geminiInfo ? JSON.stringify(card.geminiInfo) : ''; } else { dom.addEditModalTitle.textContent = `Adicionar ${modeName}`; dom.cardIdInput.value = ''; dom.geminiDataInput.value = ''; } dom.addEditModal.classList.add('visible'); } async function deleteCard(cardId) { if (confirm('Tem certeza que deseja apagar este card?')) { try { await remove(ref(db, `${getDbPath('cards')}/${cardId}`)); } catch(error) { console.error("Erro ao apagar card:", error); } } }
+        
+        // --- PLACAR / LIGAS (NOVA VERSÃO) ---
+        dom.navLeaderboard.addEventListener('click', (e) => { e.preventDefault(); showView('leaderboard'); }); 
+        dom.closeLeaderboardModalBtn.addEventListener('click', () => dom.leaderboardModal.classList.remove('visible'));
+        
+        function updateLeagueTimer() { 
+            const now = new Date(); 
+            const endOfWeek = new Date(now); 
+            endOfWeek.setDate(now.getDate() + (7 - now.getDay()) % 7); 
+            endOfWeek.setHours(23, 59, 59, 999); 
+            const diff = endOfWeek - now; 
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24)); 
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); 
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); 
+            dom.leagueTimer.textContent = `Termina em: ${d}d ${h}h ${m}m`; 
+        }
+        
+        function getPatentIcon(level) {
+            const patent = patents[level];
+            return `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M24 6L8 14V34L24 42L40 34V14L24 6Z" fill="${patent.shadow}"/>
+                        <path d="M24 8.25L9.5 15.1875V32.8125L24 39.75L38.5 32.8125V15.1875L24 8.25Z" fill="${patent.color}"/>
+                        <path d="M24 20L15 15.5L24 11L33 15.5L24 20Z" fill="${patent.shadow}" opacity="0.5"/>
+                    </svg>`;
+        }
+
+        async function openLeaderboard() {
+            if (!userProfile.leagueId) { 
+                dom.leaderboardList.innerHTML = '<p class="text-center p-4">Você ainda não está em uma liga.</p>'; 
+                return; 
+            }
+            const patent = patents[userProfile.patentLevel];
+            dom.patentName.textContent = patent.name;
+            dom.patentName.style.color = patent.shadow;
+            dom.patentIconContainer.innerHTML = getPatentIcon(userProfile.patentLevel);
+            updateLeagueTimer();
+            if (leagueTimerInterval) clearInterval(leagueTimerInterval);
+            leagueTimerInterval = setInterval(updateLeagueTimer, 60000);
+            
+            const leagueRef = ref(db, `${getDbPath('leagues')}/${userProfile.leagueWeek}/${userProfile.leagueId}/members`);
+            onValue(leagueRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const members = Object.values(snapshot.val());
+                    const sortedMembers = members.sort((a,b) => (b.weeklyScore || 0) - (a.weeklyScore || 0));
+                    renderLeague(sortedMembers);
+                }
+            });
+            dom.leaderboardModal.classList.add('visible');
+        }
+
+        function renderLeague(data) {
+            dom.leaderboardList.innerHTML = '';
+            
+            const createZone = (className, title) => {
+                const zone = document.createElement('div');
+                zone.className = `league-zone ${className}`;
+                if (title) {
+                    const titleEl = document.createElement('div');
+                    titleEl.className = 'zone-title';
+                    titleEl.textContent = title;
+                    zone.appendChild(titleEl);
+                }
+                return zone;
+            };
+
+            const promotionZone = createZone('league-zone-promotion', 'Zona de Promoção');
+            const normalZone = createZone('', null);
+            const demotionZone = createZone('league-zone-demotion', 'Zona de Rebaixamento');
+
+            const promotionLimit = 5;
+            const demotionLimit = data.length - 5;
+
+            data.forEach((user, index) => {
+                const item = document.createElement('div');
+                item.className = 'leaderboard-item';
+                if (user.uid === userId) {
+                    item.classList.add('current-user');
+                }
+
+                const rank = index + 1;
+                let rankContent;
+                if (rank === 1) rankContent = '<span class="medal">🥇</span>';
+                else if (rank === 2) rankContent = '<span class="medal">🥈</span>';
+                else if (rank === 3) rankContent = '<span class="medal">🥉</span>';
+                else rankContent = `<span>${rank}</span>`;
+
+                const userInitial = user.email.charAt(0).toUpperCase();
+
+                item.innerHTML = `
+                    <div class="rank">${rankContent}</div>
+                    <div class="user-avatar">${userInitial}</div>
+                    <div class="user-info">
+                        <div class="user-name">${user.email.split('@')[0]}</div>
+                    </div>
+                    <div class="user-score">${user.weeklyScore || 0} pts</div>
+                `;
+                
+                if (rank <= promotionLimit) {
+                    promotionZone.appendChild(item);
+                } else if (rank > demotionLimit && data.length > 10) {
+                    demotionZone.appendChild(item);
+                } else {
+                    normalZone.appendChild(item);
+                }
+            });
+
+            if (promotionZone.childElementCount > 1) dom.leaderboardList.appendChild(promotionZone);
+            if (normalZone.childElementCount > 0) dom.leaderboardList.appendChild(normalZone);
+            if (demotionZone.childElementCount > 1) dom.leaderboardList.appendChild(demotionZone);
+        }
+        
+        // --- GEMINI API E FORMULÁRIO DE CARD ---
+        dom.generateAiBtn.addEventListener('click', async () => { const character = dom.kanjiInput.value; if (!character.trim()) { alert("Por favor, insira um caractere."); return; } dom.generateAiBtn.disabled = true; dom.aiBtnText.style.display = 'none'; dom.aiBtnSpinner.style.display = 'block'; try { const geminiData = await fetchGeminiDataForFields(character, currentLearningMode); if (geminiData) { dom.pronunciationInput.value = geminiData.pronunciation || ''; dom.meaningInput.value = geminiData.meaning || ''; dom.geminiDataInput.value = JSON.stringify(geminiData); } else { alert("Não foi possível gerar informações com a IA. Tente novamente."); } } catch (error) { console.error("Erro na geração com IA:", error); alert("Ocorreu um erro ao contatar a IA."); } finally { dom.generateAiBtn.disabled = false; dom.aiBtnText.style.display = 'inline'; dom.aiBtnSpinner.style.display = 'none'; } }); async function fetchGeminiDataForFields(character, mode) { const apiKey = "AIzaSyCpNSwWWEbyWhklPL96AAweF2qhjeLrWlM"; const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`; let userQuery = ''; const systemPrompt = `Você é um professor de japonês para falantes de português. Forneça informações concisas e úteis sobre um caractere japonês. Responda em JSON.`; if (mode === 'kanji') { userQuery = `Analise o kanji "${character}". Quero informações para um flashcard. Forneça o seguinte em JSON: "pronunciation" (leitura romaji), "meaning" (significado principal), "sentences" (duas frases de exemplo com "japanese", "reading" e "portuguese"), "curiosities" (curiosidade sobre origem/uso), e "grammar" (dica gramatical).`; } else { userQuery = `Analise o caractere de ${mode} "${character}". Quero informações para um flashcard. Forneça o seguinte em JSON: "pronunciation" (leitura romaji), "meaning" (para o que é usado, ex: som 'a'), "sentences" (duas palavras de exemplo simples usando o caractere, com "japanese", "reading" e "portuguese"), "curiosities" (dica de memorização ou traçado), e "grammar" (dica de uso ou partículas comuns).`; } const payload = { contents: [{ parts: [{ text: userQuery }] }], systemInstruction: { parts: [{ text: systemPrompt }] }, generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", properties: { "pronunciation": { "type": "STRING" }, "meaning": { "type": "STRING" }, "sentences": { type: "ARRAY", items: { type: "OBJECT", properties: { "japanese": { "type": "STRING" }, "reading": { "type": "STRING" }, "portuguese": { "type": "STRING" } }, required: ["japanese", "reading", "portuguese"]}}, "curiosities": { "type": "STRING" }, "grammar": { "type": "STRING" } }, required: ["pronunciation", "meaning", "sentences", "curiosities", "grammar"] } } }; try { const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); if (!response.ok) throw new Error(`API error: ${response.status}`); const result = await response.json(); const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text; return JSON.parse(jsonText); } catch (error) { console.error("Erro ao chamar a API Gemini:", error); return null; } }
+        
+        // --- AUTENTICAÇÃO E CONTA ---
+        dom.addEditForm.addEventListener('submit', async (e) => { e.preventDefault(); const cardData = { kanji: dom.kanjiInput.value, pronunciation: dom.pronunciationInput.value, meaning: dom.meaningInput.value, srsLevel: 0, lastReview: new Date().toISOString(), geminiInfo: dom.geminiDataInput.value ? JSON.parse(dom.geminiDataInput.value) : null }; const cardId = dom.cardIdInput.value; try { if (cardId) { await set(ref(db, `${getDbPath('cards')}/${cardId}`), cardData); } else { await push(ref(db, getDbPath('cards')), cardData); } dom.addEditModal.classList.remove('visible'); } catch(error) { console.error("Erro ao salvar card:", error); } }); dom.logoutBtn.addEventListener('click', () => signOut(auth)); let isSignInMode = true; const authElements = { emailInput: document.getElementById('emailInput'), passwordInput: document.getElementById('passwordInput'), confirmPasswordInput: document.getElementById('confirmPasswordInput'), authBtn: document.getElementById('authBtn'), toggleAuthMode: document.getElementById('toggleAuthMode'), authModalTitle: document.getElementById('auth-modal-title'), authStatusMessage: document.getElementById('auth-status-message') }; authElements.toggleAuthMode.addEventListener('click', () => { isSignInMode = !isSignInMode; authElements.authModalTitle.textContent = isSignInMode ? 'Entrar' : 'Criar Conta'; authElements.authBtn.textContent = isSignInMode ? 'Entrar' : 'Criar Conta'; authElements.toggleAuthMode.textContent = isSignInMode ? 'Ainda não tem uma conta? Crie uma.' : 'Já tem uma conta? Entrar.'; authElements.confirmPasswordInput.style.display = isSignInMode ? 'none' : 'block'; authElements.authStatusMessage.textContent = ''; }); authElements.authBtn.addEventListener('click', async () => { const email = authElements.emailInput.value; const password = authElements.passwordInput.value; authElements.authStatusMessage.textContent = 'Processando...'; try { if (isSignInMode) { await signInWithEmailAndPassword(auth, email, password); } else { const confirmPassword = authElements.confirmPasswordInput.value; if (password !== confirmPassword) { authElements.authStatusMessage.textContent = 'As senhas não coincidem.'; return; } await createUserWithEmailAndPassword(auth, email, password); } } catch (error) { authElements.authStatusMessage.textContent = "Falha na autenticação: " + error.message; } }); dom.updatePasswordForm.addEventListener('submit', async (e) => { e.preventDefault(); const newPassword = document.getElementById('new-password-input').value; const confirmPassword = document.getElementById('confirm-new-password-input').value; const statusEl = dom.updatePasswordStatus; if (newPassword !== confirmPassword) { statusEl.textContent = 'As senhas não coincidem.'; statusEl.style.color = 'var(--danger)'; return; } if(newPassword.length < 6) { statusEl.textContent = 'A senha deve ter no mínimo 6 caracteres.'; statusEl.style.color = 'var(--danger)'; return; } statusEl.textContent = 'Atualizando...'; statusEl.style.color = 'var(--text-secondary)'; try { const user = auth.currentUser; await updatePassword(user, newPassword); statusEl.textContent = 'Senha atualizada com sucesso!'; statusEl.style.color = 'var(--success)'; setTimeout(() => { dom.userManageModal.classList.remove('visible'); statusEl.textContent = ''; dom.updatePasswordForm.reset(); }, 2000); } catch (error) { console.error("Erro ao atualizar senha:", error); statusEl.textContent = 'Erro ao atualizar. Tente novamente.'; statusEl.style.color = 'var(--danger)'; } });
+    </script>
+</body>
+</html>
+
