@@ -1013,22 +1013,23 @@
                 return; // Já está em uma liga para esta semana
             }
             
-            // Lógica de promoção/rebaixamento (simplificada, rodaria num "cron job" idealmente)
             if (userProfile.leagueWeek && userProfile.leagueWeek !== currentWeekId) {
                  const oldLeagueRef = ref(db, `${getDbPath('leagues')}/${userProfile.leagueWeek}/${userProfile.leagueId}`);
                  const oldLeagueSnap = await get(oldLeagueRef);
                  if(oldLeagueSnap.exists()){
                      const members = oldLeagueSnap.val().members;
-                     const sortedMembers = Object.values(members).sort((a,b) => b.weeklyScore - a.weeklyScore);
-                     const userRank = sortedMembers.findIndex(m => m.uid === userId);
-                     if (userRank !== -1) {
-                         if (userRank < 5) userProfile.patentLevel = Math.min(patents.length - 1, userProfile.patentLevel + 1);
-                         else if (userRank >= 25) userProfile.patentLevel = Math.max(0, userProfile.patentLevel - 1);
+                     if (members) { // Check if members exist
+                        const sortedMembers = Object.values(members).sort((a,b) => b.weeklyScore - a.weeklyScore);
+                        const userRank = sortedMembers.findIndex(m => m.uid === userId);
+                        if (userRank !== -1) {
+                            if (userRank < 5) userProfile.patentLevel = Math.min(patents.length - 1, userProfile.patentLevel + 1);
+                            else if (userRank >= 25) userProfile.patentLevel = Math.max(0, userProfile.patentLevel - 1);
+                        }
                      }
                  }
             }
 
-            userProfile.weeklyScore = 0; // Reseta o score para a nova semana
+            userProfile.weeklyScore = 0;
             
             const leaguesRef = ref(db, `${getDbPath('leagues')}/${currentWeekId}`);
             const snapshot = await get(leaguesRef);
@@ -1037,7 +1038,7 @@
             
             for (const leagueId in leagues) {
                 const league = leagues[leagueId];
-                if (league.patentLevel === userProfile.patentLevel && Object.keys(league.members).length < 30) {
+                if (league.patentLevel === userProfile.patentLevel && league.members && Object.keys(league.members).length < 30) {
                     userProfile.leagueId = leagueId;
                     assigned = true;
                     break;
