@@ -376,6 +376,9 @@
             background: linear-gradient(180deg, #DDD6FE 0%, var(--bg-primary) 30%);
             display: flex;
             flex-direction: column;
+            /* Corrigido para iPhone */
+            height: 90vh;
+            max-height: 700px;
         }
         #gogo-chan-mascot {
             width: 120px;
@@ -458,6 +461,7 @@
             background-color: var(--bg-secondary);
             border: 1px solid var(--border-color);
             transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
         }
         .leaderboard-item:hover {
             transform: scale(1.02);
@@ -621,6 +625,85 @@
             0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
             40% { transform: translateY(-30px); } 60% { transform: translateY(-15px); }
         }
+
+        /* --- PERFIL DE USUÁRIO (NOVO) --- */
+        #profile-modal .modal-content {
+            padding: 0;
+            overflow: hidden;
+            background: var(--bg-primary);
+        }
+        .profile-header {
+            background-color: var(--accent-primary);
+            color: white;
+            padding: 2.5rem 1.5rem 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+        .profile-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 0 auto 1rem;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .profile-name {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+        .profile-joindate {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+        #close-profile-modal {
+            position: absolute; top: 1rem; right: 1rem;
+            background: rgba(0,0,0,0.2); border: none; color: white;
+            border-radius: 50%; width: 32px; height: 32px;
+            font-size: 1.5rem; line-height: 1;
+        }
+        .profile-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+        .stat-card {
+            background-color: var(--bg-secondary);
+            border-radius: 1rem;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .stat-card .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+        .stat-card .label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-top: 0.25rem;
+            text-transform: uppercase;
+        }
+        .profile-league-card {
+            margin: 0 1.5rem 1.5rem;
+            background-color: var(--bg-secondary);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            gap: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center">
@@ -717,6 +800,7 @@
                             <i class="ph ph-caret-down"></i>
                         </button>
                         <div id="user-menu-dropdown" class="dropdown-content">
+                            <a href="#" id="my-profile-btn">Meu Perfil</a>
                             <a href="#" id="manage-account-btn">Gerenciar Conta</a>
                             <a href="#" id="logoutBtn">Sair</a>
                         </div>
@@ -863,6 +947,15 @@
                 <!-- Lista da liga será inserida aqui -->
             </div>
             <div id="leaderboard-pagination-container" class="pagination-container"></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE PERFIL DE USUÁRIO (NOVO) -->
+    <div id="profile-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div id="profile-content">
+                <!-- O conteúdo do perfil será renderizado aqui -->
+            </div>
         </div>
     </div>
 
@@ -1041,7 +1134,7 @@
 
         // Estado da aplicação
         let allCards = {};
-        let userProfile = { totalScore: 0, weeklyScore: 0, patentLevel: 0, leagueId: null, email: '', username: '', keyword: '' };
+        let userProfile = { totalScore: 0, weeklyScore: 0, patentLevel: 0, leagueId: null, email: '', username: '', keyword: '', createdAt: '' };
         let dueCards = [];
         let currentCard = null;
         let userId = null;
@@ -1060,7 +1153,9 @@
 
         // Elementos do DOM
         const dom = {
-            mainContainer: document.querySelector('.main-container'), gameContainer: document.getElementById('game-container'), loadingOverlay: document.getElementById('loading-overlay'), authModal: document.getElementById('auth-modal'), reviewCard: document.getElementById('review-card'), cardFront: document.getElementById('card-front'), cardBack: document.getElementById('card-back'), progressBar: document.getElementById('progress-bar'), progressText: document.getElementById('progress-text'), feedbackButtons: document.getElementById('feedback-buttons-container'), studyMoreBtn: document.getElementById('studyMoreBtn'), navStudy: document.getElementById('nav-study'), studyModeText: document.getElementById('study-mode-text'), studyModeDropdown: document.getElementById('study-mode-dropdown'), navGames: document.getElementById('nav-games'), navManage: document.getElementById('nav-manage'), navLeaderboard: document.getElementById('nav-leaderboard'), homeLogo: document.getElementById('home-logo'), navGamesDropdown: document.querySelector('#nav-games + .dropdown-content'), gameMatchKanji: document.getElementById('game-match-kanji'), gameQuizKanji: document.getElementById('game-quiz-kanji'), gameTypeKanji: document.getElementById('game-type-kanji'), gameMemoryKanji: document.getElementById('game-memory-kanji'), manageModal: document.getElementById('manage-modal'), manageModalTitle: document.getElementById('manage-modal-title'), closeManageModalBtn: document.getElementById('close-manage-modal'), addNewCardBtn: document.getElementById('add-new-card-btn'), cardListContainer: document.getElementById('card-list-container'), managePaginationContainer: document.getElementById('manage-pagination-container'), leaderboardModal: document.getElementById('leaderboard-modal'), closeLeaderboardModalBtn: document.getElementById('close-leaderboard-modal'), leaderboardList: document.getElementById('leaderboard-list'), leaderboardPaginationContainer: document.getElementById('leaderboard-pagination-container'), leagueHeader: document.getElementById('league-header'), patentIconContainer: document.getElementById('patent-icon-container'), patentName: document.getElementById('patent-name'), leagueTimer: document.getElementById('league-timer'), addEditModal: document.getElementById('add-edit-modal'), addEditForm: document.getElementById('add-edit-form'), addEditModalTitle: document.getElementById('add-edit-modal-title'), mainCharLabel: document.getElementById('main-char-label'), cancelEditBtn: document.getElementById('cancel-edit-btn'), cardIdInput: document.getElementById('card-id-input'), kanjiInput: document.getElementById('kanji-input'), pronunciationInput: document.getElementById('pronunciation-input'), meaningInput: document.getElementById('meaning-input'), saveCardBtn: document.getElementById('save-card-btn'), authLinks: document.getElementById('auth-links'), loginNavBtn: document.getElementById('login-nav-btn'), userMenu: document.getElementById('user-menu'), userMenuBtn: document.getElementById('user-menu-btn'), userNameDisplay: document.getElementById('user-name-display'), userMenuDropdown: document.getElementById('user-menu-dropdown'), logoutBtn: document.getElementById('logoutBtn'), manageAccountBtn: document.getElementById('manage-account-btn'), userManageModal: document.getElementById('user-manage-modal'), cancelUserManageBtn: document.getElementById('cancel-user-manage-btn'), updatePasswordForm: document.getElementById('update-password-form'), updatePasswordStatus: document.getElementById('update-password-status'), updateUsernameForm: document.getElementById('update-username-form'), newUsernameInput: document.getElementById('new-username-input'), updateUsernameStatus: document.getElementById('update-username-status'), generateAiBtn: document.getElementById('generate-ai-btn'), aiBtnText: document.getElementById('ai-btn-text'), aiBtnSpinner: document.getElementById('ai-btn-spinner'), geminiDataInput: document.getElementById('gemini-data-input'), hamburgerBtn: document.getElementById('hamburger-btn'), mobileMenu: document.getElementById('mobile-menu'), menuOverlay: document.getElementById('menu-overlay'), closeMobileMenuBtn: document.getElementById('close-mobile-menu-btn'), navStudyMobileToggle: document.getElementById('nav-study-mobile-toggle'), studyModeTextMobile: document.getElementById('study-mode-text-mobile'), navStudyMobileDropdown: document.getElementById('nav-study-mobile-dropdown'), studyCaretMobile: document.getElementById('study-caret-mobile'), navGamesMobileToggle: document.getElementById('nav-games-mobile-toggle'), navGamesMobileDropdown: document.getElementById('nav-games-mobile-dropdown'), gamesCaretMobile: document.getElementById('games-caret-mobile'), navManageMobile: document.getElementById('nav-manage-mobile'), navLeaderboardMobile: document.getElementById('nav-leaderboard-mobile'), gameMatchKanjiMobile: document.getElementById('game-match-kanji-mobile'), gameQuizKanjiMobile: document.getElementById('game-quiz-kanji-mobile'), gameTypeKanjiMobile: document.getElementById('game-type-kanji-mobile'), gameMemoryKanjiMobile: document.getElementById('game-memory-kanji-mobile'),
+            mainContainer: document.querySelector('.main-container'), gameContainer: document.getElementById('game-container'), loadingOverlay: document.getElementById('loading-overlay'), authModal: document.getElementById('auth-modal'), reviewCard: document.getElementById('review-card'), cardFront: document.getElementById('card-front'), cardBack: document.getElementById('card-back'), progressBar: document.getElementById('progress-bar'), progressText: document.getElementById('progress-text'), feedbackButtons: document.getElementById('feedback-buttons-container'), studyMoreBtn: document.getElementById('studyMoreBtn'), navStudy: document.getElementById('nav-study'), studyModeText: document.getElementById('study-mode-text'), studyModeDropdown: document.getElementById('study-mode-dropdown'), navGames: document.getElementById('nav-games'), navManage: document.getElementById('nav-manage'), navLeaderboard: document.getElementById('nav-leaderboard'), homeLogo: document.getElementById('home-logo'), navGamesDropdown: document.querySelector('#nav-games + .dropdown-content'), gameMatchKanji: document.getElementById('game-match-kanji'), gameQuizKanji: document.getElementById('game-quiz-kanji'), gameTypeKanji: document.getElementById('game-type-kanji'), gameMemoryKanji: document.getElementById('game-memory-kanji'), manageModal: document.getElementById('manage-modal'), manageModalTitle: document.getElementById('manage-modal-title'), closeManageModalBtn: document.getElementById('close-manage-modal'), addNewCardBtn: document.getElementById('add-new-card-btn'), cardListContainer: document.getElementById('card-list-container'), managePaginationContainer: document.getElementById('manage-pagination-container'), leaderboardModal: document.getElementById('leaderboard-modal'), closeLeaderboardModalBtn: document.getElementById('close-leaderboard-modal'), leaderboardList: document.getElementById('leaderboard-list'), leaderboardPaginationContainer: document.getElementById('leaderboard-pagination-container'), leagueHeader: document.getElementById('league-header'), patentIconContainer: document.getElementById('patent-icon-container'), patentName: document.getElementById('patent-name'), leagueTimer: document.getElementById('league-timer'), addEditModal: document.getElementById('add-edit-modal'), addEditForm: document.getElementById('add-edit-form'), addEditModalTitle: document.getElementById('add-edit-modal-title'), mainCharLabel: document.getElementById('main-char-label'), cancelEditBtn: document.getElementById('cancel-edit-btn'), cardIdInput: document.getElementById('card-id-input'), kanjiInput: document.getElementById('kanji-input'), pronunciationInput: document.getElementById('pronunciation-input'), meaningInput: document.getElementById('meaning-input'), saveCardBtn: document.getElementById('save-card-btn'), authLinks: document.getElementById('auth-links'), loginNavBtn: document.getElementById('login-nav-btn'), userMenu: document.getElementById('user-menu'), userMenuBtn: document.getElementById('user-menu-btn'), userNameDisplay: document.getElementById('user-name-display'), userMenuDropdown: document.getElementById('user-menu-dropdown'), logoutBtn: document.getElementById('logoutBtn'), myProfileBtn: document.getElementById('my-profile-btn'), manageAccountBtn: document.getElementById('manage-account-btn'), userManageModal: document.getElementById('user-manage-modal'), cancelUserManageBtn: document.getElementById('cancel-user-manage-btn'), updatePasswordForm: document.getElementById('update-password-form'), updatePasswordStatus: document.getElementById('update-password-status'), updateUsernameForm: document.getElementById('update-username-form'), newUsernameInput: document.getElementById('new-username-input'), updateUsernameStatus: document.getElementById('update-username-status'), generateAiBtn: document.getElementById('generate-ai-btn'), aiBtnText: document.getElementById('ai-btn-text'), aiBtnSpinner: document.getElementById('ai-btn-spinner'), geminiDataInput: document.getElementById('gemini-data-input'), hamburgerBtn: document.getElementById('hamburger-btn'), mobileMenu: document.getElementById('mobile-menu'), menuOverlay: document.getElementById('menu-overlay'), closeMobileMenuBtn: document.getElementById('close-mobile-menu-btn'), navStudyMobileToggle: document.getElementById('nav-study-mobile-toggle'), studyModeTextMobile: document.getElementById('study-mode-text-mobile'), navStudyMobileDropdown: document.getElementById('nav-study-mobile-dropdown'), studyCaretMobile: document.getElementById('study-caret-mobile'), navGamesMobileToggle: document.getElementById('nav-games-mobile-toggle'), navGamesMobileDropdown: document.getElementById('nav-games-mobile-dropdown'), gamesCaretMobile: document.getElementById('games-caret-mobile'), navManageMobile: document.getElementById('nav-manage-mobile'), navLeaderboardMobile: document.getElementById('nav-leaderboard-mobile'), gameMatchKanjiMobile: document.getElementById('game-match-kanji-mobile'), gameQuizKanjiMobile: document.getElementById('game-quiz-kanji-mobile'), gameTypeKanjiMobile: document.getElementById('game-type-kanji-mobile'), gameMemoryKanjiMobile: document.getElementById('game-memory-kanji-mobile'),
+            profileModal: document.getElementById('profile-modal'),
+            profileContent: document.getElementById('profile-content'),
             // Auth Modal elements
             authForm: { usernameInput: document.getElementById('usernameInput'), emailInput: document.getElementById('emailInput'), passwordInput: document.getElementById('passwordInput'), confirmPasswordInput: document.getElementById('confirmPasswordInput'), keywordInput: document.getElementById('keywordInput'), authBtn: document.getElementById('authBtn'), toggleAuthMode: document.getElementById('toggleAuthMode'), authModalTitle: document.getElementById('auth-modal-title'), authStatusMessage: document.getElementById('auth-status-message'), forgotPasswordLink: document.getElementById('forgotPassword') },
             // Manage Account Modal elements
@@ -1081,7 +1176,7 @@
                 if(unsubscribeCards) unsubscribeCards();
                 if(unsubscribeProfile) unsubscribeProfile();
                 allCards = {};
-                userProfile = { totalScore: 0, weeklyScore: 0, patentLevel: 0, leagueId: null, email: '', username: '', keyword: '' };
+                userProfile = { totalScore: 0, weeklyScore: 0, patentLevel: 0, leagueId: null, email: '', username: '', keyword: '', createdAt: '' };
                 toggleUI(false);
             }
         });
@@ -1116,10 +1211,13 @@
             setupRealtimeProfileListener();
         }
 
-        function getDbPath(type = 'cards') {
+        function getDbPath(type = 'cards', targetUserId = null) {
+             const uid = targetUserId || userId;
+             if (!uid) return null;
+
              const modePaths = { kanji: 'kanjiCards', hiragana: 'hiraganaCards', katakana: 'katakanaCards' };
-             if (type === 'cards') return `artifacts/${appId}/users/${userId}/${modePaths[currentLearningMode]}`;
-             if (type === 'profile') return `artifacts/${appId}/userProfiles/${userId}`;
+             if (type === 'cards') return `artifacts/${appId}/users/${uid}/${modePaths[currentLearningMode]}`;
+             if (type === 'profile') return `artifacts/${appId}/userProfiles/${uid}`;
              if (type === 'leagues') return `artifacts/${appId}/leagues`;
              return `artifacts/${appId}`;
         }
@@ -1128,8 +1226,9 @@
         
         function setupRealtimeCardListener() {
             if (unsubscribeCards) unsubscribeCards();
-            if (!userId) return;
-            const cardsRef = ref(db, getDbPath('cards'));
+            const path = getDbPath('cards');
+            if (!path) return;
+            const cardsRef = ref(db, path);
             unsubscribeCards = onValue(cardsRef, (snapshot) => {
                 const data = snapshot.val();
                 allCards[currentLearningMode] = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
@@ -1140,11 +1239,12 @@
         
         function setupRealtimeProfileListener() {
             if (unsubscribeProfile) unsubscribeProfile();
-            if (!userId) return;
-            const profileRef = ref(db, getDbPath('profile'));
+            const path = getDbPath('profile');
+            if (!path) return;
+            const profileRef = ref(db, path);
             unsubscribeProfile = onValue(profileRef, async (snapshot) => {
                 if (snapshot.exists()) {
-                    userProfile = snapshot.val();
+                    userProfile = { ...snapshot.val(), uid: userId };
                     await checkAndAssignLeague();
                     toggleUI(true); // Atualiza a UI com os dados do perfil
                 } 
@@ -1219,7 +1319,7 @@
             
             for (const leagueId in leagues) {
                 const league = leagues[leagueId];
-                if (league.patentLevel === (profileUpdates.patentLevel || userProfile.patentLevel) && league.members && Object.keys(league.members).length < 30) {
+                if (league.patentLevel === (profileUpdates.patentLevel ?? userProfile.patentLevel) && league.members && Object.keys(league.members).length < 30) {
                     profileUpdates.leagueId = leagueId;
                     assigned = true;
                     break;
@@ -1229,7 +1329,7 @@
             if (!assigned) {
                 const newLeagueRef = push(leaguesRef);
                 profileUpdates.leagueId = newLeagueRef.key;
-                await set(newLeagueRef, { patentLevel: (profileUpdates.patentLevel || userProfile.patentLevel), members: {}, createdAt: Date.now() });
+                await set(newLeagueRef, { patentLevel: (profileUpdates.patentLevel ?? userProfile.patentLevel), members: {}, createdAt: Date.now() });
             }
             
             profileUpdates.leagueWeek = currentWeekId;
@@ -1241,22 +1341,34 @@
         // --- NAVEGAÇÃO E UI GERAL ---
         dom.loginNavBtn.addEventListener('click', () => dom.authModal.classList.add('visible')); dom.userMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); dom.userMenuDropdown.classList.toggle('visible'); }); window.addEventListener('click', (e) => { if (!dom.userMenu.contains(e.target)) dom.userMenuDropdown.classList.remove('visible'); if (!dom.navGames.parentElement.contains(e.target)) dom.navGamesDropdown.classList.remove('visible'); if (!dom.navStudy.parentElement.contains(e.target)) dom.studyModeDropdown.classList.remove('visible'); }); function showView(viewName) { dom.mainContainer.style.display = 'none'; dom.gameContainer.style.display = 'none'; document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active')); if (viewName === 'srs') { dom.mainContainer.style.display = 'flex'; dom.navStudy.classList.add('active'); } else if (viewName.startsWith('game-')) { dom.gameContainer.style.display = 'flex'; dom.navGames.classList.add('active'); } else if (viewName === 'manage') { dom.mainContainer.style.display = 'flex'; dom.navManage.classList.add('active'); dom.manageModal.classList.add('visible'); renderManageView(); } else if (viewName === 'leaderboard') { dom.mainContainer.style.display = 'flex'; dom.navLeaderboard.classList.add('active'); openLeaderboard(); } } dom.homeLogo.addEventListener('click', (e) => { e.preventDefault(); showView('srs'); filterCardsDueToday(); }); dom.navGames.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); dom.navGamesDropdown.classList.toggle('visible'); }); dom.gameMatchKanji.addEventListener('click', (e) => { e.preventDefault(); startMatchingGame(); }); dom.gameQuizKanji.addEventListener('click', (e) => { e.preventDefault(); startQuizGame(); }); dom.gameTypeKanji.addEventListener('click', (e) => { e.preventDefault(); startTypingGame(); }); dom.gameMemoryKanji.addEventListener('click', (e) => { e.preventDefault(); startMemoryGame(); }); dom.navStudy.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); if(e.target.closest('.dropdown')) { dom.studyModeDropdown.classList.toggle('visible'); } else { showView('srs'); filterCardsDueToday(); } }); function setLearningMode(mode) { currentLearningMode = mode; const modeName = mode.charAt(0).toUpperCase() + mode.slice(1); dom.studyModeText.textContent = `Estudar: ${modeName}`; dom.studyModeTextMobile.textContent = `Estudar: ${modeName}`; document.querySelectorAll('.mode-select-btn, .mode-select-btn-mobile').forEach(btn => { btn.classList.toggle('active', btn.dataset.mode === mode); }); dom.studyModeDropdown.classList.remove('visible'); showView('srs'); setupRealtimeCardListener(); } document.querySelectorAll('.mode-select-btn, .mode-select-btn-mobile').forEach(btn => { btn.addEventListener('click', () => { setLearningMode(btn.dataset.mode); if (btn.classList.contains('mode-select-btn-mobile')) { closeMobileMenu(); } }); }); function openMobileMenu() { dom.mobileMenu.classList.remove('-translate-x-full'); dom.menuOverlay.style.display = 'block'; setTimeout(() => dom.menuOverlay.style.opacity = '1', 10); } function closeMobileMenu() { dom.mobileMenu.classList.add('-translate-x-full'); dom.menuOverlay.style.opacity = '0'; setTimeout(() => dom.menuOverlay.style.display = 'none', 300); } dom.hamburgerBtn.addEventListener('click', openMobileMenu); dom.closeMobileMenuBtn.addEventListener('click', closeMobileMenu); dom.menuOverlay.addEventListener('click', closeMobileMenu); function toggleMobileDropdown(dropdownEl, caretEl) { const isHidden = dropdownEl.style.display === 'none' || dropdownEl.style.display === ''; dropdownEl.style.display = isHidden ? 'block' : 'none'; caretEl.classList.toggle('open', isHidden); } dom.navStudyMobileToggle.addEventListener('click', () => toggleMobileDropdown(dom.navStudyMobileDropdown, dom.studyCaretMobile)); dom.navGamesMobileToggle.addEventListener('click', () => toggleMobileDropdown(dom.navGamesMobileDropdown, dom.gamesCaretMobile)); dom.navManageMobile.addEventListener('click', (e) => { e.preventDefault(); showView('manage'); closeMobileMenu(); }); dom.navLeaderboardMobile.addEventListener('click', (e) => { e.preventDefault(); showView('leaderboard'); closeMobileMenu(); }); [dom.gameMatchKanjiMobile, dom.gameQuizKanjiMobile, dom.gameTypeKanjiMobile, dom.gameMemoryKanjiMobile].forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); const gameType = e.target.id.split('-')[1]; const gameFunctions = { 'match': startMatchingGame, 'quiz': startQuizGame, 'type': startTypingGame, 'memory': startMemoryGame }; if(gameFunctions[gameType]) gameFunctions[gameType](); closeMobileMenu(); }); }); 
         
-        /**
-         * Pronuncia um texto em japonês usando a Web Speech API nativa do navegador.
-         * É mais seguro e eficiente do que APIs externas.
-         */
-        function speak(text, lang = 'ja-JP') { if ('speechSynthesis' in window) { const utterance = new SpeechSynthesisUtterance(text); utterance.lang = lang; const voices = window.speechSynthesis.getVoices(); utterance.voice = voices.find(voice => voice.lang === lang && voice.name.includes('Google')) || voices.find(voice => voice.lang === lang) || voices.find(voice => voice.lang.startsWith('ja')) || null; utterance.rate = 0.9; window.speechSynthesis.cancel(); window.speechSynthesis.speak(utterance); } }
+        function speak(text, lang = 'ja-JP') {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = lang;
+                const voices = window.speechSynthesis.getVoices();
+                utterance.voice = voices.find(voice => voice.lang === lang && voice.name.includes('Google')) || voices.find(voice => voice.lang === lang) || voices.find(voice => voice.lang.startsWith('ja')) || null;
+                utterance.rate = 0.9;
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(utterance);
+            } else {
+                playGoogleTTS(text, lang.split('-')[0]);
+            }
+        }
         
         function playGoogleTTS(text, lang = 'ja') {
             if (!text) return;
             try {
                 const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=${lang}`;
                 const audio = new Audio(url);
-                audio.play();
+                audio.play().catch(e => {
+                     console.error("Erro ao tocar áudio do Google TTS:", e);
+                     // Se houver um erro (como política de autoplay), tentamos o speechSynthesis como fallback
+                     if (!('speechSynthesis' in window)) {
+                        alert("Seu navegador não suporta a reprodução de áudio.");
+                     }
+                });
             } catch (error) {
-                console.error("Error playing Google TTS audio:", error);
-                // Fallback to native speech synthesis
-                speak(text, lang);
+                console.error("Erro ao criar áudio do Google TTS:", error);
             }
         }
 
@@ -1581,6 +1693,7 @@
                 const item = document.createElement('div');
                 item.className = 'leaderboard-item';
                 if (user.uid === userId) item.classList.add('current-user');
+                item.dataset.userId = user.uid;
 
                 const rank = ((leagueCurrentPage - 1) * ITEMS_PER_PAGE) + index + 1;
                 let rankContent;
@@ -1593,6 +1706,7 @@
                 const userName = user.username || (user.email ? user.email.split('@')[0] : 'Usuário');
 
                 item.innerHTML = `<div class="rank">${rankContent}</div><div class="user-avatar">${userInitial}</div><div class="user-info"><div class="user-name">${userName}</div></div><div class="user-score">${user.weeklyScore || 0} pts</div>`;
+                item.addEventListener('click', () => openProfileModal(user.uid));
                 
                 if (rank <= promotionLimit) { promotionZone.appendChild(item); } 
                 else if (rank > demotionLimit && data.length > 10) { demotionZone.appendChild(item); } 
@@ -1609,6 +1723,69 @@
             });
         }
         
+        // --- PERFIL DE USUÁRIO (NOVO) ---
+        dom.myProfileBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openProfileModal(userId);
+            dom.userMenuDropdown.classList.remove('visible');
+        });
+
+        async function openProfileModal(profileUserId) {
+            dom.profileContent.innerHTML = `<div class="loader-icon">語</div>`;
+            dom.profileModal.classList.add('visible');
+            
+            const profilePath = getDbPath('profile', profileUserId);
+            if(!profilePath) {
+                dom.profileContent.innerHTML = `<p>Erro: Usuário não encontrado.</p>`;
+                return;
+            }
+
+            try {
+                const snapshot = await get(ref(db, profilePath));
+                if (snapshot.exists()) {
+                    renderProfile(snapshot.val());
+                } else {
+                    dom.profileContent.innerHTML = `<p>Perfil não encontrado.</p>`;
+                }
+            } catch(error) {
+                console.error("Erro ao buscar perfil:", error);
+                dom.profileContent.innerHTML = `<p>Ocorreu um erro ao carregar o perfil.</p>`;
+            }
+        }
+        
+        function renderProfile(profileData) {
+            const patent = patents[profileData.patentLevel || 0];
+            const joinDate = profileData.createdAt ? new Date(profileData.createdAt).toLocaleDateString('pt-BR') : 'Data não disponível';
+            const userInitial = (profileData.username || 'U').charAt(0).toUpperCase();
+
+            dom.profileContent.innerHTML = `
+                <div class="profile-header">
+                    <button id="close-profile-modal">&times;</button>
+                    <div class="profile-avatar">${userInitial}</div>
+                    <h2 class="profile-name">${profileData.username || 'Usuário Anônimo'}</h2>
+                    <p class="profile-joindate">Membro desde ${joinDate}</p>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat-card">
+                        <div class="value">${profileData.totalScore || 0}</div>
+                        <div class="label">Total XP</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value">${profileData.correctAnswers || 0}</div>
+                        <div class="label">Respostas Corretas</div>
+                    </div>
+                </div>
+                <div class="profile-league-card">
+                    <div id="profile-patent-icon">${getPatentIcon(profileData.patentLevel || 0)}</div>
+                    <div>
+                        <p class="font-bold">${patent.name}</p>
+                        <p class="text-sm text-gray-600">Pontos da semana: ${profileData.weeklyScore || 0}</p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('close-profile-modal').addEventListener('click', () => dom.profileModal.classList.remove('visible'));
+        }
+
         // --- GEMINI API E FORMULÁRIO DE CARD ---
         dom.generateAiBtn.addEventListener('click', async () => { const character = dom.kanjiInput.value; if (!character.trim()) { alert("Por favor, insira um caractere."); return; } dom.generateAiBtn.disabled = true; dom.aiBtnText.style.display = 'none'; dom.aiBtnSpinner.style.display = 'block'; try { const geminiData = await fetchGeminiDataForFields(character, currentLearningMode); if (geminiData) { dom.pronunciationInput.value = geminiData.pronunciation || ''; dom.meaningInput.value = geminiData.meaning || ''; dom.geminiDataInput.value = JSON.stringify(geminiData); } else { alert("Não foi possível gerar informações com a IA. Tente novamente."); } } catch (error) { console.error("Erro na geração com IA:", error); alert("Ocorreu um erro ao contatar a IA."); } finally { dom.generateAiBtn.disabled = false; dom.aiBtnText.style.display = 'inline'; dom.aiBtnSpinner.style.display = 'none'; } }); 
         
@@ -1696,7 +1873,7 @@
                         const profileRef = ref(db, `artifacts/${appId}/userProfiles/${user.uid}`);
                         const newProfile = { 
                             totalScore: 0, weeklyScore: 0, patentLevel: 0, leagueId: null, 
-                            email: email, username: username, keyword: keyword, lastLeagueUpdate: 0 
+                            email: email, username: username, keyword: keyword, createdAt: new Date().toISOString()
                         };
                         await set(profileRef, newProfile);
                         break;
@@ -1822,3 +1999,4 @@
     </script>
 </body>
 </html>
+
