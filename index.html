@@ -1103,6 +1103,11 @@
             if (!audioCtx) {
                 try {
                     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    // "Desbloqueia" a síntese de voz em dispositivos móveis na primeira interação
+                    if ('speechSynthesis' in window) {
+                        const utterance = new SpeechSynthesisUtterance('');
+                        window.speechSynthesis.speak(utterance);
+                    }
                 } catch (e) {
                     console.error("Web Audio API is not supported in this browser");
                 }
@@ -1124,9 +1129,10 @@
         function playCorrectSound() { playTone(600, 0.1, 'triangle'); setTimeout(() => playTone(900, 0.1, 'triangle'), 100); }
         function playIncorrectSound() { playTone(150, 0.2, 'sawtooth'); }
         function playVictorySound() {
-            const notes = [440, 554.37, 659.25, 880]; // A4, C#5, E5, A5
+            // Arpejo de Dó Maior (C4, E4, G4, C5) - mais animador e claro
+            const notes = [261.63, 329.63, 392.00, 523.25];
             notes.forEach((note, i) => {
-                setTimeout(() => playTone(note, 0.15, 'sine'), i * 120);
+                setTimeout(() => playTone(note, 0.15, 'triangle'), i * 100);
             });
         }
         document.body.addEventListener('click', initAudioContext, { once: true });
@@ -1373,7 +1379,7 @@
         }
 
         // --- LÓGICA DO SRS ---
-        function filterCardsDueToday() { isStudyMoreSession = false; srsSessionStats = { correct: 0, incorrect: 0 }; const now = new Date(); now.setHours(0, 0, 0, 0); const deck = getCurrentDeck(); dueCards = deck.filter(card => { const interval = card.srsInterval === undefined ? 0 : card.srsInterval; if (interval === 0) return true; const lastReviewDate = new Date(card.lastReview); lastReviewDate.setHours(0,0,0,0); lastReviewDate.setDate(lastReviewDate.getDate() + interval); return now >= lastReviewDate; }); dueCards.sort(() => Math.random() - 0.5); sessionInitialCount = dueCards.length; updateProgress(); nextCard(); } function nextCard() { isCardFlipped = false; dom.reviewCard.classList.remove('is-flipped'); if (dueCards.length === 0) { currentCard = null; displayCompletion(); return; } currentCard = dueCards[0]; displayCard(); } function displayCard() { const mainChar = currentCard.kanji; dom.cardFront.innerHTML = `<button class="sound-btn" onclick="window.speak('${mainChar}')"><i class="ph ph-speaker-high"></i></button><p class="question-text">${mainChar}</p><p class="question-hint">${currentCard.meaning}</p>`; dom.cardBack.innerHTML = renderAnswerContent(currentCard); renderActionButtons('show_answer'); } function renderAnswerContent(card) { const mainChar = card.kanji; let geminiContent = ''; if (card.geminiInfo) { const info = card.geminiInfo; geminiContent += `<div class="w-full text-left mt-4 gemini-info-section">`; if (info.sentences && info.sentences.length > 0) { geminiContent += `<h3>Frases de Exemplo</h3><ul>`; info.sentences.forEach(s => { const escapedSentence = JSON.stringify(s.japanese); geminiContent += `<li class="sentence"><div class="flex items-center gap-2"><div class="flex-grow"><p class="jp">${s.japanese}</p><p class="reading">${s.reading}</p><p>${s.portuguese}</p></div><button class="sound-btn-sentence" onclick='window.playGoogleTTS(${escapedSentence})'><i class="ph ph-speaker-high text-lg"></i></button></div></li>`; }); geminiContent += `</ul>`; } if (info.curiosities) { geminiContent += `<h3>Curiosidades</h3><p>${info.curiosities}</p>`; } if (info.grammar) { geminiContent += `<h3>Dica Gramatical</h3><p>${info.grammar}</p>`; } geminiContent += `</div>`; } return `<button class="sound-btn" onclick="window.speak('${mainChar}')"><i class="ph ph-speaker-high"></i></button><div class="flex-grow w-full flex flex-col items-center justify-start text-center"><p style="font-size: 3rem; font-family: var(--font-jp);">${mainChar}</p><p class="text-xl mt-2">${card.pronunciation}</p><p class="text-2xl mt-4 font-bold">${card.meaning}</p>${geminiContent}</div>`; }
+        function filterCardsDueToday() { isStudyMoreSession = false; srsSessionStats = { correct: 0, incorrect: 0 }; const now = new Date(); now.setHours(0, 0, 0, 0); const deck = getCurrentDeck(); dueCards = deck.filter(card => { const interval = card.srsInterval === undefined ? 0 : card.srsInterval; if (interval === 0) return true; const lastReviewDate = new Date(card.lastReview); lastReviewDate.setHours(0,0,0,0); lastReviewDate.setDate(lastReviewDate.getDate() + interval); return now >= lastReviewDate; }); dueCards.sort(() => Math.random() - 0.5); sessionInitialCount = dueCards.length; updateProgress(); nextCard(); } function nextCard() { isCardFlipped = false; dom.reviewCard.classList.remove('is-flipped'); if (dueCards.length === 0) { currentCard = null; displayCompletion(); return; } currentCard = dueCards[0]; displayCard(); } function displayCard() { const mainChar = currentCard.kanji; dom.cardFront.innerHTML = `<button class="sound-btn" onclick="window.speak('${mainChar}')"><i class="ph ph-speaker-high"></i></button><p class="question-text">${mainChar}</p><p class="question-hint">${currentCard.meaning}</p>`; dom.cardBack.innerHTML = renderAnswerContent(currentCard); renderActionButtons('show_answer'); } function renderAnswerContent(card) { const mainChar = card.kanji; let geminiContent = ''; if (card.geminiInfo) { const info = card.geminiInfo; geminiContent += `<div class="w-full text-left mt-4 gemini-info-section">`; if (info.sentences && info.sentences.length > 0) { geminiContent += `<h3>Frases de Exemplo</h3><ul>`; info.sentences.forEach(s => { const escapedSentence = JSON.stringify(s.japanese); geminiContent += `<li class="sentence"><div class="flex items-center gap-2"><div class="flex-grow"><p class="jp">${s.japanese}</p><p class="reading">${s.reading}</p><p>${s.portuguese}</p></div><button class="sound-btn-sentence" onclick='window.speak(${escapedSentence})'><i class="ph ph-speaker-high text-lg"></i></button></div></li>`; }); geminiContent += `</ul>`; } if (info.curiosities) { geminiContent += `<h3>Curiosidades</h3><p>${info.curiosities}</p>`; } if (info.grammar) { geminiContent += `<h3>Dica Gramatical</h3><p>${info.grammar}</p>`; } geminiContent += `</div>`; } return `<button class="sound-btn" onclick="window.speak('${mainChar}')"><i class="ph ph-speaker-high"></i></button><div class="flex-grow w-full flex flex-col items-center justify-start text-center"><p style="font-size: 3rem; font-family: var(--font-jp);">${mainChar}</p><p class="text-xl mt-2">${card.pronunciation}</p><p class="text-2xl mt-4 font-bold">${card.meaning}</p>${geminiContent}</div>`; }
         function renderActionButtons(state) {
             if (state === 'show_answer') {
                 dom.feedbackButtons.innerHTML = `<button id="check-btn" class="btn btn-primary col-span-2">Mostrar Resposta</button>`;
@@ -1405,6 +1411,7 @@
             const wasSession = sessionInitialCount > 0;
             const title = wasSession ? "Parabéns!" : "Tudo em dia!";
             const subtitle = wasSession ? "Você completou sua revisão de hoje." : `Nenhuma revisão de ${currentLearningMode} restante.`;
+            const totalPoints = srsSessionStats.correct * 10;
 
             const completionHTML = `
                 <div class="completion-container">
@@ -1413,13 +1420,32 @@
                     ${wasSession ? `
                     <div class="score-display">
                         <div class="label">Pontuação da Sessão</div>
-                        <div class="score-value" id="animated-score">${srsSessionStats.correct * 10}</div>
+                        <div class="score-value" id="animated-score">0</div>
                         <div class="score-details">(${srsSessionStats.correct} acertos, ${srsSessionStats.incorrect} erros)</div>
                     </div>` : ''}
                 </div>
             `;
             dom.cardFront.innerHTML = completionHTML;
-            if (wasSession) playVictorySound();
+            
+            if (wasSession) {
+                playVictorySound();
+                const scoreElement = document.getElementById('animated-score');
+                if (scoreElement) {
+                    let currentScore = 0;
+                    const increment = Math.max(1, Math.ceil(totalPoints / 60)); // Animate over ~1 second
+
+                    function animateScore() {
+                        currentScore += increment;
+                        if (currentScore >= totalPoints) {
+                            scoreElement.textContent = totalPoints;
+                        } else {
+                            scoreElement.textContent = currentScore;
+                            requestAnimationFrame(animateScore);
+                        }
+                    }
+                    setTimeout(() => requestAnimationFrame(animateScore), 600); // Start after intro animation
+                }
+            }
         }
         function startStudyMoreSession() { const deck = getCurrentDeck(); if (!deck || deck.length === 0) return; const shuffled = [...deck].sort(() => 0.5 - Math.random()); dueCards = shuffled.slice(0, 10); sessionInitialCount = dueCards.length; isStudyMoreSession = true; srsSessionStats = { correct: 0, incorrect: 0 }; updateProgress(); nextCard(); } dom.studyMoreBtn.addEventListener('click', startStudyMoreSession); function updateProgress() { const reviewed = sessionInitialCount - dueCards.length; const total = sessionInitialCount; const percentage = total > 0 ? (reviewed / total) * 100 : 0; dom.progressBar.style.width = `${percentage}%`; dom.progressText.textContent = `${reviewed} / ${total}`; }
         async function handleFeedback(isCorrect) {
@@ -1999,4 +2025,3 @@
     </script>
 </body>
 </html>
-
