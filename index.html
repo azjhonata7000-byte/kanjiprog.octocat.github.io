@@ -10,8 +10,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Lexend:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <!-- Corrigido: Trocado o link CSS pelo script para garantir a renderização dos ícones -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Adicionado Chart.js para a nova seção de estatísticas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* © 2024 Firefly Designer. Todos os direitos reservados. */
         :root {
@@ -50,7 +51,7 @@
         }
         
         /* --- ESTRUTURA E LAYOUT --- */
-        .main-container, .game-container {
+        .main-container, .game-container, .stats-container {
             width: 100%;
             max-width: 768px;
             margin: auto;
@@ -59,6 +60,10 @@
             flex-direction: column;
             justify-content: center;
             padding: 1rem;
+        }
+        
+        .stats-container {
+            max-width: 1024px;
         }
 
         /* --- HEADER E NAVEGAÇÃO --- */
@@ -626,8 +631,8 @@
             40% { transform: translateY(-30px); } 60% { transform: translateY(-15px); }
         }
 
-        /* --- PERFIL DE USUÁRIO (NOVO) --- */
-        #profile-modal .modal-content {
+        /* --- PERFIL E ESTATÍSTICAS (NOVO) --- */
+        #profile-modal .modal-content, #stats-modal .modal-content {
             padding: 0;
             overflow: hidden;
             background: var(--bg-primary);
@@ -668,7 +673,7 @@
             border-radius: 50%; width: 32px; height: 32px;
             font-size: 1.5rem; line-height: 1;
         }
-        .profile-stats {
+        .profile-stats, .stats-section-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
@@ -703,6 +708,21 @@
             gap: 1rem;
             border: 1px solid var(--border-color);
         }
+
+        .stats-container .stat-card {
+            padding: 1.5rem;
+        }
+        .stats-container .stat-card.full-width {
+            grid-column: 1 / -1; /* Ocupa a largura total */
+        }
+        .stats-container h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
 
     </style>
 </head>
@@ -752,6 +772,11 @@
                 <i class="ph ph-cards w-6"></i>
                 <span>Gerenciar</span>
             </a>
+            <!-- NOVO: Link para Estatísticas no menu móvel -->
+            <a href="#" class="nav-link-mobile" id="nav-stats-mobile">
+                <i class="ph ph-chart-bar w-6"></i>
+                <span>Estatísticas</span>
+            </a>
             <a href="#" class="nav-link-mobile" id="nav-leaderboard-mobile">
                 <i class="ph ph-trophy w-6"></i>
                 <span>Ligas</span>
@@ -761,7 +786,7 @@
 
     <!-- CABEÇALHO -->
     <header class="w-full flex justify-center items-center p-4">
-        <div class="w-full max-w-4xl flex justify-between items-center">
+        <div class="w-full max-w-5xl flex justify-between items-center">
             <div class="font-black text-3xl" style="color: var(--accent-primary);">
                 <a href="#" id="home-logo">語</a>
             </div>
@@ -787,6 +812,8 @@
                     </div>
                 </div>
                 <a href="#" class="nav-link" id="nav-manage">Gerenciar</a>
+                <!-- NOVO: Link para Estatísticas no menu principal -->
+                <a href="#" class="nav-link" id="nav-stats">Estatísticas</a>
                 <a href="#" class="nav-link" id="nav-leaderboard">Ligas</a>
             </nav>
             <div class="flex items-center space-x-2">
@@ -873,6 +900,12 @@
     <div id="game-container" class="game-container" style="display: none;">
         <!-- O conteúdo do jogo será renderizado aqui pelo JS -->
     </div>
+
+    <!-- NOVO: CONTEÚDO DAS ESTATÍSTICAS -->
+    <div id="stats-container" class="stats-container" style="display: none;">
+        <!-- O conteúdo das estatísticas será renderizado aqui pelo JS -->
+    </div>
+
 
     <!-- MODAL DE GERENCIAMENTO DE CARDS -->
     <div id="manage-modal" class="modal-overlay">
@@ -1059,6 +1092,13 @@
         </div>
     </div>
     
+    <!-- MODAL DE PLACAR PÓS-JOGO (NOVO) -->
+    <div id="game-completion-modal" class="modal-overlay">
+        <div id="game-completion-content" class="modal-content">
+            <!-- Conteúdo do placar do jogo será injetado aqui pelo JS -->
+        </div>
+    </div>
+
     <footer class="w-full text-center p-4 mt-auto">
         <p class="text-xs" style="color: var(--text-secondary);">&copy; 2024 Firefly Designer. Todos os direitos reservados.</p>
     </footer>
@@ -1156,19 +1196,107 @@
         let manageCurrentPage = 1;
         let currentAuthMode = 'login'; // 'login', 'register', 'recover'
         const ITEMS_PER_PAGE = 10;
+        let studyResultsChart = null; // para a nova tela de estatísticas
 
         // Elementos do DOM
         const dom = {
-            mainContainer: document.querySelector('.main-container'), gameContainer: document.getElementById('game-container'), loadingOverlay: document.getElementById('loading-overlay'), authModal: document.getElementById('auth-modal'), reviewCard: document.getElementById('review-card'), cardFront: document.getElementById('card-front'), cardBack: document.getElementById('card-back'), progressBar: document.getElementById('progress-bar'), progressText: document.getElementById('progress-text'), feedbackButtons: document.getElementById('feedback-buttons-container'), studyMoreBtn: document.getElementById('studyMoreBtn'), navStudy: document.getElementById('nav-study'), studyModeText: document.getElementById('study-mode-text'), studyModeDropdown: document.getElementById('study-mode-dropdown'), navGames: document.getElementById('nav-games'), navManage: document.getElementById('nav-manage'), navLeaderboard: document.getElementById('nav-leaderboard'), homeLogo: document.getElementById('home-logo'), navGamesDropdown: document.querySelector('#nav-games + .dropdown-content'), gameMatchKanji: document.getElementById('game-match-kanji'), gameQuizKanji: document.getElementById('game-quiz-kanji'), gameTypeKanji: document.getElementById('game-type-kanji'), gameMemoryKanji: document.getElementById('game-memory-kanji'), manageModal: document.getElementById('manage-modal'), manageModalTitle: document.getElementById('manage-modal-title'), closeManageModalBtn: document.getElementById('close-manage-modal'), addNewCardBtn: document.getElementById('add-new-card-btn'), cardListContainer: document.getElementById('card-list-container'), managePaginationContainer: document.getElementById('manage-pagination-container'), leaderboardModal: document.getElementById('leaderboard-modal'), closeLeaderboardModalBtn: document.getElementById('close-leaderboard-modal'), leaderboardList: document.getElementById('leaderboard-list'), leaderboardPaginationContainer: document.getElementById('leaderboard-pagination-container'), leagueHeader: document.getElementById('league-header'), patentIconContainer: document.getElementById('patent-icon-container'), patentName: document.getElementById('patent-name'), leagueTimer: document.getElementById('league-timer'), addEditModal: document.getElementById('add-edit-modal'), addEditForm: document.getElementById('add-edit-form'), addEditModalTitle: document.getElementById('add-edit-modal-title'), mainCharLabel: document.getElementById('main-char-label'), cancelEditBtn: document.getElementById('cancel-edit-btn'), cardIdInput: document.getElementById('card-id-input'), kanjiInput: document.getElementById('kanji-input'), pronunciationInput: document.getElementById('pronunciation-input'), meaningInput: document.getElementById('meaning-input'), saveCardBtn: document.getElementById('save-card-btn'), authLinks: document.getElementById('auth-links'), loginNavBtn: document.getElementById('login-nav-btn'), userMenu: document.getElementById('user-menu'), userMenuBtn: document.getElementById('user-menu-btn'), userNameDisplay: document.getElementById('user-name-display'), userMenuDropdown: document.getElementById('user-menu-dropdown'), logoutBtn: document.getElementById('logoutBtn'), myProfileBtn: document.getElementById('my-profile-btn'), manageAccountBtn: document.getElementById('manage-account-btn'), userManageModal: document.getElementById('user-manage-modal'), cancelUserManageBtn: document.getElementById('cancel-user-manage-btn'), updatePasswordForm: document.getElementById('update-password-form'), updatePasswordStatus: document.getElementById('update-password-status'), updateUsernameForm: document.getElementById('update-username-form'), newUsernameInput: document.getElementById('new-username-input'), updateUsernameStatus: document.getElementById('update-username-status'), generateAiBtn: document.getElementById('generate-ai-btn'), aiBtnText: document.getElementById('ai-btn-text'), aiBtnSpinner: document.getElementById('ai-btn-spinner'), geminiDataInput: document.getElementById('gemini-data-input'), hamburgerBtn: document.getElementById('hamburger-btn'), mobileMenu: document.getElementById('mobile-menu'), menuOverlay: document.getElementById('menu-overlay'), closeMobileMenuBtn: document.getElementById('close-mobile-menu-btn'), navStudyMobileToggle: document.getElementById('nav-study-mobile-toggle'), studyModeTextMobile: document.getElementById('study-mode-text-mobile'), navStudyMobileDropdown: document.getElementById('nav-study-mobile-dropdown'), studyCaretMobile: document.getElementById('study-caret-mobile'), navGamesMobileToggle: document.getElementById('nav-games-mobile-toggle'), navGamesMobileDropdown: document.getElementById('nav-games-mobile-dropdown'), gamesCaretMobile: document.getElementById('games-caret-mobile'), navManageMobile: document.getElementById('nav-manage-mobile'), navLeaderboardMobile: document.getElementById('nav-leaderboard-mobile'), gameMatchKanjiMobile: document.getElementById('game-match-kanji-mobile'), gameQuizKanjiMobile: document.getElementById('game-quiz-kanji-mobile'), gameTypeKanjiMobile: document.getElementById('game-type-kanji-mobile'), gameMemoryKanjiMobile: document.getElementById('game-memory-kanji-mobile'),
+            mainContainer: document.querySelector('.main-container'),
+            gameContainer: document.getElementById('game-container'),
+            statsContainer: document.getElementById('stats-container'), 
+            loadingOverlay: document.getElementById('loading-overlay'),
+            authModal: document.getElementById('auth-modal'),
+            reviewCard: document.getElementById('review-card'),
+            cardFront: document.getElementById('card-front'),
+            cardBack: document.getElementById('card-back'),
+            progressBar: document.getElementById('progress-bar'),
+            progressText: document.getElementById('progress-text'),
+            feedbackButtons: document.getElementById('feedback-buttons-container'),
+            studyMoreBtn: document.getElementById('studyMoreBtn'),
+            navStudy: document.getElementById('nav-study'),
+            studyModeText: document.getElementById('study-mode-text'),
+            studyModeDropdown: document.getElementById('study-mode-dropdown'),
+            navGames: document.getElementById('nav-games'),
+            navManage: document.getElementById('nav-manage'),
+            navStats: document.getElementById('nav-stats'), 
+            navLeaderboard: document.getElementById('nav-leaderboard'),
+            homeLogo: document.getElementById('home-logo'),
+            navGamesDropdown: document.querySelector('#nav-games + .dropdown-content'),
+            gameMatchKanji: document.getElementById('game-match-kanji'),
+            gameQuizKanji: document.getElementById('game-quiz-kanji'),
+            gameTypeKanji: document.getElementById('game-type-kanji'),
+            gameMemoryKanji: document.getElementById('game-memory-kanji'),
+            manageModal: document.getElementById('manage-modal'),
+            manageModalTitle: document.getElementById('manage-modal-title'),
+            closeManageModalBtn: document.getElementById('close-manage-modal'),
+            addNewCardBtn: document.getElementById('add-new-card-btn'),
+            cardListContainer: document.getElementById('card-list-container'),
+            managePaginationContainer: document.getElementById('manage-pagination-container'),
+            leaderboardModal: document.getElementById('leaderboard-modal'),
+            closeLeaderboardModalBtn: document.getElementById('close-leaderboard-modal'),
+            leaderboardList: document.getElementById('leaderboard-list'),
+            leaderboardPaginationContainer: document.getElementById('leaderboard-pagination-container'),
+            leagueHeader: document.getElementById('league-header'),
+            patentIconContainer: document.getElementById('patent-icon-container'),
+            patentName: document.getElementById('patent-name'),
+            leagueTimer: document.getElementById('league-timer'),
+            addEditModal: document.getElementById('add-edit-modal'),
+            addEditForm: document.getElementById('add-edit-form'),
+            addEditModalTitle: document.getElementById('add-edit-modal-title'),
+            mainCharLabel: document.getElementById('main-char-label'),
+            cancelEditBtn: document.getElementById('cancel-edit-btn'),
+            cardIdInput: document.getElementById('card-id-input'),
+            kanjiInput: document.getElementById('kanji-input'),
+            pronunciationInput: document.getElementById('pronunciation-input'),
+            meaningInput: document.getElementById('meaning-input'),
+            saveCardBtn: document.getElementById('save-card-btn'),
+            authLinks: document.getElementById('auth-links'),
+            loginNavBtn: document.getElementById('login-nav-btn'),
+            userMenu: document.getElementById('user-menu'),
+            userMenuBtn: document.getElementById('user-menu-btn'),
+            userNameDisplay: document.getElementById('user-name-display'),
+            userMenuDropdown: document.getElementById('user-menu-dropdown'),
+            logoutBtn: document.getElementById('logoutBtn'),
+            myProfileBtn: document.getElementById('my-profile-btn'),
+            manageAccountBtn: document.getElementById('manage-account-btn'),
+            userManageModal: document.getElementById('user-manage-modal'),
+            cancelUserManageBtn: document.getElementById('cancel-user-manage-btn'),
+            updatePasswordForm: document.getElementById('update-password-form'),
+            updatePasswordStatus: document.getElementById('update-password-status'),
+            updateUsernameForm: document.getElementById('update-username-form'),
+            newUsernameInput: document.getElementById('new-username-input'),
+            updateUsernameStatus: document.getElementById('update-username-status'),
+            generateAiBtn: document.getElementById('generate-ai-btn'),
+            aiBtnText: document.getElementById('ai-btn-text'),
+            aiBtnSpinner: document.getElementById('ai-btn-spinner'),
+            geminiDataInput: document.getElementById('gemini-data-input'),
+            hamburgerBtn: document.getElementById('hamburger-btn'),
+            mobileMenu: document.getElementById('mobile-menu'),
+            menuOverlay: document.getElementById('menu-overlay'),
+            closeMobileMenuBtn: document.getElementById('close-mobile-menu-btn'),
+            navStudyMobileToggle: document.getElementById('nav-study-mobile-toggle'),
+            studyModeTextMobile: document.getElementById('study-mode-text-mobile'),
+            navStudyMobileDropdown: document.getElementById('nav-study-mobile-dropdown'),
+            studyCaretMobile: document.getElementById('study-caret-mobile'),
+            navGamesMobileToggle: document.getElementById('nav-games-mobile-toggle'),
+            navGamesMobileDropdown: document.getElementById('nav-games-mobile-dropdown'),
+            gamesCaretMobile: document.getElementById('games-caret-mobile'),
+            navManageMobile: document.getElementById('nav-manage-mobile'),
+            navStatsMobile: document.getElementById('nav-stats-mobile'), 
+            navLeaderboardMobile: document.getElementById('nav-leaderboard-mobile'),
+            gameMatchKanjiMobile: document.getElementById('game-match-kanji-mobile'),
+            gameQuizKanjiMobile: document.getElementById('game-quiz-kanji-mobile'),
+            gameTypeKanjiMobile: document.getElementById('game-type-kanji-mobile'),
+            gameMemoryKanjiMobile: document.getElementById('game-memory-kanji-mobile'),
             profileModal: document.getElementById('profile-modal'),
             profileContent: document.getElementById('profile-content'),
-            // Auth Modal elements
             authForm: { usernameInput: document.getElementById('usernameInput'), emailInput: document.getElementById('emailInput'), passwordInput: document.getElementById('passwordInput'), confirmPasswordInput: document.getElementById('confirmPasswordInput'), keywordInput: document.getElementById('keywordInput'), authBtn: document.getElementById('authBtn'), toggleAuthMode: document.getElementById('toggleAuthMode'), authModalTitle: document.getElementById('auth-modal-title'), authStatusMessage: document.getElementById('auth-status-message'), forgotPasswordLink: document.getElementById('forgotPassword') },
-            // Manage Account Modal elements
             updateKeywordForm: document.getElementById('update-keyword-form'),
             newKeywordInput: document.getElementById('new-keyword-input'),
             currentPasswordForKeyword: document.getElementById('current-password-for-keyword'),
             updateKeywordStatus: document.getElementById('update-keyword-status'),
+            // NOVO: Modal de placar de jogo
+            gameCompletionModal: document.getElementById('game-completion-modal'),
+            gameCompletionContent: document.getElementById('game-completion-content'),
         };
 
 
@@ -1200,6 +1328,7 @@
             } else {
                 dom.mainContainer.style.display = 'none';
                 dom.gameContainer.style.display = 'none';
+                dom.statsContainer.style.display = 'none';
                 dom.authLinks.style.display = 'block';
                 dom.userMenu.style.display = 'none';
                 setAuthMode('login'); // Reset auth modal to login
@@ -1254,7 +1383,6 @@
                     await checkAndAssignLeague();
                     toggleUI(true); // Atualiza a UI com os dados do perfil
                 } 
-                // A criação do perfil agora é feita no momento do registro
             });
         }
 
@@ -1345,7 +1473,85 @@
         }
 
         // --- NAVEGAÇÃO E UI GERAL ---
-        dom.loginNavBtn.addEventListener('click', () => dom.authModal.classList.add('visible')); dom.userMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); dom.userMenuDropdown.classList.toggle('visible'); }); window.addEventListener('click', (e) => { if (!dom.userMenu.contains(e.target)) dom.userMenuDropdown.classList.remove('visible'); if (!dom.navGames.parentElement.contains(e.target)) dom.navGamesDropdown.classList.remove('visible'); if (!dom.navStudy.parentElement.contains(e.target)) dom.studyModeDropdown.classList.remove('visible'); }); function showView(viewName) { dom.mainContainer.style.display = 'none'; dom.gameContainer.style.display = 'none'; document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active')); if (viewName === 'srs') { dom.mainContainer.style.display = 'flex'; dom.navStudy.classList.add('active'); } else if (viewName.startsWith('game-')) { dom.gameContainer.style.display = 'flex'; dom.navGames.classList.add('active'); } else if (viewName === 'manage') { dom.mainContainer.style.display = 'flex'; dom.navManage.classList.add('active'); dom.manageModal.classList.add('visible'); renderManageView(); } else if (viewName === 'leaderboard') { dom.mainContainer.style.display = 'flex'; dom.navLeaderboard.classList.add('active'); openLeaderboard(); } } dom.homeLogo.addEventListener('click', (e) => { e.preventDefault(); showView('srs'); filterCardsDueToday(); }); dom.navGames.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); dom.navGamesDropdown.classList.toggle('visible'); }); dom.gameMatchKanji.addEventListener('click', (e) => { e.preventDefault(); startMatchingGame(); }); dom.gameQuizKanji.addEventListener('click', (e) => { e.preventDefault(); startQuizGame(); }); dom.gameTypeKanji.addEventListener('click', (e) => { e.preventDefault(); startTypingGame(); }); dom.gameMemoryKanji.addEventListener('click', (e) => { e.preventDefault(); startMemoryGame(); }); dom.navStudy.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); if(e.target.closest('.dropdown')) { dom.studyModeDropdown.classList.toggle('visible'); } else { showView('srs'); filterCardsDueToday(); } }); function setLearningMode(mode) { currentLearningMode = mode; const modeName = mode.charAt(0).toUpperCase() + mode.slice(1); dom.studyModeText.textContent = `Estudar: ${modeName}`; dom.studyModeTextMobile.textContent = `Estudar: ${modeName}`; document.querySelectorAll('.mode-select-btn, .mode-select-btn-mobile').forEach(btn => { btn.classList.toggle('active', btn.dataset.mode === mode); }); dom.studyModeDropdown.classList.remove('visible'); showView('srs'); setupRealtimeCardListener(); } document.querySelectorAll('.mode-select-btn, .mode-select-btn-mobile').forEach(btn => { btn.addEventListener('click', () => { setLearningMode(btn.dataset.mode); if (btn.classList.contains('mode-select-btn-mobile')) { closeMobileMenu(); } }); }); function openMobileMenu() { dom.mobileMenu.classList.remove('-translate-x-full'); dom.menuOverlay.style.display = 'block'; setTimeout(() => dom.menuOverlay.style.opacity = '1', 10); } function closeMobileMenu() { dom.mobileMenu.classList.add('-translate-x-full'); dom.menuOverlay.style.opacity = '0'; setTimeout(() => dom.menuOverlay.style.display = 'none', 300); } dom.hamburgerBtn.addEventListener('click', openMobileMenu); dom.closeMobileMenuBtn.addEventListener('click', closeMobileMenu); dom.menuOverlay.addEventListener('click', closeMobileMenu); function toggleMobileDropdown(dropdownEl, caretEl) { const isHidden = dropdownEl.style.display === 'none' || dropdownEl.style.display === ''; dropdownEl.style.display = isHidden ? 'block' : 'none'; caretEl.classList.toggle('open', isHidden); } dom.navStudyMobileToggle.addEventListener('click', () => toggleMobileDropdown(dom.navStudyMobileDropdown, dom.studyCaretMobile)); dom.navGamesMobileToggle.addEventListener('click', () => toggleMobileDropdown(dom.navGamesMobileDropdown, dom.gamesCaretMobile)); dom.navManageMobile.addEventListener('click', (e) => { e.preventDefault(); showView('manage'); closeMobileMenu(); }); dom.navLeaderboardMobile.addEventListener('click', (e) => { e.preventDefault(); showView('leaderboard'); closeMobileMenu(); }); [dom.gameMatchKanjiMobile, dom.gameQuizKanjiMobile, dom.gameTypeKanjiMobile, dom.gameMemoryKanjiMobile].forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); const gameType = e.target.id.split('-')[1]; const gameFunctions = { 'match': startMatchingGame, 'quiz': startQuizGame, 'type': startTypingGame, 'memory': startMemoryGame }; if(gameFunctions[gameType]) gameFunctions[gameType](); closeMobileMenu(); }); }); 
+        dom.loginNavBtn.addEventListener('click', () => dom.authModal.classList.add('visible'));
+        dom.userMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); dom.userMenuDropdown.classList.toggle('visible'); });
+        window.addEventListener('click', (e) => {
+            if (!dom.userMenu.contains(e.target)) dom.userMenuDropdown.classList.remove('visible');
+            if (!dom.navGames.parentElement.contains(e.target)) dom.navGamesDropdown.classList.remove('visible');
+            if (!dom.navStudy.parentElement.contains(e.target)) dom.studyModeDropdown.classList.remove('visible');
+        });
+
+        function showView(viewName) {
+            dom.mainContainer.style.display = 'none';
+            dom.gameContainer.style.display = 'none';
+            dom.statsContainer.style.display = 'none';
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+
+            if (viewName === 'srs') {
+                dom.mainContainer.style.display = 'flex';
+                dom.navStudy.classList.add('active');
+            } else if (viewName.startsWith('game-')) {
+                dom.gameContainer.style.display = 'flex';
+                dom.navGames.classList.add('active');
+            } else if (viewName === 'manage') {
+                dom.mainContainer.style.display = 'flex'; // Show main to keep layout consistent
+                dom.navManage.classList.add('active');
+                dom.manageModal.classList.add('visible');
+                renderManageView();
+            } else if (viewName === 'stats') { 
+                dom.statsContainer.style.display = 'flex';
+                dom.navStats.classList.add('active');
+                renderStatsView(); 
+            } else if (viewName === 'leaderboard') {
+                dom.mainContainer.style.display = 'flex'; // Show main to keep layout consistent
+                dom.navLeaderboard.classList.add('active');
+                openLeaderboard();
+            }
+        }
+        dom.homeLogo.addEventListener('click', (e) => { e.preventDefault(); showView('srs'); filterCardsDueToday(); });
+        dom.navGames.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); dom.navGamesDropdown.classList.toggle('visible'); });
+        dom.gameMatchKanji.addEventListener('click', (e) => { e.preventDefault(); startMatchingGame(); });
+        dom.gameQuizKanji.addEventListener('click', (e) => { e.preventDefault(); startQuizGame(); });
+        dom.gameTypeKanji.addEventListener('click', (e) => { e.preventDefault(); startTypingGame(); });
+        dom.gameMemoryKanji.addEventListener('click', (e) => { e.preventDefault(); startMemoryGame(); });
+        dom.navStudy.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); if(e.target.closest('.dropdown')) { dom.studyModeDropdown.classList.toggle('visible'); } else { showView('srs'); filterCardsDueToday(); } });
+
+        function setLearningMode(mode) {
+            currentLearningMode = mode;
+            const modeName = mode.charAt(0).toUpperCase() + mode.slice(1);
+            dom.studyModeText.textContent = `Estudar: ${modeName}`;
+            dom.studyModeTextMobile.textContent = `Estudar: ${modeName}`;
+            document.querySelectorAll('.mode-select-btn, .mode-select-btn-mobile').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === mode);
+            });
+            dom.studyModeDropdown.classList.remove('visible');
+            showView('srs');
+            setupRealtimeCardListener();
+        }
+        document.querySelectorAll('.mode-select-btn, .mode-select-btn-mobile').forEach(btn => {
+            btn.addEventListener('click', () => {
+                setLearningMode(btn.dataset.mode);
+                if (btn.classList.contains('mode-select-btn-mobile')) {
+                    closeMobileMenu();
+                }
+            });
+        });
+
+        function openMobileMenu() { dom.mobileMenu.classList.remove('-translate-x-full'); dom.menuOverlay.style.display = 'block'; setTimeout(() => dom.menuOverlay.style.opacity = '1', 10); }
+        function closeMobileMenu() { dom.mobileMenu.classList.add('-translate-x-full'); dom.menuOverlay.style.opacity = '0'; setTimeout(() => dom.menuOverlay.style.display = 'none', 300); }
+        dom.hamburgerBtn.addEventListener('click', openMobileMenu);
+        dom.closeMobileMenuBtn.addEventListener('click', closeMobileMenu);
+        dom.menuOverlay.addEventListener('click', closeMobileMenu);
+        function toggleMobileDropdown(dropdownEl, caretEl) { const isHidden = dropdownEl.style.display === 'none' || dropdownEl.style.display === ''; dropdownEl.style.display = isHidden ? 'block' : 'none'; caretEl.classList.toggle('open', isHidden); }
+        dom.navStudyMobileToggle.addEventListener('click', () => toggleMobileDropdown(dom.navStudyMobileDropdown, dom.studyCaretMobile));
+        dom.navGamesMobileToggle.addEventListener('click', () => toggleMobileDropdown(dom.navGamesMobileDropdown, dom.gamesCaretMobile));
+        dom.navManageMobile.addEventListener('click', (e) => { e.preventDefault(); showView('manage'); closeMobileMenu(); });
+        dom.navStatsMobile.addEventListener('click', (e) => { e.preventDefault(); showView('stats'); closeMobileMenu(); });
+        dom.navLeaderboardMobile.addEventListener('click', (e) => { e.preventDefault(); showView('leaderboard'); closeMobileMenu(); });
+        [dom.gameMatchKanjiMobile, dom.gameQuizKanjiMobile, dom.gameTypeKanjiMobile, dom.gameMemoryKanjiMobile].forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); const gameType = e.target.id.split('-')[1]; const gameFunctions = { 'match': startMatchingGame, 'quiz': startQuizGame, 'type': startTypingGame, 'memory': startMemoryGame }; if(gameFunctions[gameType]) gameFunctions[gameType](); closeMobileMenu(); }); }); 
+        
+        // Navegação para Estatísticas
+        dom.navStats.addEventListener('click', (e) => { e.preventDefault(); showView('stats'); });
         
         function speak(text, lang = 'ja-JP') {
             if ('speechSynthesis' in window) {
@@ -1368,7 +1574,6 @@
                 const audio = new Audio(url);
                 audio.play().catch(e => {
                      console.error("Erro ao tocar áudio do Google TTS:", e);
-                     // Se houver um erro (como política de autoplay), tentamos o speechSynthesis como fallback
                      if (!('speechSynthesis' in window)) {
                         alert("Seu navegador não suporta a reprodução de áudio.");
                      }
@@ -1403,10 +1608,10 @@
                 });
             }
         }
+        
         function displayCompletion() {
             dom.cardFront.innerHTML = '';
             dom.cardBack.innerHTML = '';
-            dom.feedbackButtons.innerHTML = '';
 
             const wasSession = sessionInitialCount > 0;
             const title = wasSession ? "Parabéns!" : "Tudo em dia!";
@@ -1426,6 +1631,8 @@
                 </div>
             `;
             dom.cardFront.innerHTML = completionHTML;
+
+            dom.feedbackButtons.innerHTML = ``;
             
             if (wasSession) {
                 playVictorySound();
@@ -1485,26 +1692,42 @@
         // --- JOGOS ---
         function renderGameUI(title, description, content) { dom.gameContainer.innerHTML = `<div class="text-center mb-8"><h2 class="text-3xl font-bold">${title}</h2><p class="text-gray-500 mt-2">${description}</p></div><div id="game-content">${content}</div>`; } 
         
+        // MODIFICADO: Placar pós-jogo agora usa um modal
         function renderGameCompletion(playAgainFunction, correct, incorrect, points) {
             const totalPoints = points + 50;
             updateScore(totalPoints, correct, incorrect);
             playVictorySound();
+            dom.gameContainer.innerHTML = ''; // Limpa a tela do jogo
 
-            dom.gameContainer.innerHTML = `
+            const modalContentHTML = `
                 <div class="completion-container">
                     <h2 class="completion-title">Parabéns!</h2>
                     <p class="completion-subtitle">Você completou o desafio.</p>
                     <div class="score-display">
                         <div class="label">Pontos Ganhos</div>
-                        <div class="score-value" id="animated-score">0</div>
+                        <div class="score-value" id="animated-score-modal">0</div>
                         <div class="score-details">(${correct} acertos, ${incorrect} erros + 50 bônus)</div>
                     </div>
-                    <button id="play-again-btn" class="btn btn-primary">Jogar Novamente</button>
+                     <div class="flex flex-col sm:flex-row gap-4 mt-12 w-full max-w-sm">
+                        <button id="play-again-btn-modal" class="btn btn-primary w-full">Jogar Novamente</button>
+                        <button id="return-to-menu-btn-modal" class="btn btn-secondary w-full">Voltar ao Menu</button>
+                    </div>
                 </div>
             `;
-            document.getElementById('play-again-btn').addEventListener('click', playAgainFunction);
+            dom.gameCompletionContent.innerHTML = modalContentHTML;
+            dom.gameCompletionModal.classList.add('visible');
 
-            const scoreElement = document.getElementById('animated-score');
+            document.getElementById('play-again-btn-modal').addEventListener('click', () => {
+                dom.gameCompletionModal.classList.remove('visible');
+                playAgainFunction();
+            });
+            document.getElementById('return-to-menu-btn-modal').addEventListener('click', () => {
+                dom.gameCompletionModal.classList.remove('visible');
+                showView('srs');
+                filterCardsDueToday();
+            });
+
+            const scoreElement = document.getElementById('animated-score-modal');
             let currentScore = 0;
             const increment = Math.max(1, Math.ceil(totalPoints / 60)); 
 
@@ -1517,7 +1740,7 @@
                     requestAnimationFrame(animateScore);
                 }
             }
-            setTimeout(() => requestAnimationFrame(animateScore), 600);
+            setTimeout(() => requestAnimationFrame(animateScore), 300); // Inicia a animação um pouco depois do modal aparecer
         }
 
         function getGameCards(count = 5) { const deck = getCurrentDeck(); if (deck.length < count) { dom.gameContainer.innerHTML = `<div class="text-center"><h2 class="text-2xl font-bold">Cards Insuficientes</h2><p>Você precisa de pelo menos ${count} cards de ${currentLearningMode} para jogar este modo.</p></div>`; return null; } return [...deck].sort(() => 0.5 - Math.random()).slice(0, count); }
@@ -1658,8 +1881,17 @@
 
             paginatedCards.forEach(card => {
                 const cardElement = document.createElement('div');
-                cardElement.className = 'flex items-center justify-between p-4 rounded-lg bg-white border border-gray-200';
-                cardElement.innerHTML = `<div><p class="text-xl font-bold font-['Noto_Sans_JP']">${card.kanji}</p><p class="text-sm text-gray-600">${card.meaning}</p></div><div class="space-x-2"><button class="edit-btn btn btn-secondary text-xs p-2"><i class="ph-pencil-simple"></i></button><button class="delete-btn btn btn-danger text-xs p-2"><i class="ph-trash"></i></button></div>`;
+                cardElement.className = 'flex items-center justify-between p-3 rounded-lg bg-white border border-gray-200';
+                cardElement.innerHTML = `
+                    <div class="flex-grow">
+                        <p class="text-xl font-bold font-['Noto_Sans_JP']">${card.kanji}</p>
+                        <p class="text-sm text-gray-600">${card.meaning}</p>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <button class="edit-btn btn btn-secondary !py-1 !px-3 !text-xs">Editar</button>
+                        <button class="delete-btn btn btn-danger !py-1 !px-3 !text-xs">Deletar</button>
+                    </div>
+                `;
                 cardElement.querySelector('.edit-btn').addEventListener('click', () => openAddEditModal(card));
                 cardElement.querySelector('.delete-btn').addEventListener('click', () => deleteCard(card.id));
                 dom.cardListContainer.appendChild(cardElement);
@@ -1672,7 +1904,7 @@
         }
         function openAddEditModal(card = null) { dom.addEditForm.reset(); const modeName = currentLearningMode.charAt(0).toUpperCase() + currentLearningMode.slice(1); const charType = currentLearningMode === 'kanji' ? 'Kanji' : 'Caractere'; dom.mainCharLabel.textContent = charType; if (card) { dom.addEditModalTitle.textContent = `Editar ${modeName}`; dom.cardIdInput.value = card.id; dom.kanjiInput.value = card.kanji; dom.pronunciationInput.value = card.pronunciation; dom.meaningInput.value = card.meaning; dom.geminiDataInput.value = card.geminiInfo ? JSON.stringify(card.geminiInfo) : ''; } else { dom.addEditModalTitle.textContent = `Adicionar ${modeName}`; dom.cardIdInput.value = ''; dom.geminiDataInput.value = ''; } dom.addEditModal.classList.add('visible'); } async function deleteCard(cardId) { if (confirm('Tem certeza que deseja apagar este card?')) { try { await remove(ref(db, `${getDbPath('cards')}/${cardId}`)); manageCurrentPage = 1; } catch(error) { console.error("Erro ao apagar card:", error); } } }
         
-        // --- PLACAR / LIGAS (NOVA VERSÃO) ---
+        // --- PLACAR / LIGAS ---
         dom.navLeaderboard.addEventListener('click', (e) => { e.preventDefault(); showView('leaderboard'); }); 
         dom.closeLeaderboardModalBtn.addEventListener('click', () => dom.leaderboardModal.classList.remove('visible'));
         
@@ -1749,7 +1981,7 @@
             });
         }
         
-        // --- PERFIL DE USUÁRIO (NOVO) ---
+        // --- PERFIL DE USUÁRIO ---
         dom.myProfileBtn.addEventListener('click', (e) => {
             e.preventDefault();
             openProfileModal(userId);
@@ -1812,6 +2044,120 @@
             document.getElementById('close-profile-modal').addEventListener('click', () => dom.profileModal.classList.remove('visible'));
         }
 
+        // --- SEÇÃO DE ESTATÍSTICAS ---
+        async function fetchAllUserData() {
+            const modes = ['kanji', 'hiragana', 'katakana'];
+            const allCards = [];
+            for (const mode of modes) {
+                const modePath = `artifacts/${appId}/users/${userId}/${mode}Cards`;
+                try {
+                    const snapshot = await get(ref(db, modePath));
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        allCards.push(...Object.values(data).map(c => ({...c, createdAt: c.createdAt || null})));
+                    }
+                } catch(e) { console.error(`Erro ao buscar cards de ${mode}:`, e); }
+            }
+            return allCards;
+        }
+
+        async function renderStatsView() {
+            dom.statsContainer.innerHTML = `
+                <div class="text-center">
+                    <h1 class="text-4xl font-bold">Estatísticas</h1>
+                    <p class="text-gray-500 mt-2">Seu progresso de aprendizado ao longo do tempo.</p>
+                </div>
+                <div id="stats-grid" class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="md:col-span-2 lg:col-span-3 text-center p-8">
+                        <div class="loader-icon" style="animation: none;">📊</div>
+                        <p>Calculando estatísticas...</p>
+                    </div>
+                </div>`;
+
+            const allUserCards = await fetchAllUserData();
+            const grid = document.getElementById('stats-grid');
+            grid.innerHTML = ''; 
+
+            const totalCards = allUserCards.length;
+            const learnedCards = allUserCards.filter(c => c.srsInterval && c.srsInterval > 21).length;
+            grid.innerHTML += `
+                <div class="stat-card"> <div class="value">${totalCards}</div> <div class="label">Cards Adicionados</div> </div>
+                <div class="stat-card"> <div class="value">${learnedCards}</div> <div class="label">Cards Concluídos</div> </div>
+                <div class="stat-card"> <div class="value">${(userProfile.totalScore || 0)}</div> <div class="label">Total XP</div> </div>`;
+            
+            const correct = userProfile.correctAnswers || 0;
+            const incorrect = userProfile.incorrectAnswers || 0;
+            const accuracy = (correct + incorrect > 0) ? ((correct / (correct + incorrect)) * 100).toFixed(1) : "0.0";
+            
+            // MODIFICADO: Layout do gráfico e texto colorido
+            grid.innerHTML += `
+                <div class="stat-card md:col-span-2">
+                    <h3 class="text-left font-bold mb-4">Resultados de Estudo</h3>
+                    <div class="flex flex-col sm:flex-row items-center gap-4">
+                        <div class="w-full sm:w-1/2 max-w-[200px] mx-auto"><canvas id="studyResultsChart"></canvas></div>
+                        <div class="w-full sm:w-1/2 text-left space-y-2">
+                            <p style="color: var(--success);"><strong>Corretos:</strong> ${correct}</p>
+                            <p style="color: var(--danger);"><strong>Incorretos:</strong> ${incorrect}</p>
+                            <p class="mt-4 pt-2 border-t"><strong>Precisão:</strong> ${accuracy}%</p>
+                        </div>
+                    </div>
+                </div>`;
+
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(0,0,0,0);
+            let cardsTomorrow = 0;
+            allUserCards.forEach(card => {
+                const interval = card.srsInterval === undefined ? 0 : card.srsInterval;
+                if (interval > 0 && card.lastReview) {
+                    const lastReviewDate = new Date(card.lastReview);
+                    lastReviewDate.setDate(lastReviewDate.getDate() + interval);
+                    lastReviewDate.setHours(0,0,0,0);
+                    if (lastReviewDate.getTime() <= tomorrow.getTime()) {
+                        cardsTomorrow++;
+                    }
+                }
+            });
+            grid.innerHTML += `
+                 <div class="stat-card">
+                    <h3 class="text-left font-bold mb-4">Previsão de Estudo</h3>
+                    <div class="space-y-4 text-left">
+                        <div> <p class="value">${cardsTomorrow}</p> <p class="label">Cards para revisar amanhã</p> </div>
+                         <div> <p class="value text-gray-400">Em breve</p> <p class="label">Média de cards/mês</p> </div>
+                    </div>
+                </div>`;
+
+            grid.innerHTML += `
+                 <div class="stat-card md:col-span-3">
+                    <h3 class="text-left font-bold mb-4">Engajamento (Em Breve)</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div><p class="value text-gray-400">--</p><p class="label">Tempo médio/sessão</p></div>
+                        <div><p class="value text-gray-400">--</p><p class="label">Tempo médio em jogos</p></div>
+                        <div><p class="value text-gray-400">--</p><p class="label">Cards adicionados/mês</p></div>
+                        <div><p class="value text-gray-400">--</p><p class="label">Tendência de acertos</p></div>
+                    </div>
+                </div>`;
+            
+            const ctx = document.getElementById('studyResultsChart').getContext('2d');
+            if(studyResultsChart) studyResultsChart.destroy();
+            studyResultsChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Acertos', 'Erros'],
+                    datasets: [{
+                        data: [correct, incorrect],
+                        // MODIFICADO: Cores pastéis para o gráfico
+                        backgroundColor: ['var(--success-light)', 'var(--danger-light)'],
+                        borderColor: ['var(--success)', 'var(--danger)'],
+                        borderWidth: 2,
+                        hoverOffset: 4
+                    }]
+                },
+                options: { responsive: true, cutout: '70%', plugins: { legend: { display: false } } }
+            });
+        }
+
+
         // --- GEMINI API E FORMULÁRIO DE CARD ---
         dom.generateAiBtn.addEventListener('click', async () => { const character = dom.kanjiInput.value; if (!character.trim()) { alert("Por favor, insira um caractere."); return; } dom.generateAiBtn.disabled = true; dom.aiBtnText.style.display = 'none'; dom.aiBtnSpinner.style.display = 'block'; try { const geminiData = await fetchGeminiDataForFields(character, currentLearningMode); if (geminiData) { dom.pronunciationInput.value = geminiData.pronunciation || ''; dom.meaningInput.value = geminiData.meaning || ''; dom.geminiDataInput.value = JSON.stringify(geminiData); } else { alert("Não foi possível gerar informações com a IA. Tente novamente."); } } catch (error) { console.error("Erro na geração com IA:", error); alert("Ocorreu um erro ao contatar a IA."); } finally { dom.generateAiBtn.disabled = false; dom.aiBtnText.style.display = 'inline'; dom.aiBtnSpinner.style.display = 'none'; } }); 
         
@@ -1831,7 +2177,29 @@
         }
         
         // --- AUTENTICAÇÃO E CONTA ---
-        dom.addEditForm.addEventListener('submit', async (e) => { e.preventDefault(); const cardData = { kanji: dom.kanjiInput.value, pronunciation: dom.pronunciationInput.value, meaning: dom.meaningInput.value, srsInterval: 0, lastReview: new Date().toISOString(), geminiInfo: dom.geminiDataInput.value ? JSON.parse(dom.geminiDataInput.value) : null }; const cardId = dom.cardIdInput.value; try { if (cardId) { await set(ref(db, `${getDbPath('cards')}/${cardId}`), cardData); } else { await push(ref(db, getDbPath('cards')), cardData); } dom.addEditModal.classList.remove('visible'); } catch(error) { console.error("Erro ao salvar card:", error); } }); dom.logoutBtn.addEventListener('click', () => signOut(auth)); 
+        dom.addEditForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const cardData = {
+                kanji: dom.kanjiInput.value,
+                pronunciation: dom.pronunciationInput.value,
+                meaning: dom.meaningInput.value,
+                srsInterval: 0,
+                lastReview: new Date().toISOString(),
+                geminiInfo: dom.geminiDataInput.value ? JSON.parse(dom.geminiDataInput.value) : null
+            };
+            const cardId = dom.cardIdInput.value;
+            
+            try {
+                if (cardId) {
+                    await set(ref(db, `${getDbPath('cards')}/${cardId}`), cardData);
+                } else {
+                    cardData.createdAt = new Date().toISOString();
+                    await push(ref(db, getDbPath('cards')), cardData);
+                }
+                dom.addEditModal.classList.remove('visible');
+            } catch(error) { console.error("Erro ao salvar card:", error); }
+        });
+        dom.logoutBtn.addEventListener('click', () => signOut(auth)); 
 
         const { authForm } = dom;
 
@@ -1852,23 +2220,15 @@
             authForm.confirmPasswordInput.style.display = isRegister ? 'block' : 'none';
             authForm.keywordInput.style.display = isRegister || isRecover ? 'block' : 'none';
 
-            if(isRegister) {
-                authForm.keywordInput.placeholder = "Crie uma Palavra-chave de Segurança";
-            } else if (isRecover) {
-                authForm.keywordInput.placeholder = "Sua Palavra-chave de Segurança";
-            }
+            if(isRegister) { authForm.keywordInput.placeholder = "Crie uma Palavra-chave de Segurança"; } 
+            else if (isRecover) { authForm.keywordInput.placeholder = "Sua Palavra-chave de Segurança"; }
 
             authForm.toggleAuthMode.style.display = isRecover ? 'none' : 'block';
             authForm.forgotPasswordLink.textContent = isRecover ? 'Voltar para o Login' : 'Esqueceu sua senha?';
         }
 
-        authForm.toggleAuthMode.addEventListener('click', () => {
-            setAuthMode(currentAuthMode === 'login' ? 'register' : 'login');
-        });
-
-        authForm.forgotPasswordLink.addEventListener('click', () => {
-            setAuthMode(currentAuthMode === 'recover' ? 'login' : 'recover');
-        });
+        authForm.toggleAuthMode.addEventListener('click', () => { setAuthMode(currentAuthMode === 'login' ? 'register' : 'login'); });
+        authForm.forgotPasswordLink.addEventListener('click', () => { setAuthMode(currentAuthMode === 'recover' ? 'login' : 'recover'); });
         
         authForm.authBtn.addEventListener('click', async () => { 
             authForm.authStatusMessage.textContent = 'Processando...';
@@ -1877,74 +2237,37 @@
 
             try {
                 switch (currentAuthMode) {
-                    case 'login':
-                        const password = authForm.passwordInput.value; 
-                        await signInWithEmailAndPassword(auth, email, password); 
-                        break;
-                    
+                    case 'login': await signInWithEmailAndPassword(auth, email, authForm.passwordInput.value); break;
                     case 'register':
                         const regPassword = authForm.passwordInput.value;
                         const username = authForm.usernameInput.value.trim();
                         const keyword = authForm.keywordInput.value.trim();
-                        if (!username || !keyword) {
-                            throw new Error('Nome de usuário e palavra-chave são obrigatórios.');
-                        }
-                        const confirmPassword = authForm.confirmPasswordInput.value; 
-                        if (regPassword !== confirmPassword) { 
-                            throw new Error('As senhas não coincidem.');
-                        } 
-                        const userCredential = await createUserWithEmailAndPassword(auth, email, regPassword);
-                        const user = userCredential.user;
-                        
-                        const profileRef = ref(db, `artifacts/${appId}/userProfiles/${user.uid}`);
-                        const newProfile = { 
-                            totalScore: 0, weeklyScore: 0, patentLevel: 0, leagueId: null, 
-                            email: email, username: username, keyword: keyword, createdAt: new Date().toISOString()
-                        };
-                        await set(profileRef, newProfile);
+                        if (!username || !keyword) throw new Error('Nome de usuário e palavra-chave são obrigatórios.');
+                        if (regPassword !== authForm.confirmPasswordInput.value) throw new Error('As senhas não coincidem.');
+                        const { user } = await createUserWithEmailAndPassword(auth, email, regPassword);
+                        const newProfile = { totalScore: 0, weeklyScore: 0, patentLevel: 0, leagueId: null, email: email, username: username, keyword: keyword, createdAt: new Date().toISOString() };
+                        await set(ref(db, `artifacts/${appId}/userProfiles/${user.uid}`), newProfile);
                         break;
-
                     case 'recover':
-                        const recoverEmail = authForm.emailInput.value;
                         const recoverKeyword = authForm.keywordInput.value.trim();
-                        if (!recoverEmail || !recoverKeyword) {
-                            throw new Error('E-mail e Palavra-chave são obrigatórios.');
-                        }
-
-                        // INSECURE: This should be a backend call. Fetches all user profiles to the client.
-                        const profilesRef = ref(db, `artifacts/${appId}/userProfiles`);
-                        const snapshot = await get(profilesRef);
-                        if (!snapshot.exists()) {
-                            throw new Error('Nenhum usuário encontrado no sistema.');
-                        }
-
+                        if (!email || !recoverKeyword) throw new Error('E-mail e Palavra-chave são obrigatórios.');
+                        const snapshot = await get(ref(db, `artifacts/${appId}/userProfiles`));
+                        if (!snapshot.exists()) throw new Error('Nenhum usuário encontrado no sistema.');
                         const profiles = snapshot.val();
-                        let userFound = false;
-                        let keywordMatch = false;
-
+                        let userFound = false, keywordMatch = false;
                         for (const uid in profiles) {
-                            if (profiles[uid].email && profiles[uid].email.toLowerCase() === recoverEmail.toLowerCase()) {
+                            if (profiles[uid].email && profiles[uid].email.toLowerCase() === email.toLowerCase()) {
                                 userFound = true;
-                                if (profiles[uid].keyword && profiles[uid].keyword.toLowerCase() === recoverKeyword.toLowerCase()) {
-                                    keywordMatch = true;
-                                }
-                                break; // User found, no need to check further
+                                if (profiles[uid].keyword && profiles[uid].keyword.toLowerCase() === recoverKeyword.toLowerCase()) keywordMatch = true;
+                                break;
                             }
                         }
-
-                        if (!userFound) {
-                            throw new Error('E-mail não encontrado.');
-                        }
-
-                        if (!keywordMatch) {
-                            throw new Error('Palavra-chave de segurança incorreta.');
-                        }
-
-                        // If all checks pass, send the email
-                        await sendPasswordResetEmail(auth, recoverEmail);
+                        if (!userFound) throw new Error('E-mail não encontrado.');
+                        if (!keywordMatch) throw new Error('Palavra-chave de segurança incorreta.');
+                        await sendPasswordResetEmail(auth, email);
                         authForm.authStatusMessage.textContent = "Verificação bem-sucedida! E-mail de recuperação enviado.";
                         authForm.authStatusMessage.style.color = 'var(--success)';
-                        return; // Exit switch
+                        return;
                 }
             } catch (error) { 
                 authForm.authStatusMessage.textContent = "Falha: " + error.message; 
@@ -1956,29 +2279,17 @@
             e.preventDefault();
             const newUsername = dom.newUsernameInput.value.trim();
             const statusEl = dom.updateUsernameStatus;
-            if (!newUsername) {
-                statusEl.textContent = 'O nome de usuário não pode ser vazio.';
-                statusEl.style.color = 'var(--danger)';
-                return;
-            }
-            statusEl.textContent = 'Salvando...';
-            statusEl.style.color = 'var(--text-secondary)';
+            if (!newUsername) { statusEl.textContent = 'O nome de usuário não pode ser vazio.'; statusEl.style.color = 'var(--danger)'; return; }
+            statusEl.textContent = 'Salvando...'; statusEl.style.color = 'var(--text-secondary)';
             try {
                 const updates = { username: newUsername };
                 await update(ref(db, getDbPath('profile')), updates);
-
                 if (userProfile.leagueId && userProfile.leagueWeek) {
                     await update(ref(db, `${getDbPath('leagues')}/${userProfile.leagueWeek}/${userProfile.leagueId}/members/${userId}`), updates);
                 }
-
-                statusEl.textContent = 'Nome atualizado com sucesso!';
-                statusEl.style.color = 'var(--success)';
+                statusEl.textContent = 'Nome atualizado com sucesso!'; statusEl.style.color = 'var(--success)';
                 setTimeout(() => { statusEl.textContent = ''; }, 3000);
-            } catch (error) {
-                console.error("Erro ao atualizar nome de usuário:", error);
-                statusEl.textContent = 'Erro ao salvar. Tente novamente.';
-                statusEl.style.color = 'var(--danger)';
-            }
+            } catch (error) { console.error("Erro ao atualizar nome de usuário:", error); statusEl.textContent = 'Erro ao salvar. Tente novamente.'; statusEl.style.color = 'var(--danger)'; }
         });
 
         dom.updateKeywordForm.addEventListener('submit', async (e) => {
@@ -1986,38 +2297,21 @@
             const newKeyword = dom.newKeywordInput.value.trim();
             const currentPassword = dom.currentPasswordForKeyword.value;
             const statusEl = dom.updateKeywordStatus;
-
-            if (!newKeyword || !currentPassword) {
-                statusEl.textContent = 'Todos os campos são obrigatórios.';
-                statusEl.style.color = 'var(--danger)';
-                return;
-            }
-            statusEl.textContent = 'Verificando e salvando...';
-            statusEl.style.color = 'var(--text-secondary)';
-
+            if (!newKeyword || !currentPassword) { statusEl.textContent = 'Todos os campos são obrigatórios.'; statusEl.style.color = 'var(--danger)'; return; }
+            statusEl.textContent = 'Verificando e salvando...'; statusEl.style.color = 'var(--text-secondary)';
             try {
                 const user = auth.currentUser;
                 const credential = EmailAuthProvider.credential(user.email, currentPassword);
-                
-                // Reautentica para segurança
                 await reauthenticateWithCredential(user, credential);
-
-                // Se a reautenticação for bem-sucedida, atualize a palavra-chave
                 await update(ref(db, getDbPath('profile')), { keyword: newKeyword });
-
-                statusEl.textContent = 'Palavra-chave atualizada com sucesso!';
-                statusEl.style.color = 'var(--success)';
+                statusEl.textContent = 'Palavra-chave atualizada com sucesso!'; statusEl.style.color = 'var(--success)';
                 dom.updateKeywordForm.reset();
                 setTimeout(() => { statusEl.textContent = ''; }, 3000);
-
             } catch (error) {
                 console.error("Erro ao atualizar palavra-chave:", error);
                 let message = 'Erro ao salvar. Tente novamente.';
-                if (error.code === 'auth/wrong-password') {
-                    message = 'Senha atual incorreta.';
-                }
-                statusEl.textContent = message;
-                statusEl.style.color = 'var(--danger)';
+                if (error.code === 'auth/wrong-password') message = 'Senha atual incorreta.';
+                statusEl.textContent = message; statusEl.style.color = 'var(--danger)';
             }
         });
 
