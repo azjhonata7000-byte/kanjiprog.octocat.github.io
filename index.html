@@ -1595,15 +1595,18 @@
         
         function displayCard() { 
             const mainChar = currentCard.displayKanji || currentCard.kanji;
-            const singleCharForAudio = currentCard.kanji;
-            dom.cardFront.innerHTML = `<button class="sound-btn" onclick="window.speak('${singleCharForAudio}')"><i class="ph ph-speaker-high"></i></button><p class="question-text">${mainChar}</p><p class="question-hint">${currentCard.meaning}</p>`; 
+            // ALTERAÇÃO: Usar o caractere principal (composto, se houver) para o áudio.
+            const charForAudio = mainChar;
+            // ALTERAÇÃO: Remover a dica de significado da frente do card.
+            dom.cardFront.innerHTML = `<button class="sound-btn" onclick="window.speak('${charForAudio}')"><i class="ph ph-speaker-high"></i></button><p class="question-text">${mainChar}</p>`; 
             dom.cardBack.innerHTML = renderAnswerContent(currentCard); 
             renderActionButtons('show_answer'); 
         } 
         
         function renderAnswerContent(card) { 
             const mainChar = card.displayKanji || card.kanji;
-            const singleCharForAudio = card.kanji;
+            // ALTERAÇÃO: Usar o caractere principal (composto, se houver) para o áudio no verso também.
+            const charForAudio = mainChar;
             let geminiContent = ''; 
             if (card.geminiInfo) { 
                 const info = card.geminiInfo; 
@@ -1620,7 +1623,7 @@
                 if (info.grammar) { geminiContent += `<h3>Dica Gramatical</h3><p>${info.grammar}</p>`; } 
                 geminiContent += `</div>`; 
             } 
-            return `<button class="sound-btn" onclick="window.speak('${singleCharForAudio}')"><i class="ph ph-speaker-high"></i></button><div class="flex-grow w-full flex flex-col items-center justify-start text-center"><p style="font-size: 3rem; font-family: var(--font-jp);">${mainChar}</p><p class="text-2xl mt-4 font-bold">${card.meaning}</p>${geminiContent}</div>`; 
+            return `<button class="sound-btn" onclick="window.speak('${charForAudio}')"><i class="ph ph-speaker-high"></i></button><div class="flex-grow w-full flex flex-col items-center justify-start text-center"><p style="font-size: 3rem; font-family: var(--font-jp);">${mainChar}</p><p class="text-2xl mt-4 font-bold">${card.meaning}</p>${geminiContent}</div>`; 
         }
 
         function renderActionButtons(state) {
@@ -2448,4 +2451,3 @@
     </script>
 </body>
 </html>
-
