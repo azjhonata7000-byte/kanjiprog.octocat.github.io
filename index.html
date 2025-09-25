@@ -1070,6 +1070,10 @@
                     </button>
                 </div>
                 <div>
+                    <label for="display-kanji-input" class="font-bold text-sm">Forma de Exibição (Opcional, ex: 大きい)</label>
+                    <input type="text" id="display-kanji-input" class="input mt-1">
+                </div>
+                <div>
                     <label for="pronunciation-input" class="font-bold text-sm">Leitura (Romaji)</label>
                     <input type="text" id="pronunciation-input" class="input mt-1" required>
                 </div>
@@ -1246,6 +1250,7 @@
             cancelEditBtn: document.getElementById('cancel-edit-btn'),
             cardIdInput: document.getElementById('card-id-input'),
             kanjiInput: document.getElementById('kanji-input'),
+            displayKanjiInput: document.getElementById('display-kanji-input'), // NOVO
             pronunciationInput: document.getElementById('pronunciation-input'),
             meaningInput: document.getElementById('meaning-input'),
             saveCardBtn: document.getElementById('save-card-btn'),
@@ -1584,7 +1589,40 @@
         }
 
         // --- LÓGICA DO SRS ---
-        function filterCardsDueToday() { isStudyMoreSession = false; srsSessionStats = { correct: 0, incorrect: 0 }; const now = new Date(); now.setHours(0, 0, 0, 0); const deck = getCurrentDeck(); dueCards = deck.filter(card => { const interval = card.srsInterval === undefined ? 0 : card.srsInterval; if (interval === 0) return true; const lastReviewDate = new Date(card.lastReview); lastReviewDate.setHours(0,0,0,0); lastReviewDate.setDate(lastReviewDate.getDate() + interval); return now >= lastReviewDate; }); dueCards.sort(() => Math.random() - 0.5); sessionInitialCount = dueCards.length; updateProgress(); nextCard(); } function nextCard() { isCardFlipped = false; dom.reviewCard.classList.remove('is-flipped'); if (dueCards.length === 0) { currentCard = null; displayCompletion(); return; } currentCard = dueCards[0]; displayCard(); } function displayCard() { const mainChar = currentCard.kanji; dom.cardFront.innerHTML = `<button class="sound-btn" onclick="window.speak('${mainChar}')"><i class="ph ph-speaker-high"></i></button><p class="question-text">${mainChar}</p><p class="question-hint">${currentCard.meaning}</p>`; dom.cardBack.innerHTML = renderAnswerContent(currentCard); renderActionButtons('show_answer'); } function renderAnswerContent(card) { const mainChar = card.kanji; let geminiContent = ''; if (card.geminiInfo) { const info = card.geminiInfo; geminiContent += `<div class="w-full text-left mt-4 gemini-info-section">`; if (info.sentences && info.sentences.length > 0) { geminiContent += `<h3>Frases de Exemplo</h3><ul>`; info.sentences.forEach(s => { const escapedSentence = JSON.stringify(s.japanese); geminiContent += `<li class="sentence"><div class="flex items-center gap-2"><div class="flex-grow"><p class="jp">${s.japanese}</p><p class="reading">${s.reading}</p><p>${s.portuguese}</p></div><button class="sound-btn-sentence" onclick='window.speak(${escapedSentence})'><i class="ph ph-speaker-high text-lg"></i></button></div></li>`; }); geminiContent += `</ul>`; } if (info.curiosities) { geminiContent += `<h3>Curiosidades</h3><p>${info.curiosities}</p>`; } if (info.grammar) { geminiContent += `<h3>Dica Gramatical</h3><p>${info.grammar}</p>`; } geminiContent += `</div>`; } return `<button class="sound-btn" onclick="window.speak('${mainChar}')"><i class="ph ph-speaker-high"></i></button><div class="flex-grow w-full flex flex-col items-center justify-start text-center"><p style="font-size: 3rem; font-family: var(--font-jp);">${mainChar}</p><p class="text-xl mt-2">${card.pronunciation}</p><p class="text-2xl mt-4 font-bold">${card.meaning}</p>${geminiContent}</div>`; }
+        function filterCardsDueToday() { isStudyMoreSession = false; srsSessionStats = { correct: 0, incorrect: 0 }; const now = new Date(); now.setHours(0, 0, 0, 0); const deck = getCurrentDeck(); dueCards = deck.filter(card => { const interval = card.srsInterval === undefined ? 0 : card.srsInterval; if (interval === 0) return true; const lastReviewDate = new Date(card.lastReview); lastReviewDate.setHours(0,0,0,0); lastReviewDate.setDate(lastReviewDate.getDate() + interval); return now >= lastReviewDate; }); dueCards.sort(() => Math.random() - 0.5); sessionInitialCount = dueCards.length; updateProgress(); nextCard(); } 
+        
+        function nextCard() { isCardFlipped = false; dom.reviewCard.classList.remove('is-flipped'); if (dueCards.length === 0) { currentCard = null; displayCompletion(); return; } currentCard = dueCards[0]; displayCard(); } 
+        
+        function displayCard() { 
+            const mainChar = currentCard.displayKanji || currentCard.kanji;
+            const singleCharForAudio = currentCard.kanji;
+            dom.cardFront.innerHTML = `<button class="sound-btn" onclick="window.speak('${singleCharForAudio}')"><i class="ph ph-speaker-high"></i></button><p class="question-text">${mainChar}</p><p class="question-hint">${currentCard.meaning}</p>`; 
+            dom.cardBack.innerHTML = renderAnswerContent(currentCard); 
+            renderActionButtons('show_answer'); 
+        } 
+        
+        function renderAnswerContent(card) { 
+            const mainChar = card.displayKanji || card.kanji;
+            const singleCharForAudio = card.kanji;
+            let geminiContent = ''; 
+            if (card.geminiInfo) { 
+                const info = card.geminiInfo; 
+                geminiContent += `<div class="w-full text-left mt-4 gemini-info-section">`; 
+                if (info.sentences && info.sentences.length > 0) { 
+                    geminiContent += `<h3>Frases de Exemplo</h3><ul>`; 
+                    info.sentences.forEach(s => { 
+                        const escapedSentence = JSON.stringify(s.japanese); 
+                        geminiContent += `<li class="sentence"><div class="flex items-center gap-2"><div class="flex-grow"><p class="jp">${s.japanese}</p><p class="reading">${s.reading}</p><p>${s.portuguese}</p></div><button class="sound-btn-sentence" onclick='window.speak(${escapedSentence})'><i class="ph ph-speaker-high text-lg"></i></button></div></li>`; 
+                    }); 
+                    geminiContent += `</ul>`; 
+                } 
+                if (info.curiosities) { geminiContent += `<h3>Curiosidades</h3><p>${info.curiosities}</p>`; } 
+                if (info.grammar) { geminiContent += `<h3>Dica Gramatical</h3><p>${info.grammar}</p>`; } 
+                geminiContent += `</div>`; 
+            } 
+            return `<button class="sound-btn" onclick="window.speak('${singleCharForAudio}')"><i class="ph ph-speaker-high"></i></button><div class="flex-grow w-full flex flex-col items-center justify-start text-center"><p style="font-size: 3rem; font-family: var(--font-jp);">${mainChar}</p><p class="text-2xl mt-4 font-bold">${card.meaning}</p>${geminiContent}</div>`; 
+        }
+
         function renderActionButtons(state) {
             if (state === 'show_answer') {
                 dom.feedbackButtons.innerHTML = `<button id="check-btn" class="btn btn-primary col-span-2">Mostrar Resposta</button>`;
@@ -1882,9 +1920,13 @@
             paginatedCards.forEach(card => {
                 const cardElement = document.createElement('div');
                 cardElement.className = 'flex items-center justify-between p-3 rounded-lg bg-white border border-gray-200';
+                
+                const mainDisplay = card.displayKanji || card.kanji;
+                const subDisplay = card.displayKanji && card.displayKanji !== card.kanji ? ` <span class="text-base text-gray-500">(${card.kanji})</span>` : '';
+
                 cardElement.innerHTML = `
                     <div class="flex-grow">
-                        <p class="text-xl font-bold font-['Noto_Sans_JP']">${card.kanji}</p>
+                        <p class="text-xl font-bold font-['Noto_Sans_JP']">${mainDisplay}${subDisplay}</p>
                         <p class="text-sm text-gray-600">${card.meaning}</p>
                     </div>
                     <div class="flex items-center gap-2 flex-shrink-0">
@@ -1902,7 +1944,29 @@
                 renderManageView();
             });
         }
-        function openAddEditModal(card = null) { dom.addEditForm.reset(); const modeName = currentLearningMode.charAt(0).toUpperCase() + currentLearningMode.slice(1); const charType = currentLearningMode === 'kanji' ? 'Kanji' : 'Caractere'; dom.mainCharLabel.textContent = charType; if (card) { dom.addEditModalTitle.textContent = `Editar ${modeName}`; dom.cardIdInput.value = card.id; dom.kanjiInput.value = card.kanji; dom.pronunciationInput.value = card.pronunciation; dom.meaningInput.value = card.meaning; dom.geminiDataInput.value = card.geminiInfo ? JSON.stringify(card.geminiInfo) : ''; } else { dom.addEditModalTitle.textContent = `Adicionar ${modeName}`; dom.cardIdInput.value = ''; dom.geminiDataInput.value = ''; } dom.addEditModal.classList.add('visible'); } async function deleteCard(cardId) { if (confirm('Tem certeza que deseja apagar este card?')) { try { await remove(ref(db, `${getDbPath('cards')}/${cardId}`)); manageCurrentPage = 1; } catch(error) { console.error("Erro ao apagar card:", error); } } }
+
+        function openAddEditModal(card = null) { 
+            dom.addEditForm.reset(); 
+            const modeName = currentLearningMode.charAt(0).toUpperCase() + currentLearningMode.slice(1); 
+            const charType = currentLearningMode === 'kanji' ? 'Kanji' : 'Caractere'; 
+            dom.mainCharLabel.textContent = charType; 
+            if (card) { 
+                dom.addEditModalTitle.textContent = `Editar ${modeName}`; 
+                dom.cardIdInput.value = card.id; 
+                dom.kanjiInput.value = card.kanji; 
+                dom.displayKanjiInput.value = card.displayKanji || '';
+                dom.pronunciationInput.value = card.pronunciation; 
+                dom.meaningInput.value = card.meaning; 
+                dom.geminiDataInput.value = card.geminiInfo ? JSON.stringify(card.geminiInfo) : ''; 
+            } else { 
+                dom.addEditModalTitle.textContent = `Adicionar ${modeName}`; 
+                dom.cardIdInput.value = ''; 
+                dom.geminiDataInput.value = ''; 
+            } 
+            dom.addEditModal.classList.add('visible'); 
+        } 
+        
+        async function deleteCard(cardId) { if (confirm('Tem certeza que deseja apagar este card?')) { try { await remove(ref(db, `${getDbPath('cards')}/${cardId}`)); manageCurrentPage = 1; } catch(error) { console.error("Erro ao apagar card:", error); } } }
         
         // --- PLACAR / LIGAS ---
         dom.navLeaderboard.addEventListener('click', (e) => { e.preventDefault(); showView('leaderboard'); }); 
@@ -2159,7 +2223,31 @@
 
 
         // --- GEMINI API E FORMULÁRIO DE CARD ---
-        dom.generateAiBtn.addEventListener('click', async () => { const character = dom.kanjiInput.value; if (!character.trim()) { alert("Por favor, insira um caractere."); return; } dom.generateAiBtn.disabled = true; dom.aiBtnText.style.display = 'none'; dom.aiBtnSpinner.style.display = 'block'; try { const geminiData = await fetchGeminiDataForFields(character, currentLearningMode); if (geminiData) { dom.pronunciationInput.value = geminiData.pronunciation || ''; dom.meaningInput.value = geminiData.meaning || ''; dom.geminiDataInput.value = JSON.stringify(geminiData); } else { alert("Não foi possível gerar informações com a IA. Tente novamente."); } } catch (error) { console.error("Erro na geração com IA:", error); alert("Ocorreu um erro ao contatar a IA."); } finally { dom.generateAiBtn.disabled = false; dom.aiBtnText.style.display = 'inline'; dom.aiBtnSpinner.style.display = 'none'; } }); 
+        dom.generateAiBtn.addEventListener('click', async () => { 
+            const character = dom.kanjiInput.value; 
+            if (!character.trim()) { alert("Por favor, insira um caractere."); return; } 
+            dom.generateAiBtn.disabled = true; 
+            dom.aiBtnText.style.display = 'none'; 
+            dom.aiBtnSpinner.style.display = 'block'; 
+            try { 
+                const geminiData = await fetchGeminiDataForFields(character, currentLearningMode); 
+                if (geminiData) { 
+                    dom.pronunciationInput.value = geminiData.pronunciation || ''; 
+                    dom.meaningInput.value = geminiData.meaning || ''; 
+                    dom.displayKanjiInput.value = geminiData.commonUsage || '';
+                    dom.geminiDataInput.value = JSON.stringify(geminiData); 
+                } else { 
+                    alert("Não foi possível gerar informações com a IA. Tente novamente."); 
+                } 
+            } catch (error) { 
+                console.error("Erro na geração com IA:", error); 
+                alert("Ocorreu um erro ao contatar a IA."); 
+            } finally { 
+                dom.generateAiBtn.disabled = false; 
+                dom.aiBtnText.style.display = 'inline'; 
+                dom.aiBtnSpinner.style.display = 'none'; 
+            } 
+        }); 
         
         async function fetchGeminiDataForFields(character, mode) {
             // ATENÇÃO: NUNCA exponha sua chave de API diretamente no código do cliente (front-end).
@@ -2171,9 +2259,49 @@
             
             let userQuery = ''; 
             const systemPrompt = `Você é um professor de japonês para falantes de português. Forneça informações concisas e úteis sobre um caractere japonês. Responda em JSON.`; 
-            if (mode === 'kanji') { userQuery = `Analise o kanji "${character}". Quero informações para um flashcard. Forneça o seguinte em JSON: "pronunciation" (leitura romaji), "meaning" (significado principal), "sentences" (duas frases de exemplo com "japanese", "reading" e "portuguese"), "curiosities" (curiosidade sobre origem/uso), e "grammar" (dica gramatical).`; } else { userQuery = `Analise o caractere de ${mode} "${character}". Quero informações para um flashcard. Forneça o seguinte em JSON: "pronunciation" (leitura romaji), "meaning" (para o que é usado, ex: som 'a'), "sentences" (duas palavras de exemplo simples usando o caractere, com "japanese", "reading" e "portuguese"), "curiosities" (dica de memorização ou traçado), e "grammar" (dica de uso ou partículas comuns).`; } 
-            const payload = { contents: [{ parts: [{ text: userQuery }] }], systemInstruction: { parts: [{ text: systemPrompt }] }, generationConfig: { responseMimeType: "application/json", responseSchema: { type: "OBJECT", properties: { "pronunciation": { "type": "STRING" }, "meaning": { "type": "STRING" }, "sentences": { type: "ARRAY", items: { type: "OBJECT", properties: { "japanese": { "type": "STRING" }, "reading": { "type": "STRING" }, "portuguese": { "type": "STRING" } }, required: ["japanese", "reading", "portuguese"]}}, "curiosities": { "type": "STRING" }, "grammar": { "type": "STRING" } }, required: ["pronunciation", "meaning", "sentences", "curiosities", "grammar"] } } }; 
-            try { const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); if (!response.ok) throw new Error(`API error: ${response.status}`); const result = await response.json(); const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text; return JSON.parse(jsonText); } catch (error) { console.error("Erro ao chamar a API Gemini:", error); return null; } 
+            
+            if (mode === 'kanji') { 
+                userQuery = `Analise o kanji "${character}". Quero informações para um flashcard. Forneça o seguinte em JSON: "pronunciation" (leitura romaji), "meaning" (significado principal), "commonUsage" (a palavra mais comum que usa este kanji, ex: 大きい para o kanji 大. Se for usado principalmente sozinho, retorne apenas o kanji.), "sentences" (duas frases de exemplo com "japanese", "reading" e "portuguese"), "curiosities" (curiosidade sobre origem/uso), e "grammar" (dica gramatical).`; 
+            } else { 
+                userQuery = `Analise o caractere de ${mode} "${character}". Quero informações para um flashcard. Forneça o seguinte em JSON: "pronunciation" (leitura romaji), "meaning" (para o que é usado, ex: som 'a'), "commonUsage" (o próprio caractere), "sentences" (duas palavras de exemplo simples usando o caractere, com "japanese", "reading" e "portuguese"), "curiosities" (dica de memorização ou traçado), e "grammar" (dica de uso ou partículas comuns).`; 
+            } 
+            
+            const payload = { 
+                contents: [{ parts: [{ text: userQuery }] }], 
+                systemInstruction: { parts: [{ text: systemPrompt }] }, 
+                generationConfig: { 
+                    responseMimeType: "application/json", 
+                    responseSchema: { 
+                        type: "OBJECT", 
+                        properties: { 
+                            "pronunciation": { "type": "STRING" }, 
+                            "meaning": { "type": "STRING" }, 
+                            "commonUsage": { "type": "STRING" }, 
+                            "sentences": { 
+                                type: "ARRAY", 
+                                items: { 
+                                    type: "OBJECT", 
+                                    properties: { "japanese": { "type": "STRING" }, "reading": { "type": "STRING" }, "portuguese": { "type": "STRING" } }, 
+                                    required: ["japanese", "reading", "portuguese"]
+                                }
+                            }, 
+                            "curiosities": { "type": "STRING" }, 
+                            "grammar": { "type": "STRING" } 
+                        }, 
+                        required: ["pronunciation", "meaning", "commonUsage", "sentences", "curiosities", "grammar"] 
+                    } 
+                } 
+            }; 
+            try { 
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); 
+                if (!response.ok) throw new Error(`API error: ${response.status}`); 
+                const result = await response.json(); 
+                const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text; 
+                return JSON.parse(jsonText); 
+            } catch (error) { 
+                console.error("Erro ao chamar a API Gemini:", error); 
+                return null; 
+            } 
         }
         
         // --- AUTENTICAÇÃO E CONTA ---
@@ -2181,6 +2309,7 @@
             e.preventDefault();
             const cardData = {
                 kanji: dom.kanjiInput.value,
+                displayKanji: dom.displayKanjiInput.value,
                 pronunciation: dom.pronunciationInput.value,
                 meaning: dom.meaningInput.value,
                 srsInterval: 0,
@@ -2319,3 +2448,4 @@
     </script>
 </body>
 </html>
+
