@@ -1623,7 +1623,7 @@
                 if (info.grammar) { geminiContent += `<h3>Dica Gramatical</h3><p>${info.grammar}</p>`; } 
                 geminiContent += `</div>`; 
             } 
-            return `<button class="sound-btn" onclick="window.speak('${charForAudio}')"><i class="ph ph-speaker-high"></i></button><div class="flex-grow w-full flex flex-col items-center justify-start text-center"><p style="font-size: 3rem; font-family: var(--font-jp);">${mainChar}</p><p class="text-2xl mt-4 font-bold">${card.meaning}</p>${geminiContent}</div>`; 
+            return `<button class="sound-btn" onclick="window.speak('${charForAudio}')"><i class="ph ph-speaker-high"></i></button><div class="flex-grow w-full flex flex-col items-center justify-start text-center"><p style="font-size: 3rem; font-family: var(--font-jp);">${mainChar}</p><p class="text-2xl mt-4 font-bold">${card.meaning}</p><p class="text-lg text-gray-600 mt-2">${card.pronunciation}</p>${geminiContent}</div>`; 
         }
 
         function renderActionButtons(state) {
@@ -2264,7 +2264,7 @@
             const systemPrompt = `Você é um professor de japonês para falantes de português. Forneça informações concisas e úteis sobre um caractere japonês. Responda em JSON.`; 
             
             if (mode === 'kanji') { 
-                userQuery = `Analise o kanji "${character}". Quero informações para um flashcard. Forneça o seguinte em JSON: "pronunciation" (leitura romaji), "meaning" (significado principal), "commonUsage" (a palavra mais comum que usa este kanji, ex: 大きい para o kanji 大. Se for usado principalmente sozinho, retorne apenas o kanji.), "sentences" (duas frases de exemplo com "japanese", "reading" e "portuguese"), "curiosities" (curiosidade sobre origem/uso), e "grammar" (dica gramatical).`; 
+                userQuery = `Analise o kanji "${character}". Quero informações para um flashcard. Forneça o seguinte em JSON: "pronunciation" (APENAS a leitura em romaji, separada por vírgulas, ex: 'oo, dai, tai'), "meaning" (significado principal), "commonUsage" (a palavra japonesa mais comum que usa este kanji, SEM romaji, ex: 大きい. Se for usado sozinho, retorne apenas o kanji.), "sentences" (duas frases de exemplo com "japanese", "reading" e "portuguese"), "curiosities" (curiosidade sobre origem/uso), e "grammar" (dica gramatical).`;
             } else { 
                 userQuery = `Analise o caractere de ${mode} "${character}". Quero informações para um flashcard. Forneça o seguinte em JSON: "pronunciation" (leitura romaji), "meaning" (para o que é usado, ex: som 'a'), "commonUsage" (o próprio caractere), "sentences" (duas palavras de exemplo simples usando o caractere, com "japanese", "reading" e "portuguese"), "curiosities" (dica de memorização ou traçado), e "grammar" (dica de uso ou partículas comuns).`; 
             } 
@@ -2451,3 +2451,4 @@
     </script>
 </body>
 </html>
+
