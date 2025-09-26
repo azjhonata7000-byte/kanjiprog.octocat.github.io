@@ -3,14 +3,14 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, scale=1.0">
     <meta name="author" content="Firefly Designer">
     <title>Nihongo Master - SRS Moderno</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Lexend:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <script src="httpshttps://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <!-- Adicionado Chart.js para a nova seção de estatísticas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -127,7 +127,7 @@
         .dropdown-content.visible { display: block; }
         .dropdown-content a, .dropdown-content button {
             color: var(--text-primary); padding: 0.75rem 1rem; text-decoration: none;
-            display: flex; align-items: center; gap: 0.5rem; border-radius: 0.5rem; font-weight: 500;
+            display: block; border-radius: 0.5rem; font-weight: 500;
             width: 100%; text-align: left;
         }
         .dropdown-content a:hover, .dropdown-content button:hover { background-color: var(--bg-accent); color: var(--accent-primary); }
@@ -162,13 +162,9 @@
         }
 
         .question-text {
-            font-size: clamp(3rem, 15vw, 6rem);
+            font-family: var(--font-jp); font-size: clamp(3rem, 15vw, 6rem);
             font-weight: 700; line-height: 1.1; text-align: center;
         }
-        .question-text.jp { font-family: var(--font-jp); }
-        .question-text.en { font-family: var(--font-ui); }
-
-
         .question-hint {
             font-size: 1.25rem; color: var(--text-secondary);
             margin-top: 0.5rem; text-align: center;
@@ -185,8 +181,6 @@
         .gemini-info-section ul { list-style-position: inside; padding-left: 0.5rem; }
         .gemini-info-section .sentence { margin-bottom: 0.75rem; }
         .gemini-info-section .sentence .jp { font-family: var(--font-jp); font-size: 1.2rem; color: var(--text-primary); }
-        .gemini-info-section .sentence .en { font-family: var(--font-ui); font-size: 1.1rem; color: var(--text-primary); font-weight: 500;}
-
         .gemini-info-section .sentence .reading { font-size: 0.85rem; color: var(--text-secondary); font-style: italic;}
 
         /* --- BOTÕES E INTERAÇÕES --- */
@@ -244,7 +238,7 @@
             word-break: break-word; /* Garante que o texto não saia do card */
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        .game-option.jp { font-family: var(--font-jp); font-size: 1.5rem; }
+        .game-option.kanji { font-family: var(--font-jp); font-size: 1.5rem; }
         .game-option:hover { 
             border-color: var(--accent-primary-light); 
             transform: scale(1.03); 
@@ -300,7 +294,7 @@
             color: var(--text-primary);
             transform: rotateY(180deg);
         }
-        .memory-card .jp { font-family: var(--font-jp); font-size: clamp(1.5rem, 8vw, 2.5rem); }
+        .memory-card .kanji { font-family: var(--font-jp); font-size: clamp(1.5rem, 8vw, 2.5rem); }
         .memory-card.flipped {
             transform: rotateY(180deg);
         }
@@ -744,22 +738,6 @@
             </button>
         </div>
         <nav class="flex flex-col space-y-2">
-            <!-- Seletor de Idioma de Aprendizado (Mobile) -->
-            <div>
-                 <button id="nav-lang-mobile-toggle" class="w-full text-left nav-link-mobile flex justify-between items-center">
-                    <div class="flex items-center gap-3">
-                        <i class="ph ph-translate w-6"></i>
-                        <span id="lang-learn-text-mobile" data-translate="learn_language_select">Aprender: Japonês</span>
-                    </div>
-                    <i id="lang-learn-caret-mobile" class="ph ph-caret-down transition-transform caret-icon"></i>
-                </button>
-                 <div id="nav-lang-mobile-dropdown" class="pl-8 mt-1 space-y-1" style="display: none;">
-                    <button data-lang="jp" class="lang-learn-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left active">Japonês</button>
-                    <button data-lang="en" class="lang-learn-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left">Inglês</button>
-                </div>
-            </div>
-
-            <!-- Modos de Estudo (Mobile) -->
             <div>
                  <button id="nav-study-mobile-toggle" class="w-full text-left nav-link-mobile flex justify-between items-center">
                     <div class="flex items-center gap-3">
@@ -769,34 +747,39 @@
                     <i id="study-caret-mobile" class="ph ph-caret-down transition-transform caret-icon"></i>
                 </button>
                  <div id="nav-study-mobile-dropdown" class="pl-8 mt-1 space-y-1" style="display: none;">
-                    {/* Conteúdo dinâmico aqui */}
+                    <button data-mode="kanji" class="mode-select-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left active">Kanji</button>
+                    <button data-mode="hiragana" class="mode-select-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left">Hiragana</button>
+                    <button data-mode="katakana" class="mode-select-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left">Katakana</button>
                 </div>
             </div>
 
-            <!-- Jogos (Mobile) -->
             <div>
                 <button id="nav-games-mobile-toggle" class="w-full text-left nav-link-mobile flex justify-between items-center">
                     <div class="flex items-center gap-3">
                         <i class="ph ph-game-controller w-6"></i>
-                        <span data-translate="games">Jogos</span>
+                        <span>Jogos</span>
                     </div>
                     <i id="games-caret-mobile" class="ph ph-caret-down transition-transform caret-icon"></i>
                 </button>
                 <div id="nav-games-mobile-dropdown" class="pl-8 mt-1 space-y-1" style="display: none;">
-                    {/* Conteúdo dinâmico aqui */}
+                    <a href="#" class="block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3" id="game-match-kanji-mobile">Combine</a>
+                    <a href="#" class="block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3" id="game-quiz-kanji-mobile">Quiz</a>
+                    <a href="#" class="block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3" id="game-type-kanji-mobile">Digite a Leitura</a>
+                    <a href="#" class="block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3" id="game-memory-kanji-mobile">Jogo da Memória</a>
                 </div>
             </div>
             <a href="#" class="nav-link-mobile" id="nav-manage-mobile">
                 <i class="ph ph-cards w-6"></i>
-                <span data-translate="manage">Gerenciar</span>
+                <span>Gerenciar</span>
             </a>
+            <!-- NOVO: Link para Estatísticas no menu móvel -->
             <a href="#" class="nav-link-mobile" id="nav-stats-mobile">
                 <i class="ph ph-chart-bar w-6"></i>
-                <span data-translate="statistics">Estatísticas</span>
+                <span>Estatísticas</span>
             </a>
             <a href="#" class="nav-link-mobile" id="nav-leaderboard-mobile">
                 <i class="ph ph-trophy w-6"></i>
-                <span data-translate="leagues">Ligas</span>
+                <span>Ligas</span>
             </a>
         </nav>
     </aside>
@@ -808,54 +791,35 @@
                 <a href="#" id="home-logo">語</a>
             </div>
             <nav class="hidden md:flex items-center space-x-2">
-                 <!-- Seletor de Idioma de Aprendizado -->
-                 <div class="dropdown">
-                    <a href="#" class="nav-link flex items-center gap-2" id="nav-lang-learn">
-                        <span id="lang-learn-text" data-translate="learn_language_select">Aprender: Japonês</span>
-                        <i class="ph ph-caret-down"></i>
-                    </a>
-                    <div id="lang-learn-dropdown" class="dropdown-content">
-                        <button data-lang="jp" class="lang-learn-btn active">Japonês</button>
-                        <button data-lang="en" class="lang-learn-btn">Inglês</button>
-                    </div>
-                </div>
-
-                 <!-- Modos de Estudo -->
                  <div class="dropdown">
                     <a href="#" class="nav-link active flex items-center gap-2" id="nav-study">
                         <span id="study-mode-text">Estudar: Kanji</span>
                         <i class="ph ph-caret-down"></i>
                     </a>
                     <div id="study-mode-dropdown" class="dropdown-content">
-                        {/* Conteúdo dinâmico aqui */}
+                        <button data-mode="kanji" class="mode-select-btn active">Kanji</button>
+                        <button data-mode="hiragana" class="mode-select-btn">Hiragana</button>
+                        <button data-mode="katakana" class="mode-select-btn">Katakana</button>
                     </div>
                 </div>
-
                 <div class="dropdown">
-                    <a href="#" class="nav-link" id="nav-games" data-translate="games">Jogos</a>
-                    <div id="nav-games-dropdown" class="dropdown-content">
-                         {/* Conteúdo dinâmico aqui */}
+                    <a href="#" class="nav-link" id="nav-games">Jogos</a>
+                    <div class="dropdown-content">
+                        <a href="#" id="game-match-kanji">Combine</a>
+                        <a href="#" id="game-quiz-kanji">Quiz</a>
+                        <a href="#" id="game-type-kanji">Digite a Leitura</a>
+                        <a href="#" id="game-memory-kanji">Jogo da Memória</a>
                     </div>
                 </div>
-                <a href="#" class="nav-link" id="nav-manage" data-translate="manage">Gerenciar</a>
-                <a href="#" class="nav-link" id="nav-stats" data-translate="statistics">Estatísticas</a>
-                <a href="#" class="nav-link" id="nav-leaderboard" data-translate="leagues">Ligas</a>
+                <a href="#" class="nav-link" id="nav-manage">Gerenciar</a>
+                <!-- NOVO: Link para Estatísticas no menu principal -->
+                <a href="#" class="nav-link" id="nav-stats">Estatísticas</a>
+                <a href="#" class="nav-link" id="nav-leaderboard">Ligas</a>
             </nav>
             <div class="flex items-center space-x-2">
-                 <!-- Seletor de Idioma da UI -->
-                <div class="dropdown">
-                    <button id="lang-ui-btn" class="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100">
-                        <i class="ph ph-globe text-2xl"></i>
-                    </button>
-                    <div id="lang-ui-dropdown" class="dropdown-content" style="right: 0; left: auto; transform: none; min-width: 150px;">
-                        <button data-lang="pt" class="lang-ui-btn active"><span>🇧🇷</span> Português</button>
-                        <button data-lang="en" class="lang-ui-btn"><span>🇺🇸</span> English</button>
-                    </div>
-                </div>
-                
                 <div id="userInfoContainer" class="relative">
                     <div id="auth-links" style="display: none;">
-                         <button id="login-nav-btn" class="btn btn-secondary text-sm" data-translate="login">Entrar</button>
+                         <button id="login-nav-btn" class="btn btn-secondary text-sm">Entrar</button>
                     </div>
                     <div id="user-menu" class="relative" style="display: none;">
                         <button id="user-menu-btn" class="flex items-center space-x-2 text-sm font-medium text-gray-600 hover:text-accent-primary">
@@ -863,9 +827,9 @@
                             <i class="ph ph-caret-down"></i>
                         </button>
                         <div id="user-menu-dropdown" class="dropdown-content">
-                            <a href="#" id="my-profile-btn" data-translate="my_profile">Meu Perfil</a>
-                            <a href="#" id="manage-account-btn" data-translate="manage_account">Gerenciar Conta</a>
-                            <a href="#" id="logoutBtn" data-translate="logout">Sair</a>
+                            <a href="#" id="my-profile-btn">Meu Perfil</a>
+                            <a href="#" id="manage-account-btn">Gerenciar Conta</a>
+                            <a href="#" id="logoutBtn">Sair</a>
                         </div>
                     </div>
                 </div>
@@ -883,25 +847,25 @@
     <div id="loading-overlay" class="modal-overlay visible">
         <div class="text-center">
             <div class="loader-icon">語</div>
-            <p id="loading-text" class="mt-4 text-lg font-bold" style="color: var(--text-primary);" data-translate="loading_learning">Carregando seu aprendizado...</p>
+            <p id="loading-text" class="mt-4 text-lg font-bold" style="color: var(--text-primary);">Carregando seu aprendizado...</p>
         </div>
     </div>
     
     <!-- MODAL DE AUTENTICAÇÃO -->
     <div id="auth-modal" class="modal-overlay">
         <div class="modal-content text-center">
-             <h2 class="text-3xl font-bold mb-6" id="auth-modal-title" data-translate="login">Entrar</h2>
+             <h2 class="text-3xl font-bold mb-6" id="auth-modal-title">Entrar</h2>
             <div id="auth-form-fields" class="flex flex-col space-y-4">
-                <input type="text" id="usernameInput" data-translate-placeholder="username" placeholder="Nome de Usuário" class="input" style="display: none;">
-                <input type="email" id="emailInput" data-translate-placeholder="email" placeholder="Email" class="input">
-                <input type="password" id="passwordInput" data-translate-placeholder="password" placeholder="Senha" class="input">
-                <input type="password" id="confirmPasswordInput" data-translate-placeholder="confirm_password" placeholder="Confirmar Senha" class="input" style="display: none;">
-                <input type="text" id="keywordInput" data-translate-placeholder="security_keyword" placeholder="Palavra-chave de Segurança" class="input" style="display: none;" data-translate-title="keyword_tooltip" title="Use esta palavra para confirmar alterações importantes na sua conta.">
+                <input type="text" id="usernameInput" placeholder="Nome de Usuário" class="input" style="display: none;">
+                <input type="email" id="emailInput" placeholder="Email" class="input">
+                <input type="password" id="passwordInput" placeholder="Senha" class="input">
+                <input type="password" id="confirmPasswordInput" placeholder="Confirmar Senha" class="input" style="display: none;">
+                <input type="text" id="keywordInput" placeholder="Palavra-chave de Segurança" class="input" style="display: none;" title="Use esta palavra para confirmar alterações importantes na sua conta.">
             </div>
              <div class="mt-4">
-                <button id="authBtn" class="btn btn-primary w-full" data-translate="login">Entrar</button>
-                <p id="toggleAuthMode" class="text-sm cursor-pointer hover:underline text-gray-500 mt-4" data-translate="no_account_yet">Ainda não tem uma conta? Crie uma.</p>
-                <p id="forgotPassword" class="text-sm cursor-pointer hover:underline text-gray-500 mt-2" data-translate="forgot_password">Esqueceu sua senha?</p>
+                <button id="authBtn" class="btn btn-primary w-full">Entrar</button>
+                <p id="toggleAuthMode" class="text-sm cursor-pointer hover:underline text-gray-500 mt-4">Ainda não tem uma conta? Crie uma.</p>
+                <p id="forgotPassword" class="text-sm cursor-pointer hover:underline text-gray-500 mt-2">Esqueceu sua senha?</p>
              </div>
             <p id="auth-status-message" class="mt-4 text-sm min-h-[20px]"></p>
         </div>
@@ -926,7 +890,7 @@
             
             <div id="action-buttons" class="mt-6 flex flex-col space-y-4 items-center w-full max-w-md">
                 <div id="feedback-buttons-container" class="grid grid-cols-2 gap-4 w-full"></div>
-                <button id="studyMoreBtn" class="btn btn-secondary w-full" data-translate="study_more">Estudar Mais</button>
+                <button id="studyMoreBtn" class="btn btn-secondary w-full">Estudar Mais</button>
             </div>
         </div>
         <p id="userIdDisplay" class="text-xs text-gray-400 text-center mt-8"></p>
@@ -937,7 +901,7 @@
         <!-- O conteúdo do jogo será renderizado aqui pelo JS -->
     </div>
 
-    <!-- CONTEÚDO DAS ESTATÍSTICAS -->
+    <!-- NOVO: CONTEÚDO DAS ESTATÍSTICAS -->
     <div id="stats-container" class="stats-container" style="display: none;">
         <!-- O conteúdo das estatísticas será renderizado aqui pelo JS -->
     </div>
@@ -947,10 +911,10 @@
     <div id="manage-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-6 flex-shrink-0">
-                <h2 id="manage-modal-title" class="text-3xl font-bold" data-translate="manage_cards">Gerenciar Cards</h2>
+                <h2 id="manage-modal-title" class="text-3xl font-bold">Gerenciar Cards</h2>
                 <button id="close-manage-modal" class="text-2xl font-bold p-2 leading-none">&times;</button>
             </div>
-            <button id="add-new-card-btn" class="btn btn-primary w-full mb-6 flex-shrink-0" data-translate="add_new_card">Adicionar Novo Card</button>
+            <button id="add-new-card-btn" class="btn btn-primary w-full mb-6 flex-shrink-0">Adicionar Novo Card</button>
             <div id="card-list-container" class="space-y-3 modal-scrollable-content flex-grow min-h-0">
                 <!-- Lista de cards será inserida aqui -->
             </div>
@@ -962,6 +926,7 @@
     <div id="leaderboard-modal" class="modal-overlay">
         <div class="modal-content">
             <div id="mascot-container" class="pt-4">
+                <!-- Gogo-chan Mascot SVG Kawaii -->
                 <svg id="gogo-chan-mascot" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                     <style>
                         #gogo-chan-mascot .wing-l { animation: wings-flap 2s ease-in-out infinite; transform-origin: 90% 90%; }
@@ -979,17 +944,24 @@
                         </filter>
                     </defs>
                     <g transform="translate(50, 50)">
+                        <!-- Wings -->
                         <path class="wing-l" d="M-8, -10 C -30, -25 -25, 10 -8, 5 Z" fill="rgba(235, 226, 255, 0.9)"/>
                         <path class="wing-r" d="M8, -10 C 30, -25 25, 10 8, 5 Z" fill="rgba(235, 226, 255, 0.9)"/>
+                        
+                        <!-- Glowing Abdomen -->
                         <ellipse cx="0" cy="18" rx="18" ry="22" fill="#FDE047" filter="url(#glow-effect)"/>
+                        <!-- Body -->
                         <path d="M0,-15 Q20,-10 20,10 Q20,25 0,33 Q-20,25 -20,10 Q-20,-10 0,-15 Z" fill="#6D28D9"/>
+                        <!-- Head -->
                         <circle cx="0" cy="-18" r="16" fill="#4C1D95"/>
+                        <!-- Eyes -->
                         <circle cx="-6" cy="-20" r="4.5" fill="white"/>
                         <circle cx="6" cy="-20" r="4.5" fill="white"/>
                         <circle cx="-5" cy="-19" r="2" fill="black"/>
                         <circle cx="7" cy="-19" r="2" fill="black"/>
                         <circle cx="-4.5" cy="-20.5" r="0.8" fill="white"/>
                         <circle cx="7.5" cy="-20.5" r="0.8" fill="white"/>
+                        <!-- Blush -->
                         <ellipse class="blush" cx="-12" cy="-15" rx="4" ry="2" fill="#FFA7C3"/>
                         <ellipse class="blush" cx="12" cy="-15" rx="4" ry="2" fill="#FFA7C3"/>
                     </g>
@@ -997,12 +969,12 @@
             </div>
             <div id="league-header">
                 <button id="close-leaderboard-modal">&times;</button>
-                <h2 data-translate="weekly_league">Liga Semanal</h2>
+                <h2>Liga Semanal</h2>
                 <div id="patent-info">
                     <div id="patent-icon-container"></div>
                     <span id="patent-name">--</span>
                 </div>
-                <p id="league-timer" class="text-sm text-gray-500" data-translate-base="ends_in">Termina em: --</p>
+                <p id="league-timer" class="text-sm text-gray-500">Termina em: --</p>
             </div>
             <div id="leaderboard-list">
                 <!-- Lista da liga será inserida aqui -->
@@ -1025,94 +997,95 @@
     <div id="user-manage-modal" class="modal-overlay">
         <div class="modal-content">
              <div class="flex justify-between items-center mb-6">
-                <h2 class="text-3xl font-bold" data-translate="manage_account">Gerenciar Conta</h2>
+                <h2 class="text-3xl font-bold">Gerenciar Conta</h2>
                 <button type="button" id="cancel-user-manage-btn" class="text-2xl font-bold p-2 leading-none">&times;</button>
             </div>
             
             <div class="modal-scrollable-content pr-2">
                 <form id="update-username-form" class="flex flex-col space-y-4">
-                    <h3 class="text-lg font-semibold" data-translate="change_username">Alterar Nome de Usuário</h3>
+                    <h3 class="text-lg font-semibold">Alterar Nome de Usuário</h3>
                     <div>
-                        <label for="new-username-input" class="font-bold text-sm" data-translate="username">Nome de Usuário</label>
+                        <label for="new-username-input" class="font-bold text-sm">Nome de Usuário</label>
                         <input type="text" id="new-username-input" class="input mt-1" required>
                     </div>
                     <div class="flex justify-end">
-                        <button type="submit" class="btn btn-primary" data-translate="save_name">Salvar Nome</button>
+                        <button type="submit" class="btn btn-primary">Salvar Nome</button>
                     </div>
                     <p id="update-username-status" class="text-sm mt-2 min-h-[20px]"></p>
                 </form>
 
                  <form id="update-keyword-form" class="flex flex-col space-y-4 border-t border-gray-200 pt-4 mt-4">
-                    <h3 class="text-lg font-semibold" data-translate="change_keyword">Alterar Palavra-chave de Segurança</h3>
+                    <h3 class="text-lg font-semibold">Alterar Palavra-chave de Segurança</h3>
                     <div>
-                        <label for="new-keyword-input" class="font-bold text-sm" data-translate="new_keyword">Nova Palavra-chave</label>
+                        <label for="new-keyword-input" class="font-bold text-sm">Nova Palavra-chave</label>
                         <input type="text" id="new-keyword-input" class="input mt-1" required>
                     </div>
                     <div>
-                        <label for="current-password-for-keyword" class="font-bold text-sm" data-translate="current_password_to_confirm">Senha Atual (para confirmar)</label>
+                        <label for="current-password-for-keyword" class="font-bold text-sm">Senha Atual (para confirmar)</label>
                         <input type="password" id="current-password-for-keyword" class="input mt-1" required>
                     </div>
                     <div class="flex justify-end">
-                        <button type="submit" class="btn btn-primary" data-translate="save_keyword">Salvar Palavra-chave</button>
+                        <button type="submit" class="btn btn-primary">Salvar Palavra-chave</button>
                     </div>
                     <p id="update-keyword-status" class="text-sm mt-2 min-h-[20px]"></p>
                 </form>
 
                 <form id="update-password-form" class="flex flex-col space-y-4 border-t border-gray-200 pt-4 mt-4">
-                    <h3 class="text-lg font-semibold" data-translate="change_password">Alterar Senha</h3>
+                    <h3 class="text-lg font-semibold">Alterar Senha</h3>
                     <div>
-                        <label for="new-password-input" class="font-bold text-sm" data-translate="new_password">Nova Senha</label>
+                        <label for="new-password-input" class="font-bold text-sm">Nova Senha</label>
                         <input type="password" id="new-password-input" class="input mt-1" required>
                     </div>
                      <div>
-                        <label for="confirm-new-password-input" class="font-bold text-sm" data-translate="confirm_new_password">Confirmar Nova Senha</label>
+                        <label for="confirm-new-password-input" class="font-bold text-sm">Confirmar Nova Senha</label>
                         <input type="password" id="confirm-new-password-input" class="input mt-1" required>
                     </div>
                     <div class="flex justify-end mt-4">
-                        <button type="submit" class="btn btn-primary" data-translate="update_password">Atualizar Senha</button>
+                        <button type="submit" class="btn btn-primary">Atualizar Senha</button>
                     </div>
                     <p id="update-password-status" class="text-sm mt-2 min-h-[20px]"></p>
                 </form>
             </div>
+
         </div>
     </div>
 
     <!-- MODAL DE ADICIONAR/EDITAR CARD -->
     <div id="add-edit-modal" class="modal-overlay">
         <div class="modal-content">
-            <h2 class="text-3xl font-bold mb-6" id="add-edit-modal-title" data-translate="add_card">Adicionar Card</h2>
+            <h2 class="text-3xl font-bold mb-6" id="add-edit-modal-title">Adicionar Card</h2>
             <form id="add-edit-form" class="flex flex-col space-y-4">
                 <input type="hidden" id="card-id-input">
                  <div class="flex items-end space-x-2">
                     <div class="flex-grow">
-                        <label for="kanji-input" id="main-char-label" class="font-bold text-sm" data-translate="kanji">Kanji</label>
+                        <label for="kanji-input" id="main-char-label" class="font-bold text-sm">Kanji</label>
                         <input type="text" id="kanji-input" class="input mt-1" required>
                     </div>
                     <button type="button" id="generate-ai-btn" class="btn btn-primary flex-shrink-0">
-                        <span id="ai-btn-text" data-translate="generate_with_ai">Gerar com IA</span>
+                        <span id="ai-btn-text">Gerar com IA</span>
                          <svg id="ai-btn-spinner" class="animate-spin h-5 w-5 text-white" style="display: none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                     </button>
                 </div>
-                <div id="display-form-field">
-                    <label for="display-kanji-input" class="font-bold text-sm" data-translate="display_form_label">Forma de Exibição (Opcional, ex: 大きい)</label>
+                <div>
+                    <label for="display-kanji-input" class="font-bold text-sm">Forma de Exibição (Opcional, ex: 大きい)</label>
                     <input type="text" id="display-kanji-input" class="input mt-1">
                 </div>
                 <div>
-                    <label for="pronunciation-input" id="pronunciation-label" class="font-bold text-sm" data-translate="reading_romaji">Leitura (Romaji)</label>
+                    <label for="pronunciation-input" class="font-bold text-sm">Leitura (Romaji)</label>
                     <input type="text" id="pronunciation-input" class="input mt-1" required>
                 </div>
                 <div>
-                    <label for="meaning-input" class="font-bold text-sm" data-translate="meaning">Significado</label>
+                    <label for="meaning-input" class="font-bold text-sm">Significado</label>
                     <input type="text" id="meaning-input" class="input mt-1" required>
                 </div>
                 <input type="hidden" id="gemini-data-input">
                 <div class="flex justify-end space-x-4 mt-4">
-                    <button type="button" id="cancel-edit-btn" class="btn btn-secondary" data-translate="cancel">Cancelar</button>
+                    <button type="button" id="cancel-edit-btn" class="btn btn-secondary">Cancelar</button>
                     <button type="submit" id="save-card-btn" class="btn btn-primary">
-                        <span id="save-btn-text" data-translate="save">Salvar</span>
+                        <span id="save-btn-text">Salvar</span>
                         <svg id="save-btn-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" style="display: none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -1123,7 +1096,7 @@
         </div>
     </div>
     
-    <!-- MODAL DE PLACAR PÓS-JOGO -->
+    <!-- MODAL DE PLACAR PÓS-JOGO (NOVO) -->
     <div id="game-completion-modal" class="modal-overlay">
         <div id="game-completion-content" class="modal-content">
             <!-- Conteúdo do placar do jogo será injetado aqui pelo JS -->
@@ -1141,6 +1114,9 @@
         import { getDatabase, ref, onValue, set, push, remove, get, update } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
         // --- AVISO DE SEGURANÇA ---
+        // É seguro ter a configuração do Firebase no lado do cliente, DESDE QUE você
+        // configure as Regras de Segurança (Security Rules) corretamente no seu console do Firebase
+        // para proteger seus dados contra acesso não autorizado.
         const firebaseConfig = {
             apiKey: "AIzaSyAl4OJcZJlkn809EPdv7VUchU0ObuhcwHs",
             authDomain: "kanjis-b38b4.firebaseapp.com",
@@ -1155,298 +1131,6 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-        // --- TRADUÇÃO DA UI ---
-        const translations = {
-            pt: {
-                // Geral
-                login: "Entrar",
-                logout: "Sair",
-                games: "Jogos",
-                manage: "Gerenciar",
-                statistics: "Estatísticas",
-                leagues: "Ligas",
-                my_profile: "Meu Perfil",
-                manage_account: "Gerenciar Conta",
-                save: "Salvar",
-                cancel: "Cancelar",
-                loading_learning: "Carregando seu aprendizado...",
-                // Auth Modal
-                username: "Nome de Usuário",
-                email: "Email",
-                password: "Senha",
-                confirm_password: "Confirmar Senha",
-                security_keyword: "Palavra-chave de Segurança",
-                keyword_tooltip: "Use esta palavra para confirmar alterações importantes na sua conta.",
-                no_account_yet: "Ainda não tem uma conta? Crie uma.",
-                forgot_password: "Esqueceu sua senha?",
-                create_account: "Criar Conta",
-                already_have_account: "Já tem uma conta? Entrar.",
-                recover_password: "Recuperar Senha",
-                verify_and_send_email: "Verificar e Enviar E-mail",
-                back_to_login: "Voltar para o Login",
-                processing: "Processando...",
-                failure: "Falha",
-                success_email_sent: "Verificação bem-sucedida! E-mail de recuperação enviado.",
-                // Estudo
-                study_more: "Estudar Mais",
-                show_answer: "Mostrar Resposta",
-                hard: "Difícil",
-                easy: "Fácil",
-                show_front: "Mostrar Frente",
-                congratulations: "Parabéns!",
-                review_complete: "Você completou sua revisão de hoje.",
-                all_up_to_date: "Tudo em dia!",
-                no_review_left: "Nenhuma revisão restante.",
-                session_score: "Pontuação da Sessão",
-                correct_answers_short: "acertos",
-                incorrect_answers_short: "erros",
-                // Gerenciar
-                manage_cards: "Gerenciar Cards",
-                add_new_card: "Adicionar Novo Card",
-                add_card: "Adicionar Card",
-                edit_card: "Editar Card",
-                edit: "Editar",
-                delete: "Deletar",
-                no_cards_yet: "Você ainda não tem cards.",
-                confirm_delete: "Tem certeza que deseja apagar este card?",
-                // Add/Edit Card Modal
-                kanji: "Kanji",
-                character: "Caractere",
-                word: "Palavra",
-                display_form_label: "Forma de Exibição (Opcional, ex: 大きい)",
-                display_form_label_en: "Forma de Exibição (Opcional)",
-                reading_romaji: "Leitura (Romaji)",
-                pronunciation: "Pronúncia",
-                meaning: "Significado",
-                generate_with_ai: "Gerar com IA",
-                // Ligas
-                weekly_league: "Liga Semanal",
-                ends_in: "Termina em",
-                promotion_zone: "Zona de Promoção",
-                demotion_zone: "Zona de Rebaixamento",
-                not_in_league: "Você ainda não está em uma liga.",
-                // Perfil
-                member_since: "Membro desde",
-                total_xp: "Total XP",
-                correct_answers: "Respostas Corretas",
-                weekly_points: "Pontos da semana",
-                profile_not_found: "Perfil não encontrado.",
-                error_loading_profile: "Ocorreu um erro ao carregar o perfil.",
-                anonymous_user: "Usuário Anônimo",
-                // Gerenciar Conta
-                change_username: "Alterar Nome de Usuário",
-                save_name: "Salvar Nome",
-                username_not_empty: "O nome de usuário não pode ser vazio.",
-                saving: "Salvando...",
-                name_updated: "Nome atualizado com sucesso!",
-                error_saving: "Erro ao salvar. Tente novamente.",
-                change_keyword: "Alterar Palavra-chave de Segurança",
-                new_keyword: "Nova Palavra-chave",
-                current_password_to_confirm: "Senha Atual (para confirmar)",
-                save_keyword: "Salvar Palavra-chave",
-                fields_required: "Todos os campos são obrigatórios.",
-                verifying_and_saving: "Verificando e salvando...",
-                keyword_updated: "Palavra-chave atualizada com sucesso!",
-                wrong_password: "Senha atual incorreta.",
-                change_password: "Alterar Senha",
-                new_password: "Nova Senha",
-                confirm_new_password: "Confirmar Nova Senha",
-                update_password: "Atualizar Senha",
-                passwords_dont_match: "As senhas não coincidem.",
-                password_min_length: "A senha deve ter no mínimo 6 caracteres.",
-                updating: "Atualizando...",
-                password_updated: "Senha atualizada com sucesso!",
-                error_updating_password: "Erro ao atualizar. Requer login recente.",
-                // Jogos
-                congrats_challenge: "Parabéns!",
-                challenge_complete: "Você completou o desafio.",
-                points_earned: "Pontos Ganhos",
-                bonus_points: "bônus",
-                play_again: "Jogar Novamente",
-                return_to_menu: "Voltar ao Menu",
-                insufficient_cards: "Cards Insuficientes",
-                need_at_least: "Você precisa de pelo menos",
-                cards_to_play: "cards para jogar este modo.",
-                // Estatísticas
-                statistics_title: "Estatísticas",
-                statistics_subtitle: "Seu progresso de aprendizado ao longo do tempo.",
-                calculating_stats: "Calculando estatísticas...",
-                cards_added: "Cards Adicionados",
-                cards_completed: "Cards Concluídos",
-                study_results: "Resultados de Estudo",
-                accuracy: "Precisão",
-                study_forecast: "Previsão de Estudo",
-                cards_to_review_tomorrow: "Cards para revisar amanhã",
-                engagement: "Engajamento (Em Breve)",
-                // Misc
-                learn_language_select: "Aprender",
-                study_mode_select: "Estudar",
-                example_sentences: "Frases de Exemplo",
-                curiosities: "Curiosidades",
-                grammar_tip: "Dica Gramatical",
-            },
-            en: {
-                // General
-                login: "Login",
-                logout: "Logout",
-                games: "Games",
-                manage: "Manage",
-                statistics: "Statistics",
-                leagues: "Leagues",
-                my_profile: "My Profile",
-                manage_account: "Manage Account",
-                save: "Save",
-                cancel: "Cancel",
-                loading_learning: "Loading your learning...",
-                // Auth Modal
-                username: "Username",
-                email: "Email",
-                password: "Password",
-                confirm_password: "Confirm Password",
-                security_keyword: "Security Keyword",
-                keyword_tooltip: "Use this keyword to confirm important changes to your account.",
-                no_account_yet: "Don't have an account yet? Sign up.",
-                forgot_password: "Forgot your password?",
-                create_account: "Create Account",
-                already_have_account: "Already have an account? Login.",
-                recover_password: "Recover Password",
-                verify_and_send_email: "Verify & Send Email",
-                back_to_login: "Back to Login",
-                processing: "Processing...",
-                failure: "Failure",
-                success_email_sent: "Verification successful! Recovery email sent.",
-                // Study
-                study_more: "Study More",
-                show_answer: "Show Answer",
-                hard: "Hard",
-                easy: "Easy",
-                show_front: "Show Front",
-                congratulations: "Congratulations!",
-                review_complete: "You've completed your review for today.",
-                all_up_to_date: "All caught up!",
-                no_review_left: "No reviews left.",
-                session_score: "Session Score",
-                correct_answers_short: "correct",
-                incorrect_answers_short: "incorrect",
-                // Manage
-                manage_cards: "Manage Cards",
-                add_new_card: "Add New Card",
-                add_card: "Add Card",
-                edit_card: "Edit Card",
-                edit: "Edit",
-                delete: "Delete",
-                no_cards_yet: "You don't have any cards yet.",
-                confirm_delete: "Are you sure you want to delete this card?",
-                // Add/Edit Card Modal
-                kanji: "Kanji",
-                character: "Character",
-                word: "Word",
-                display_form_label: "Display Form (Optional, e.g., 大きい)",
-                display_form_label_en: "Display Form (Optional)",
-                reading_romaji: "Reading (Romaji)",
-                pronunciation: "Pronunciation",
-                meaning: "Meaning",
-                generate_with_ai: "Generate with AI",
-                // Leagues
-                weekly_league: "Weekly League",
-                ends_in: "Ends in",
-                promotion_zone: "Promotion Zone",
-                demotion_zone: "Demotion Zone",
-                not_in_league: "You are not in a league yet.",
-                // Profile
-                member_since: "Member since",
-                total_xp: "Total XP",
-                correct_answers: "Correct Answers",
-                weekly_points: "Weekly points",
-                profile_not_found: "Profile not found.",
-                error_loading_profile: "An error occurred while loading the profile.",
-                anonymous_user: "Anonymous User",
-                // Manage Account
-                change_username: "Change Username",
-                save_name: "Save Name",
-                username_not_empty: "Username cannot be empty.",
-                saving: "Saving...",
-                name_updated: "Name updated successfully!",
-                error_saving: "Error saving. Please try again.",
-                change_keyword: "Change Security Keyword",
-                new_keyword: "New Keyword",
-                current_password_to_confirm: "Current Password (to confirm)",
-                save_keyword: "Save Keyword",
-                fields_required: "All fields are required.",
-                verifying_and_saving: "Verifying and saving...",
-                keyword_updated: "Keyword updated successfully!",
-                wrong_password: "Incorrect current password.",
-                change_password: "Change Password",
-                new_password: "New Password",
-                confirm_new_password: "Confirm New Password",
-                update_password: "Update Password",
-                passwords_dont_match: "Passwords do not match.",
-                password_min_length: "Password must be at least 6 characters.",
-                updating: "Updating...",
-                password_updated: "Password updated successfully!",
-                error_updating_password: "Error updating. Requires recent login.",
-                 // Games
-                congrats_challenge: "Congratulations!",
-                challenge_complete: "You've completed the challenge.",
-                points_earned: "Points Earned",
-                bonus_points: "bonus",
-                play_again: "Play Again",
-                return_to_menu: "Return to Menu",
-                insufficient_cards: "Insufficient Cards",
-                need_at_least: "You need at least",
-                cards_to_play: "cards to play this mode.",
-                // Statistics
-                statistics_title: "Statistics",
-                statistics_subtitle: "Your learning progress over time.",
-                calculating_stats: "Calculating statistics...",
-                cards_added: "Cards Added",
-                cards_completed: "Cards Completed",
-                study_results: "Study Results",
-                accuracy: "Accuracy",
-                study_forecast: "Study Forecast",
-                cards_to_review_tomorrow: "Cards to review tomorrow",
-                engagement: "Engagement (Coming Soon)",
-                // Misc
-                learn_language_select: "Learn",
-                study_mode_select: "Study",
-                example_sentences: "Example Sentences",
-                curiosities: "Curiosities",
-                grammar_tip: "Grammar Tip",
-            }
-        };
-
-        let currentUILanguage = 'pt';
-
-        function translateUI(lang) {
-            currentUILanguage = lang;
-            document.documentElement.lang = lang;
-            document.querySelectorAll('[data-translate]').forEach(el => {
-                const key = el.dataset.translate;
-                if (translations[lang] && translations[lang][key]) {
-                    el.textContent = translations[lang][key];
-                }
-            });
-            document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
-                const key = el.dataset.translatePlaceholder;
-                if (translations[lang] && translations[lang][key]) {
-                    el.placeholder = translations[lang][key];
-                }
-            });
-             document.querySelectorAll('[data-translate-title]').forEach(el => {
-                const key = el.dataset.translateTitle;
-                if (translations[lang] && translations[lang][key]) {
-                    el.title = translations[lang][key];
-                }
-            });
-             document.querySelectorAll('[data-translate-base]').forEach(el => {
-                const key = el.dataset.translateBase;
-                const baseText = translations[lang][key] || el.dataset.baseText;
-                if (!el.dataset.baseText) el.dataset.baseText = el.textContent.split(':')[0] + ':';
-                const value = el.textContent.split(':')[1];
-                if (value) el.textContent = `${baseText} ${value.trim()}`;
-            });
-        }
 
 
         // --- DEFINIÇÕES DO JOGO (PATENTES) ---
@@ -1463,6 +1147,11 @@
             if (!audioCtx) {
                 try {
                     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    // "Desbloqueia" a síntese de voz em dispositivos móveis na primeira interação
+                    if ('speechSynthesis' in window) {
+                        const utterance = new SpeechSynthesisUtterance('');
+                        window.speechSynthesis.speak(utterance);
+                    }
                 } catch (e) {
                     console.error("Web Audio API is not supported in this browser");
                 }
@@ -1484,6 +1173,7 @@
         function playCorrectSound() { playTone(600, 0.1, 'triangle'); setTimeout(() => playTone(900, 0.1, 'triangle'), 100); }
         function playIncorrectSound() { playTone(150, 0.2, 'sawtooth'); }
         function playVictorySound() {
+            // Arpejo de Dó Maior (C4, E4, G4, C5) - mais animador e claro
             const notes = [261.63, 329.63, 392.00, 523.25];
             notes.forEach((note, i) => {
                 setTimeout(() => playTone(note, 0.15, 'triangle'), i * 100);
@@ -1504,14 +1194,13 @@
         let isStudyMoreSession = false; 
         let sessionInitialCount = 0; 
         let srsSessionStats = { correct: 0, incorrect: 0 };
-        let currentLearningLanguage = 'jp'; // 'jp' ou 'en'
-        let currentLearningMode = 'kanji'; // 'kanji', 'hiragana', 'katakana', 'english'
+        let currentLearningMode = 'kanji';
         let leagueTimerInterval;
         let leagueCurrentPage = 1;
         let manageCurrentPage = 1;
         let currentAuthMode = 'login'; // 'login', 'register', 'recover'
         const ITEMS_PER_PAGE = 10;
-        let studyResultsChart = null; 
+        let studyResultsChart = null; // para a nova tela de estatísticas
 
         // Elementos do DOM
         const dom = {
@@ -1535,7 +1224,11 @@
             navStats: document.getElementById('nav-stats'), 
             navLeaderboard: document.getElementById('nav-leaderboard'),
             homeLogo: document.getElementById('home-logo'),
-            navGamesDropdown: document.getElementById('nav-games-dropdown'),
+            navGamesDropdown: document.querySelector('#nav-games + .dropdown-content'),
+            gameMatchKanji: document.getElementById('game-match-kanji'),
+            gameQuizKanji: document.getElementById('game-quiz-kanji'),
+            gameTypeKanji: document.getElementById('game-type-kanji'),
+            gameMemoryKanji: document.getElementById('game-memory-kanji'),
             manageModal: document.getElementById('manage-modal'),
             manageModalTitle: document.getElementById('manage-modal-title'),
             closeManageModalBtn: document.getElementById('close-manage-modal'),
@@ -1557,9 +1250,7 @@
             cancelEditBtn: document.getElementById('cancel-edit-btn'),
             cardIdInput: document.getElementById('card-id-input'),
             kanjiInput: document.getElementById('kanji-input'),
-            displayFormField: document.getElementById('display-form-field'),
-            displayKanjiInput: document.getElementById('display-kanji-input'),
-            pronunciationLabel: document.getElementById('pronunciation-label'),
+            displayKanjiInput: document.getElementById('display-kanji-input'), // NOVO
             pronunciationInput: document.getElementById('pronunciation-input'),
             meaningInput: document.getElementById('meaning-input'),
             saveCardBtn: document.getElementById('save-card-btn'),
@@ -1597,6 +1288,10 @@
             navManageMobile: document.getElementById('nav-manage-mobile'),
             navStatsMobile: document.getElementById('nav-stats-mobile'), 
             navLeaderboardMobile: document.getElementById('nav-leaderboard-mobile'),
+            gameMatchKanjiMobile: document.getElementById('game-match-kanji-mobile'),
+            gameQuizKanjiMobile: document.getElementById('game-quiz-kanji-mobile'),
+            gameTypeKanjiMobile: document.getElementById('game-type-kanji-mobile'),
+            gameMemoryKanjiMobile: document.getElementById('game-memory-kanji-mobile'),
             profileModal: document.getElementById('profile-modal'),
             profileContent: document.getElementById('profile-content'),
             authForm: { usernameInput: document.getElementById('usernameInput'), emailInput: document.getElementById('emailInput'), passwordInput: document.getElementById('passwordInput'), confirmPasswordInput: document.getElementById('confirmPasswordInput'), keywordInput: document.getElementById('keywordInput'), authBtn: document.getElementById('authBtn'), toggleAuthMode: document.getElementById('toggleAuthMode'), authModalTitle: document.getElementById('auth-modal-title'), authStatusMessage: document.getElementById('auth-status-message'), forgotPasswordLink: document.getElementById('forgotPassword') },
@@ -1604,17 +1299,9 @@
             newKeywordInput: document.getElementById('new-keyword-input'),
             currentPasswordForKeyword: document.getElementById('current-password-for-keyword'),
             updateKeywordStatus: document.getElementById('update-keyword-status'),
+            // NOVO: Modal de placar de jogo
             gameCompletionModal: document.getElementById('game-completion-modal'),
             gameCompletionContent: document.getElementById('game-completion-content'),
-            langUiBtn: document.getElementById('lang-ui-btn'),
-            langUiDropdown: document.getElementById('lang-ui-dropdown'),
-            navLangLearn: document.getElementById('nav-lang-learn'),
-            langLearnText: document.getElementById('lang-learn-text'),
-            langLearnDropdown: document.getElementById('lang-learn-dropdown'),
-            navLangMobileToggle: document.getElementById('nav-lang-mobile-toggle'),
-            langLearnTextMobile: document.getElementById('lang-learn-text-mobile'),
-            navLangMobileDropdown: document.getElementById('nav-lang-mobile-dropdown'),
-            langLearnCaretMobile: document.getElementById('lang-learn-caret-mobile'),
         };
 
 
@@ -1653,6 +1340,7 @@
                 dom.authModal.classList.add('visible');
             }
             setTimeout(() => {
+                window.speechSynthesis.getVoices();
                 dom.loadingOverlay.classList.remove('visible');
             }, 1000);
         }
@@ -1667,7 +1355,7 @@
              const uid = targetUserId || userId;
              if (!uid) return null;
 
-             const modePaths = { kanji: 'kanjiCards', hiragana: 'hiraganaCards', katakana: 'katakanaCards', english: 'englishCards' };
+             const modePaths = { kanji: 'kanjiCards', hiragana: 'hiraganaCards', katakana: 'katakanaCards' };
              if (type === 'cards') return `artifacts/${appId}/users/${uid}/${modePaths[currentLearningMode]}`;
              if (type === 'profile') return `artifacts/${appId}/userProfiles/${uid}`;
              if (type === 'leagues') return `artifacts/${appId}/leagues`;
@@ -1792,26 +1480,11 @@
         // --- NAVEGAÇÃO E UI GERAL ---
         dom.loginNavBtn.addEventListener('click', () => dom.authModal.classList.add('visible'));
         dom.userMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); dom.userMenuDropdown.classList.toggle('visible'); });
-        
-        // Dropdown listeners
         window.addEventListener('click', (e) => {
-            const closeDropdowns = (dropdownsToExclude = []) => {
-                const allDropdowns = [dom.userMenuDropdown, dom.navGamesDropdown, dom.studyModeDropdown, dom.langUiDropdown, dom.langLearnDropdown];
-                allDropdowns.forEach(dd => {
-                    if (dd && !dropdownsToExclude.includes(dd)) dd.classList.remove('visible');
-                });
-            };
-
-            if (dom.userMenu && !dom.userMenu.contains(e.target)) dom.userMenuDropdown.classList.remove('visible');
-            if (dom.navGames.parentElement && !dom.navGames.parentElement.contains(e.target)) dom.navGamesDropdown.classList.remove('visible');
-            if (dom.navStudy.parentElement && !dom.navStudy.parentElement.contains(e.target)) dom.studyModeDropdown.classList.remove('visible');
-            if (dom.langUiBtn.parentElement && !dom.langUiBtn.parentElement.contains(e.target)) dom.langUiDropdown.classList.remove('visible');
-            if (dom.navLangLearn.parentElement && !dom.navLangLearn.parentElement.contains(e.target)) dom.langLearnDropdown.classList.remove('visible');
+            if (!dom.userMenu.contains(e.target)) dom.userMenuDropdown.classList.remove('visible');
+            if (!dom.navGames.parentElement.contains(e.target)) dom.navGamesDropdown.classList.remove('visible');
+            if (!dom.navStudy.parentElement.contains(e.target)) dom.studyModeDropdown.classList.remove('visible');
         });
-
-        dom.langUiBtn.addEventListener('click', (e) => {e.stopPropagation(); dom.langUiDropdown.classList.toggle('visible'); });
-        dom.navLangLearn.addEventListener('click', (e) => {e.stopPropagation(); e.preventDefault(); dom.langLearnDropdown.classList.toggle('visible');});
-
 
         function showView(viewName) {
             dom.mainContainer.style.display = 'none';
@@ -1826,7 +1499,7 @@
                 dom.gameContainer.style.display = 'flex';
                 dom.navGames.classList.add('active');
             } else if (viewName === 'manage') {
-                dom.mainContainer.style.display = 'flex';
+                dom.mainContainer.style.display = 'flex'; // Show main to keep layout consistent
                 dom.navManage.classList.add('active');
                 dom.manageModal.classList.add('visible');
                 renderManageView();
@@ -1835,103 +1508,24 @@
                 dom.navStats.classList.add('active');
                 renderStatsView(); 
             } else if (viewName === 'leaderboard') {
-                dom.mainContainer.style.display = 'flex';
+                dom.mainContainer.style.display = 'flex'; // Show main to keep layout consistent
                 dom.navLeaderboard.classList.add('active');
                 openLeaderboard();
             }
         }
         dom.homeLogo.addEventListener('click', (e) => { e.preventDefault(); showView('srs'); filterCardsDueToday(); });
         dom.navGames.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); dom.navGamesDropdown.classList.toggle('visible'); });
+        dom.gameMatchKanji.addEventListener('click', (e) => { e.preventDefault(); startMatchingGame(); });
+        dom.gameQuizKanji.addEventListener('click', (e) => { e.preventDefault(); startQuizGame(); });
+        dom.gameTypeKanji.addEventListener('click', (e) => { e.preventDefault(); startTypingGame(); });
+        dom.gameMemoryKanji.addEventListener('click', (e) => { e.preventDefault(); startMemoryGame(); });
         dom.navStudy.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); if(e.target.closest('.dropdown')) { dom.studyModeDropdown.classList.toggle('visible'); } else { showView('srs'); filterCardsDueToday(); } });
-
-        function updateStudyModeUI() {
-            const studyDropdown = dom.studyModeDropdown;
-            const studyDropdownMobile = dom.navStudyMobileDropdown;
-            const gamesDropdown = dom.navGamesDropdown;
-            const gamesDropdownMobile = dom.navGamesMobileDropdown;
-
-            studyDropdown.innerHTML = '';
-            studyDropdownMobile.innerHTML = '';
-            gamesDropdown.innerHTML = '';
-            gamesDropdownMobile.innerHTML = '';
-
-            const langPrefix = translations[currentUILanguage]['study_mode_select'] || 'Estudar';
-            
-            if (currentLearningLanguage === 'jp') {
-                const modes = [
-                    { key: 'kanji', name: 'Kanji' },
-                    { key: 'hiragana', name: 'Hiragana' },
-                    { key: 'katakana', name: 'Katakana' },
-                ];
-                modes.forEach(mode => {
-                    studyDropdown.innerHTML += `<button data-mode="${mode.key}" class="mode-select-btn">${mode.name}</button>`;
-                    studyDropdownMobile.innerHTML += `<button data-mode="${mode.key}" class="mode-select-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left">${mode.name}</button>`;
-                });
-                
-                const games = [
-                    { id: 'match', name: 'Combine'},
-                    { id: 'quiz', name: 'Quiz'},
-                    { id: 'type', name: 'Digite a Leitura'},
-                    { id: 'memory', name: 'Jogo da Memória'},
-                ]
-                games.forEach(game => {
-                    gamesDropdown.innerHTML += `<a href="#" class="game-start-btn" data-game="${game.id}">${game.name}</a>`;
-                    gamesDropdownMobile.innerHTML += `<a href="#" class="game-start-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3" data-game="${game.id}">${game.name}</a>`;
-                });
-
-                setLearningMode(currentLearningMode === 'english' ? 'kanji' : currentLearningMode);
-            } else if (currentLearningLanguage === 'en') {
-                studyDropdown.innerHTML = `<button data-mode="english" class="mode-select-btn">Inglês</button>`;
-                studyDropdownMobile.innerHTML = `<button data-mode="english" class="mode-select-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left">Inglês</button>`;
-                gamesDropdown.innerHTML = `<p class="p-4 text-sm text-gray-500">Jogos para inglês em breve!</p>`;
-                gamesDropdownMobile.innerHTML = `<p class="p-4 text-sm text-gray-500">Jogos para inglês em breve!</p>`;
-                setLearningMode('english');
-            }
-
-            // Re-add event listeners for the new buttons
-            document.querySelectorAll('.mode-select-btn, .mode-select-btn-mobile').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    setLearningMode(btn.dataset.mode);
-                    if (btn.classList.contains('mode-select-btn-mobile')) closeMobileMenu();
-                });
-            });
-            document.querySelectorAll('.game-start-btn, .game-start-btn-mobile').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const gameId = btn.dataset.game;
-                    const gameFunctions = { 'match': startMatchingGame, 'quiz': startQuizGame, 'type': startTypingGame, 'memory': startMemoryGame };
-                    if(gameFunctions[gameId]) gameFunctions[gameId]();
-                    if (btn.classList.contains('game-start-btn-mobile')) closeMobileMenu();
-                });
-            });
-        }
-
-
-        function setLearningLanguage(lang) {
-            currentLearningLanguage = lang;
-            const langName = lang === 'jp' ? 'Japonês' : 'Inglês';
-            const text = `${translations[currentUILanguage]['learn_language_select'] || 'Aprender'}: ${langName}`;
-            dom.langLearnText.textContent = text;
-            dom.langLearnTextMobile.textContent = text;
-            document.querySelectorAll('.lang-learn-btn, .lang-learn-btn-mobile').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.lang === lang);
-            });
-            updateStudyModeUI();
-        }
-
 
         function setLearningMode(mode) {
             currentLearningMode = mode;
-            let modeName = '';
-            if (mode === 'english') {
-                modeName = 'Inglês';
-            } else {
-                modeName = mode.charAt(0).toUpperCase() + mode.slice(1);
-            }
-            const text = `${translations[currentUILanguage]['study_mode_select'] || 'Estudar'}: ${modeName}`;
-            dom.studyModeText.textContent = text;
-            dom.studyModeTextMobile.textContent = text;
-
+            const modeName = mode.charAt(0).toUpperCase() + mode.slice(1);
+            dom.studyModeText.textContent = `Estudar: ${modeName}`;
+            dom.studyModeTextMobile.textContent = `Estudar: ${modeName}`;
             document.querySelectorAll('.mode-select-btn, .mode-select-btn-mobile').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.mode === mode);
             });
@@ -1939,19 +1533,12 @@
             showView('srs');
             setupRealtimeCardListener();
         }
-        
-        document.querySelectorAll('.lang-learn-btn, .lang-learn-btn-mobile').forEach(btn => {
+        document.querySelectorAll('.mode-select-btn, .mode-select-btn-mobile').forEach(btn => {
             btn.addEventListener('click', () => {
-                setLearningLanguage(btn.dataset.lang);
-                if (btn.classList.contains('lang-learn-btn-mobile')) closeMobileMenu();
-            });
-        });
-        document.querySelectorAll('.lang-ui-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                translateUI(btn.dataset.lang);
-                document.querySelectorAll('.lang-ui-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                dom.langUiDropdown.classList.remove('visible');
+                setLearningMode(btn.dataset.mode);
+                if (btn.classList.contains('mode-select-btn-mobile')) {
+                    closeMobileMenu();
+                }
             });
         });
 
@@ -1961,40 +1548,40 @@
         dom.closeMobileMenuBtn.addEventListener('click', closeMobileMenu);
         dom.menuOverlay.addEventListener('click', closeMobileMenu);
         function toggleMobileDropdown(dropdownEl, caretEl) { const isHidden = dropdownEl.style.display === 'none' || dropdownEl.style.display === ''; dropdownEl.style.display = isHidden ? 'block' : 'none'; caretEl.classList.toggle('open', isHidden); }
-        dom.navLangMobileToggle.addEventListener('click', () => toggleMobileDropdown(dom.navLangMobileDropdown, dom.langLearnCaretMobile));
         dom.navStudyMobileToggle.addEventListener('click', () => toggleMobileDropdown(dom.navStudyMobileDropdown, dom.studyCaretMobile));
         dom.navGamesMobileToggle.addEventListener('click', () => toggleMobileDropdown(dom.navGamesMobileDropdown, dom.gamesCaretMobile));
         dom.navManageMobile.addEventListener('click', (e) => { e.preventDefault(); showView('manage'); closeMobileMenu(); });
         dom.navStatsMobile.addEventListener('click', (e) => { e.preventDefault(); showView('stats'); closeMobileMenu(); });
         dom.navLeaderboardMobile.addEventListener('click', (e) => { e.preventDefault(); showView('leaderboard'); closeMobileMenu(); });
+        [dom.gameMatchKanjiMobile, dom.gameQuizKanjiMobile, dom.gameTypeKanjiMobile, dom.gameMemoryKanjiMobile].forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); const gameType = e.target.id.split('-')[1]; const gameFunctions = { 'match': startMatchingGame, 'quiz': startQuizGame, 'type': startTypingGame, 'memory': startMemoryGame }; if(gameFunctions[gameType]) gameFunctions[gameType](); closeMobileMenu(); }); }); 
         
+        // Navegação para Estatísticas
         dom.navStats.addEventListener('click', (e) => { e.preventDefault(); showView('stats'); });
         
-        /**
-         * MODIFIED FUNCTION
-         * This function now exclusively uses Google Translate for Text-to-Speech (TTS)
-         * as requested, ensuring consistent audio quality across all devices, including mobile.
-         * The native browser 'speechSynthesis' API is no longer used.
-         */
-        function speak(text, lang) {
-            // Define o idioma para o TTS. 'ja' para japonês, 'en' para inglês.
-            if (!lang) {
-                lang = currentLearningLanguage === 'jp' ? 'ja' : 'en';
+        function speak(text, lang = 'ja-JP') {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = lang;
+                const voices = window.speechSynthesis.getVoices();
+                utterance.voice = voices.find(voice => voice.lang === lang && voice.name.includes('Google')) || voices.find(voice => voice.lang === lang) || voices.find(voice => voice.lang.startsWith('ja')) || null;
+                utterance.rate = 0.9;
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(utterance);
             } else {
-                // Garante que o código do idioma seja simples (ex: 'ja' em vez de 'ja-JP')
-                lang = lang.split('-')[0];
+                playGoogleTTS(text, lang.split('-')[0]);
             }
-            // Chama diretamente a função do Google TTS.
-            playGoogleTTS(text, lang);
         }
         
-        function playGoogleTTS(text, lang) {
+        function playGoogleTTS(text, lang = 'ja') {
             if (!text) return;
             try {
                 const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=${lang}`;
                 const audio = new Audio(url);
                 audio.play().catch(e => {
                      console.error("Erro ao tocar áudio do Google TTS:", e);
+                     if (!('speechSynthesis' in window)) {
+                        alert("Seu navegador não suporta a reprodução de áudio.");
+                     }
                 });
             } catch (error) {
                 console.error("Erro ao criar áudio do Google TTS:", error);
@@ -2008,44 +1595,37 @@
         
         function displayCard() { 
             const mainChar = currentCard.displayKanji || currentCard.kanji;
-            const langClass = currentLearningLanguage === 'jp' ? 'jp' : 'en';
-            dom.cardFront.innerHTML = `<button class="sound-btn" onclick="window.speak('${mainChar}')"><img src="https://images.icon-icons.com/2459/PNG/512/multimedia_sound_volume_audio_button_icon_149085.png" alt="Girl in a jacket" width="20" height="20"></button><p class="question-text ${langClass}">${mainChar}</p>`; 
+            const singleCharForAudio = currentCard.kanji;
+            dom.cardFront.innerHTML = `<button class="sound-btn" onclick="window.speak('${singleCharForAudio}')"><i class="ph ph-speaker-high"></i></button><p class="question-text">${mainChar}</p><p class="question-hint">${currentCard.meaning}</p>`; 
             dom.cardBack.innerHTML = renderAnswerContent(currentCard); 
             renderActionButtons('show_answer'); 
         } 
         
         function renderAnswerContent(card) { 
             const mainChar = card.displayKanji || card.kanji;
-            const langClass = currentLearningLanguage === 'jp' ? 'jp' : 'en';
+            const singleCharForAudio = card.kanji;
             let geminiContent = ''; 
             if (card.geminiInfo) { 
                 const info = card.geminiInfo; 
                 geminiContent += `<div class="w-full text-left mt-4 gemini-info-section">`; 
                 if (info.sentences && info.sentences.length > 0) { 
-                    geminiContent += `<h3 data-translate="example_sentences">${translations[currentUILanguage].example_sentences}</h3><ul>`; 
+                    geminiContent += `<h3>Frases de Exemplo</h3><ul>`; 
                     info.sentences.forEach(s => { 
-                        const sentenceKey = currentLearningLanguage === 'jp' ? 'japanese' : 'english';
-                        const translationKey = currentLearningLanguage === 'jp' ? 'portuguese' : 'translation';
-                        const readingKey = 'reading';
-
-                        const originalSentence = s[sentenceKey];
-                        const sentenceForAudio = JSON.stringify(originalSentence).replace(/'/g, "\\'"); // Escapa apóstrofos para o HTML
-                        const reading = s[readingKey] ? `<p class="reading">${s[readingKey]}</p>` : '';
-                        
-                        geminiContent += `<li class="sentence"><div class="flex items-center gap-2"><div class="flex-grow"><p class="${langClass}">${originalSentence}</p>${reading}<p>${s[translationKey]}</p></div><button class="sound-btn-sentence" onclick='window.speak(\`${originalSentence.replace(/`/g, "\\`")}\`)'><img src="https://images.icon-icons.com/2459/PNG/512/multimedia_sound_volume_audio_button_icon_149085.png" alt="Girl in a jacket" width="20" height="20"></button></div></li>`; 
+                        const escapedSentence = JSON.stringify(s.japanese); 
+                        geminiContent += `<li class="sentence"><div class="flex items-center gap-2"><div class="flex-grow"><p class="jp">${s.japanese}</p><p class="reading">${s.reading}</p><p>${s.portuguese}</p></div><button class="sound-btn-sentence" onclick='window.speak(${escapedSentence})'><i class="ph ph-speaker-high text-lg"></i></button></div></li>`; 
                     }); 
                     geminiContent += `</ul>`; 
                 } 
-                if (info.curiosities) { geminiContent += `<h3 data-translate="curiosities">${translations[currentUILanguage].curiosities}</h3><p>${info.curiosities}</p>`; } 
-                if (info.grammar) { geminiContent += `<h3 data-translate="grammar_tip">${translations[currentUILanguage].grammar_tip}</h3><p>${info.grammar}</p>`; } 
+                if (info.curiosities) { geminiContent += `<h3>Curiosidades</h3><p>${info.curiosities}</p>`; } 
+                if (info.grammar) { geminiContent += `<h3>Dica Gramatical</h3><p>${info.grammar}</p>`; } 
                 geminiContent += `</div>`; 
             } 
-            return `<button class="sound-btn" onclick="window.speak('${mainChar}')"><img src="https://images.icon-icons.com/2459/PNG/512/multimedia_sound_volume_audio_button_icon_149085.png" alt="Girl in a jacket" width="20" height="20"></button><div class="flex-grow w-full flex flex-col items-center justify-start text-center"><p style="font-size: 3rem;" class="${langClass}">${mainChar}</p><p class="text-2xl mt-4 font-bold">${card.meaning}</p><p class="text-lg text-gray-600 mt-2">${card.pronunciation}</p>${geminiContent}</div>`; 
+            return `<button class="sound-btn" onclick="window.speak('${singleCharForAudio}')"><i class="ph ph-speaker-high"></i></button><div class="flex-grow w-full flex flex-col items-center justify-start text-center"><p style="font-size: 3rem; font-family: var(--font-jp);">${mainChar}</p><p class="text-2xl mt-4 font-bold">${card.meaning}</p>${geminiContent}</div>`; 
         }
 
         function renderActionButtons(state) {
             if (state === 'show_answer') {
-                dom.feedbackButtons.innerHTML = `<button id="check-btn" class="btn btn-primary col-span-2" data-translate="show_answer">${translations[currentUILanguage].show_answer}</button>`;
+                dom.feedbackButtons.innerHTML = `<button id="check-btn" class="btn btn-primary col-span-2">Mostrar Resposta</button>`;
                 document.getElementById('check-btn').addEventListener('click', () => {
                     isCardFlipped = true;
                     dom.reviewCard.classList.add('is-flipped');
@@ -2053,9 +1633,9 @@
                 });
             } else if (state === 'show_feedback') {
                 dom.feedbackButtons.innerHTML = `
-                    <button class="btn btn-danger" id="hard-btn-back" data-translate="hard">${translations[currentUILanguage].hard}</button>
-                    <button class="btn btn-success" id="easy-btn-back" data-translate="easy">${translations[currentUILanguage].easy}</button>
-                    <button id="flip-back-btn" class="btn btn-secondary col-span-2 mt-2" data-translate="show_front">${translations[currentUILanguage].show_front}</button>
+                    <button class="btn btn-danger" id="hard-btn-back">Difícil</button>
+                    <button class="btn btn-success" id="easy-btn-back">Fácil</button>
+                    <button id="flip-back-btn" class="btn btn-secondary col-span-2 mt-2">Mostrar Frente</button>
                 `;
                 document.getElementById('hard-btn-back').addEventListener('click', () => handleFeedback(false));
                 document.getElementById('easy-btn-back').addEventListener('click', () => handleFeedback(true));
@@ -2072,8 +1652,8 @@
             dom.cardBack.innerHTML = '';
 
             const wasSession = sessionInitialCount > 0;
-            const title = wasSession ? translations[currentUILanguage].congratulations : translations[currentUILanguage].all_up_to_date;
-            const subtitle = wasSession ? translations[currentUILanguage].review_complete : `${translations[currentUILanguage].no_review_left} ${currentLearningMode}.`;
+            const title = wasSession ? "Parabéns!" : "Tudo em dia!";
+            const subtitle = wasSession ? "Você completou sua revisão de hoje." : `Nenhuma revisão de ${currentLearningMode} restante.`;
             const totalPoints = srsSessionStats.correct * 10;
 
             const completionHTML = `
@@ -2082,9 +1662,9 @@
                     <p class="completion-subtitle">${subtitle}</p>
                     ${wasSession ? `
                     <div class="score-display">
-                        <div class="label">${translations[currentUILanguage].session_score}</div>
+                        <div class="label">Pontuação da Sessão</div>
                         <div class="score-value" id="animated-score">0</div>
-                        <div class="score-details">(${srsSessionStats.correct} ${translations[currentUILanguage].correct_answers_short}, ${srsSessionStats.incorrect} ${translations[currentUILanguage].incorrect_answers_short})</div>
+                        <div class="score-details">(${srsSessionStats.correct} acertos, ${srsSessionStats.incorrect} erros)</div>
                     </div>` : ''}
                 </div>
             `;
@@ -2097,7 +1677,8 @@
                 const scoreElement = document.getElementById('animated-score');
                 if (scoreElement) {
                     let currentScore = 0;
-                    const increment = Math.max(1, Math.ceil(totalPoints / 60)); 
+                    const increment = Math.max(1, Math.ceil(totalPoints / 60)); // Animate over ~1 second
+
                     function animateScore() {
                         currentScore += increment;
                         if (currentScore >= totalPoints) {
@@ -2107,7 +1688,7 @@
                             requestAnimationFrame(animateScore);
                         }
                     }
-                    setTimeout(() => requestAnimationFrame(animateScore), 600);
+                    setTimeout(() => requestAnimationFrame(animateScore), 600); // Start after intro animation
                 }
             }
         }
@@ -2149,24 +1730,25 @@
         // --- JOGOS ---
         function renderGameUI(title, description, content) { dom.gameContainer.innerHTML = `<div class="text-center mb-8"><h2 class="text-3xl font-bold">${title}</h2><p class="text-gray-500 mt-2">${description}</p></div><div id="game-content">${content}</div>`; } 
         
+        // MODIFICADO: Placar pós-jogo agora usa um modal
         function renderGameCompletion(playAgainFunction, correct, incorrect, points) {
             const totalPoints = points + 50;
             updateScore(totalPoints, correct, incorrect);
             playVictorySound();
-            dom.gameContainer.innerHTML = '';
+            dom.gameContainer.innerHTML = ''; // Limpa a tela do jogo
 
             const modalContentHTML = `
                 <div class="completion-container">
-                    <h2 class="completion-title" data-translate="congrats_challenge">${translations[currentUILanguage].congrats_challenge}</h2>
-                    <p class="completion-subtitle" data-translate="challenge_complete">${translations[currentUILanguage].challenge_complete}</p>
+                    <h2 class="completion-title">Parabéns!</h2>
+                    <p class="completion-subtitle">Você completou o desafio.</p>
                     <div class="score-display">
-                        <div class="label" data-translate="points_earned">${translations[currentUILanguage].points_earned}</div>
+                        <div class="label">Pontos Ganhos</div>
                         <div class="score-value" id="animated-score-modal">0</div>
-                        <div class="score-details">(${correct} ${translations[currentUILanguage].correct_answers_short}, ${incorrect} ${translations[currentUILanguage].incorrect_answers_short} + 50 ${translations[currentUILanguage].bonus_points})</div>
+                        <div class="score-details">(${correct} acertos, ${incorrect} erros + 50 bônus)</div>
                     </div>
                      <div class="flex flex-col sm:flex-row gap-4 mt-12 w-full max-w-sm">
-                        <button id="play-again-btn-modal" class="btn btn-primary w-full" data-translate="play_again">${translations[currentUILanguage].play_again}</button>
-                        <button id="return-to-menu-btn-modal" class="btn btn-secondary w-full" data-translate="return_to_menu">${translations[currentUILanguage].return_to_menu}</button>
+                        <button id="play-again-btn-modal" class="btn btn-primary w-full">Jogar Novamente</button>
+                        <button id="return-to-menu-btn-modal" class="btn btn-secondary w-full">Voltar ao Menu</button>
                     </div>
                 </div>
             `;
@@ -2196,11 +1778,11 @@
                     requestAnimationFrame(animateScore);
                 }
             }
-            setTimeout(() => requestAnimationFrame(animateScore), 300);
+            setTimeout(() => requestAnimationFrame(animateScore), 300); // Inicia a animação um pouco depois do modal aparecer
         }
 
-        function getGameCards(count = 5) { const deck = getCurrentDeck(); if (deck.length < count) { dom.gameContainer.innerHTML = `<div class="text-center"><h2 class="text-2xl font-bold">${translations[currentUILanguage].insufficient_cards}</h2><p>${translations[currentUILanguage].need_at_least} ${count} ${currentLearningMode} ${translations[currentUILanguage].cards_to_play}</p></div>`; return null; } return [...deck].sort(() => 0.5 - Math.random()).slice(0, count); }
-        function startMatchingGame() { showView('game-match'); const gameCards = getGameCards(5); if (!gameCards) return; let sessionCorrect = 0, sessionIncorrect = 0; const kanjis = gameCards.map(c => ({ id: c.id, text: c.kanji })).sort(() => 0.5 - Math.random()); const meanings = gameCards.map(c => ({ id: c.id, text: c.meaning })).sort(() => 0.5 - Math.random()); const content = `<div class="game-board" style="grid-template-columns: 1fr 1fr;"><div id="kanji-column" class="flex flex-col gap-4">${kanjis.map(k => `<div class="game-option jp" data-id="${k.id}">${k.text}</div>`).join('')}</div><div id="meaning-column" class="flex flex-col gap-4">${meanings.map(m => `<div class="game-option" data-id="${m.id}">${m.text}</div>`).join('')}</div></div>`; renderGameUI('Combine', 'Clique em um caractere e no seu significado correspondente.', content); let selectedKanji = null, selectedMeaning = null, correctPairs = 0; const kanjiItems = document.querySelectorAll('#kanji-column .game-option'); const meaningItems = document.querySelectorAll('#meaning-column .game-option'); function handleSelection(items, selectedItem, currentSelection) { if (currentSelection === selectedItem) { selectedItem.classList.remove('selected'); return null; } items.forEach(i => i.classList.remove('selected')); selectedItem.classList.add('selected'); return selectedItem; } function checkMatch() { if (!selectedKanji || !selectedMeaning) return; if (selectedKanji.dataset.id === selectedMeaning.dataset.id) { playCorrectSound(); speak(selectedKanji.textContent); selectedKanji.classList.add('correct'); selectedMeaning.classList.add('correct'); selectedKanji = null; selectedMeaning = null; correctPairs++; sessionCorrect++; if (correctPairs === gameCards.length) { setTimeout(() => renderGameCompletion(startMatchingGame, sessionCorrect, sessionIncorrect, sessionCorrect * 5), 500); } } else { playIncorrectSound(); sessionIncorrect++; selectedKanji.classList.add('incorrect'); selectedMeaning.classList.add('incorrect'); setTimeout(() => { selectedKanji?.classList.remove('incorrect', 'selected'); selectedMeaning?.classList.remove('incorrect', 'selected'); selectedKanji = null; selectedMeaning = null; }, 500); } } kanjiItems.forEach(item => item.addEventListener('click', () => { if (item.classList.contains('correct')) return; selectedKanji = handleSelection(kanjiItems, item, selectedKanji); checkMatch(); })); meaningItems.forEach(item => item.addEventListener('click', () => { if (item.classList.contains('correct')) return; selectedMeaning = handleSelection(meaningItems, item, selectedMeaning); checkMatch(); })); }
+        function getGameCards(count = 5) { const deck = getCurrentDeck(); if (deck.length < count) { dom.gameContainer.innerHTML = `<div class="text-center"><h2 class="text-2xl font-bold">Cards Insuficientes</h2><p>Você precisa de pelo menos ${count} cards de ${currentLearningMode} para jogar este modo.</p></div>`; return null; } return [...deck].sort(() => 0.5 - Math.random()).slice(0, count); }
+        function startMatchingGame() { showView('game-match'); const gameCards = getGameCards(5); if (!gameCards) return; let sessionCorrect = 0, sessionIncorrect = 0; const kanjis = gameCards.map(c => ({ id: c.id, text: c.kanji })).sort(() => 0.5 - Math.random()); const meanings = gameCards.map(c => ({ id: c.id, text: c.meaning })).sort(() => 0.5 - Math.random()); const content = `<div class="game-board" style="grid-template-columns: 1fr 1fr;"><div id="kanji-column" class="flex flex-col gap-4">${kanjis.map(k => `<div class="game-option kanji" data-id="${k.id}">${k.text}</div>`).join('')}</div><div id="meaning-column" class="flex flex-col gap-4">${meanings.map(m => `<div class="game-option" data-id="${m.id}">${m.text}</div>`).join('')}</div></div>`; renderGameUI('Combine', 'Clique em um caractere e no seu significado correspondente.', content); let selectedKanji = null, selectedMeaning = null, correctPairs = 0; const kanjiItems = document.querySelectorAll('#kanji-column .game-option'); const meaningItems = document.querySelectorAll('#meaning-column .game-option'); function handleSelection(items, selectedItem, currentSelection) { if (currentSelection === selectedItem) { selectedItem.classList.remove('selected'); return null; } items.forEach(i => i.classList.remove('selected')); selectedItem.classList.add('selected'); return selectedItem; } function checkMatch() { if (!selectedKanji || !selectedMeaning) return; if (selectedKanji.dataset.id === selectedMeaning.dataset.id) { playCorrectSound(); speak(selectedKanji.textContent); selectedKanji.classList.add('correct'); selectedMeaning.classList.add('correct'); selectedKanji = null; selectedMeaning = null; correctPairs++; sessionCorrect++; if (correctPairs === gameCards.length) { setTimeout(() => renderGameCompletion(startMatchingGame, sessionCorrect, sessionIncorrect, sessionCorrect * 5), 500); } } else { playIncorrectSound(); sessionIncorrect++; selectedKanji.classList.add('incorrect'); selectedMeaning.classList.add('incorrect'); setTimeout(() => { selectedKanji?.classList.remove('incorrect', 'selected'); selectedMeaning?.classList.remove('incorrect', 'selected'); selectedKanji = null; selectedMeaning = null; }, 500); } } kanjiItems.forEach(item => item.addEventListener('click', () => { if (item.classList.contains('correct')) return; selectedKanji = handleSelection(kanjiItems, item, selectedKanji); checkMatch(); })); meaningItems.forEach(item => item.addEventListener('click', () => { if (item.classList.contains('correct')) return; selectedMeaning = handleSelection(meaningItems, item, selectedMeaning); checkMatch(); })); }
         function startQuizGame() { showView('game-quiz'); const gameCards = getGameCards(10); if (!gameCards || gameCards.length < 4) { return; } let currentQuestionIndex = 0; let sessionCorrect = 0, sessionIncorrect = 0; function displayQuestion() { const card = gameCards[currentQuestionIndex]; const incorrectAnswers = getCurrentDeck().filter(c => c.id !== card.id).sort(() => 0.5 - Math.random()).slice(0, 3).map(c => c.meaning); const options = [card.meaning, ...incorrectAnswers].sort(() => 0.5 - Math.random()); const content = `<div class="text-center text-7xl font-bold font-['Noto_Sans_JP'] mb-8">${card.kanji}</div><div class="game-board" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">${options.map(opt => `<div class="game-option" data-correct="${opt === card.meaning}">${opt}</div>`).join('')}</div>`; renderGameUI('Quiz', `Qual o significado deste caractere? (${currentQuestionIndex + 1}/${gameCards.length})`, content); document.querySelectorAll('.game-option').forEach(option => { option.addEventListener('click', () => { document.querySelectorAll('.game-option').forEach(btn => btn.style.pointerEvents = 'none'); const isCorrect = option.dataset.correct === 'true'; option.classList.add(isCorrect ? 'correct' : 'incorrect'); if(isCorrect) { sessionCorrect++; playCorrectSound(); speak(card.kanji); } else { sessionIncorrect++; playIncorrectSound(); } if (!isCorrect) { document.querySelector('.game-option[data-correct="true"]').classList.add('correct'); } setTimeout(() => { currentQuestionIndex++; if (currentQuestionIndex < gameCards.length) { displayQuestion(); } else { renderGameCompletion(startQuizGame, sessionCorrect, sessionIncorrect, sessionCorrect * 5); } }, 1500); }); }); } displayQuestion(); }
         function startTypingGame() { showView('game-type'); const gameCards = getGameCards(10); if (!gameCards) { return; } let currentQuestionIndex = 0; let sessionCorrect = 0, sessionIncorrect = 0; function displayQuestion() { const card = gameCards[currentQuestionIndex]; const content = `<div class="text-center"><div class="text-7xl font-bold font-['Noto_Sans_JP']">${card.kanji}</div><div class="text-2xl text-gray-500 mt-2">${card.meaning}</div><input type="text" id="typing-input" class="input mt-8 text-2xl text-center" placeholder="Digite a leitura (romaji)" autocomplete="off" autocorrect="off" spellcheck="false"><p id="typing-feedback" class="mt-4 h-6 font-bold"></p></div>`; renderGameUI('Digite a Leitura', `Escreva a pronúncia e pressione Enter (${currentQuestionIndex + 1}/${gameCards.length})`, content); const input = document.getElementById('typing-input'); input.focus(); input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { const feedback = document.getElementById('typing-feedback'); const isCorrect = input.value.toLowerCase().trim() === card.pronunciation.toLowerCase().trim(); if (isCorrect) { sessionCorrect++; input.classList.add('correct'); feedback.textContent = 'Correto!'; feedback.style.color = 'var(--success)'; playCorrectSound(); speak(card.kanji); } else { sessionIncorrect++; input.classList.add('incorrect'); feedback.innerHTML = `Incorreto. A resposta era: <strong>${card.pronunciation}</strong>`; feedback.style.color = 'var(--danger)'; playIncorrectSound(); } input.disabled = true; setTimeout(() => { currentQuestionIndex++; if (currentQuestionIndex < gameCards.length) { displayQuestion(); } else { renderGameCompletion(startTypingGame, sessionCorrect, sessionIncorrect, sessionCorrect * 5); } }, 1500); } }); } displayQuestion(); }
         
@@ -2216,12 +1798,20 @@
             });
             items.sort(() => 0.5 - Math.random());
             
-            const gogoChanSVG = `<svg class="memory-card-gogo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g transform="translate(50, 50)"><path d="M0,-15 Q20,-10 20,10 Q20,25 0,33 Q-20,25 -20,10 Q-20,-10 0,-15 Z" fill="#fff"/><circle cx="0" cy="-18" r="16" fill="#fff"/><circle cx="-6" cy="-20" r="2" fill="#6D28D9"/><circle cx="6" cy="-20" r="2" fill="#6D28D9"/></g></svg>`;
+            const gogoChanSVG = `
+                <svg class="memory-card-gogo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="translate(50, 50)">
+                        <path d="M0,-15 Q20,-10 20,10 Q20,25 0,33 Q-20,25 -20,10 Q-20,-10 0,-15 Z" fill="#fff"/>
+                        <circle cx="0" cy="-18" r="16" fill="#fff"/>
+                        <circle cx="-6" cy="-20" r="2" fill="#6D28D9"/>
+                        <circle cx="6" cy="-20" r="2" fill="#6D28D9"/>
+                    </g>
+                </svg>`;
 
             const content = `<div class="memory-grid">${items.map((item, index) => `
                 <div class="memory-card" data-id="${item.id}" data-index="${index}" data-text="${item.text}" data-type="${item.type}">
                     <div class="memory-card-face memory-card-front">${gogoChanSVG}</div>
-                    <div class="memory-card-face memory-card-back ${item.type === 'kanji' ? 'jp' : ''}">${item.text}</div>
+                    <div class="memory-card-face memory-card-back ${item.type === 'kanji' ? 'kanji' : ''}">${item.text}</div>
                 </div>`).join('')}
             </div>`;
             
@@ -2313,20 +1903,18 @@
         }
 
         function renderManageView() {
-            let modeName = '';
-            if (currentLearningMode === 'english') modeName = 'Inglês';
-            else modeName = currentLearningMode.charAt(0).toUpperCase() + currentLearningMode.slice(1);
-            dom.manageModalTitle.textContent = `${translations[currentUILanguage].manage} ${modeName}`;
+            const modeName = currentLearningMode.charAt(0).toUpperCase() + currentLearningMode.slice(1);
+            dom.manageModalTitle.textContent = `Gerenciar ${modeName}`;
             const deck = getCurrentDeck();
             dom.cardListContainer.innerHTML = '';
             
             if (deck.length === 0) {
-                dom.cardListContainer.innerHTML = `<p class="text-center text-gray-500">${translations[currentUILanguage].no_cards_yet} ${modeName}.</p>`;
+                dom.cardListContainer.innerHTML = `<p class="text-center text-gray-500">Você ainda não tem cards de ${currentLearningMode}.</p>`;
                 renderPagination(dom.managePaginationContainer, 0, 0, ITEMS_PER_PAGE, () => {});
                 return;
             }
 
-            const sortedCards = [...deck].sort((a, b) => a.kanji.localeCompare(b.kanji, currentLearningLanguage === 'jp' ? 'ja' : 'en'));
+            const sortedCards = [...deck].sort((a, b) => a.kanji.localeCompare(b.kanji, 'ja'));
             const paginatedCards = sortedCards.slice((manageCurrentPage - 1) * ITEMS_PER_PAGE, manageCurrentPage * ITEMS_PER_PAGE);
 
             paginatedCards.forEach(card => {
@@ -2335,16 +1923,15 @@
                 
                 const mainDisplay = card.displayKanji || card.kanji;
                 const subDisplay = card.displayKanji && card.displayKanji !== card.kanji ? ` <span class="text-base text-gray-500">(${card.kanji})</span>` : '';
-                const langClass = currentLearningLanguage === 'jp' ? 'jp' : '';
 
                 cardElement.innerHTML = `
                     <div class="flex-grow">
-                        <p class="text-xl font-bold ${langClass}">${mainDisplay}${subDisplay}</p>
+                        <p class="text-xl font-bold font-['Noto_Sans_JP']">${mainDisplay}${subDisplay}</p>
                         <p class="text-sm text-gray-600">${card.meaning}</p>
                     </div>
                     <div class="flex items-center gap-2 flex-shrink-0">
-                        <button class="edit-btn btn btn-secondary !py-1 !px-3 !text-xs">${translations[currentUILanguage].edit}</button>
-                        <button class="delete-btn btn btn-danger !py-1 !px-3 !text-xs">${translations[currentUILanguage].delete}</button>
+                        <button class="edit-btn btn btn-secondary !py-1 !px-3 !text-xs">Editar</button>
+                        <button class="delete-btn btn btn-danger !py-1 !px-3 !text-xs">Deletar</button>
                     </div>
                 `;
                 cardElement.querySelector('.edit-btn').addEventListener('click', () => openAddEditModal(card));
@@ -2360,22 +1947,11 @@
 
         function openAddEditModal(card = null) { 
             dom.addEditForm.reset(); 
-            let modeName, charType;
-            if(currentLearningLanguage === 'en'){
-                modeName = 'Inglês';
-                charType = translations[currentUILanguage].word;
-                dom.displayFormField.style.display = 'none';
-                dom.pronunciationLabel.textContent = translations[currentUILanguage].pronunciation;
-            } else {
-                modeName = currentLearningMode.charAt(0).toUpperCase() + currentLearningMode.slice(1);
-                charType = currentLearningMode === 'kanji' ? translations[currentUILanguage].kanji : translations[currentUILanguage].character;
-                dom.displayFormField.style.display = 'block';
-                 dom.pronunciationLabel.textContent = translations[currentUILanguage].reading_romaji;
-            }
-             
+            const modeName = currentLearningMode.charAt(0).toUpperCase() + currentLearningMode.slice(1); 
+            const charType = currentLearningMode === 'kanji' ? 'Kanji' : 'Caractere'; 
             dom.mainCharLabel.textContent = charType; 
             if (card) { 
-                dom.addEditModalTitle.textContent = `${translations[currentUILanguage].edit_card} ${modeName}`;
+                dom.addEditModalTitle.textContent = `Editar ${modeName}`; 
                 dom.cardIdInput.value = card.id; 
                 dom.kanjiInput.value = card.kanji; 
                 dom.displayKanjiInput.value = card.displayKanji || '';
@@ -2383,25 +1959,25 @@
                 dom.meaningInput.value = card.meaning; 
                 dom.geminiDataInput.value = card.geminiInfo ? JSON.stringify(card.geminiInfo) : ''; 
             } else { 
-                dom.addEditModalTitle.textContent = `${translations[currentUILanguage].add_card} ${modeName}`;
+                dom.addEditModalTitle.textContent = `Adicionar ${modeName}`; 
                 dom.cardIdInput.value = ''; 
                 dom.geminiDataInput.value = ''; 
             } 
             dom.addEditModal.classList.add('visible'); 
         } 
         
-        async function deleteCard(cardId) { if (confirm(translations[currentUILanguage].confirm_delete)) { try { await remove(ref(db, `${getDbPath('cards')}/${cardId}`)); manageCurrentPage = 1; } catch(error) { console.error("Erro ao apagar card:", error); } } }
+        async function deleteCard(cardId) { if (confirm('Tem certeza que deseja apagar este card?')) { try { await remove(ref(db, `${getDbPath('cards')}/${cardId}`)); manageCurrentPage = 1; } catch(error) { console.error("Erro ao apagar card:", error); } } }
         
         // --- PLACAR / LIGAS ---
         dom.navLeaderboard.addEventListener('click', (e) => { e.preventDefault(); showView('leaderboard'); }); 
         dom.closeLeaderboardModalBtn.addEventListener('click', () => dom.leaderboardModal.classList.remove('visible'));
         
-        function updateLeagueTimer() { const now = new Date(); const endOfWeek = new Date(now); endOfWeek.setDate(now.getDate() + (7 - now.getDay()) % 7); endOfWeek.setHours(23, 59, 59, 999); const diff = endOfWeek - now; const d = Math.floor(diff / (1000 * 60 * 60 * 24)); const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); dom.leagueTimer.textContent = `${translations[currentUILanguage].ends_in}: ${d}d ${h}h ${m}m`; }
+        function updateLeagueTimer() { const now = new Date(); const endOfWeek = new Date(now); endOfWeek.setDate(now.getDate() + (7 - now.getDay()) % 7); endOfWeek.setHours(23, 59, 59, 999); const diff = endOfWeek - now; const d = Math.floor(diff / (1000 * 60 * 60 * 24)); const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); dom.leagueTimer.textContent = `Termina em: ${d}d ${h}h ${m}m`; }
         
         function getPatentIcon(level) { const patent = patents[level]; return `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 6L8 14V34L24 42L40 34V14L24 6Z" fill="${patent.shadow}"/><path d="M24 8.25L9.5 15.1875V32.8125L24 39.75L38.5 32.8125V15.1875L24 8.25Z" fill="${patent.color}"/><path d="M24 20L15 15.5L24 11L33 15.5L24 20Z" fill="${patent.shadow}" opacity="0.5"/></svg>`; }
 
         async function openLeaderboard() {
-            if (!userProfile.leagueId) { dom.leaderboardList.innerHTML = `<p class="text-center p-4">${translations[currentUILanguage].not_in_league}</p>`; return; }
+            if (!userProfile.leagueId) { dom.leaderboardList.innerHTML = '<p class="text-center p-4">Você ainda não está em uma liga.</p>'; return; }
             const patent = patents[userProfile.patentLevel];
             dom.patentName.textContent = patent.name;
             dom.patentName.style.color = patent.shadow;
@@ -2426,11 +2002,11 @@
             
             const paginatedData = data.slice((leagueCurrentPage - 1) * ITEMS_PER_PAGE, leagueCurrentPage * ITEMS_PER_PAGE);
 
-            const createZone = (className, titleKey) => { const zone = document.createElement('div'); zone.className = `league-zone ${className}`; if (titleKey) { const titleEl = document.createElement('div'); titleEl.className = 'zone-title'; titleEl.textContent = translations[currentUILanguage][titleKey]; zone.appendChild(titleEl); } return zone; };
+            const createZone = (className, title) => { const zone = document.createElement('div'); zone.className = `league-zone ${className}`; if (title) { const titleEl = document.createElement('div'); titleEl.className = 'zone-title'; titleEl.textContent = title; zone.appendChild(titleEl); } return zone; };
 
-            const promotionZone = createZone('league-zone-promotion', 'promotion_zone');
+            const promotionZone = createZone('league-zone-promotion', 'Zona de Promoção');
             const normalZone = createZone('', null);
-            const demotionZone = createZone('league-zone-demotion', 'demotion_zone');
+            const demotionZone = createZone('league-zone-demotion', 'Zona de Rebaixamento');
 
             const promotionLimit = 5;
             const demotionLimit = data.length - 5;
@@ -2482,7 +2058,7 @@
             
             const profilePath = getDbPath('profile', profileUserId);
             if(!profilePath) {
-                dom.profileContent.innerHTML = `<p>${translations[currentUILanguage].error_loading_profile}</p>`;
+                dom.profileContent.innerHTML = `<p>Erro: Usuário não encontrado.</p>`;
                 return;
             }
 
@@ -2491,41 +2067,41 @@
                 if (snapshot.exists()) {
                     renderProfile(snapshot.val());
                 } else {
-                    dom.profileContent.innerHTML = `<p>${translations[currentUILanguage].profile_not_found}</p>`;
+                    dom.profileContent.innerHTML = `<p>Perfil não encontrado.</p>`;
                 }
             } catch(error) {
                 console.error("Erro ao buscar perfil:", error);
-                dom.profileContent.innerHTML = `<p>${translations[currentUILanguage].error_loading_profile}</p>`;
+                dom.profileContent.innerHTML = `<p>Ocorreu um erro ao carregar o perfil.</p>`;
             }
         }
         
         function renderProfile(profileData) {
             const patent = patents[profileData.patentLevel || 0];
-            const joinDate = profileData.createdAt ? new Date(profileData.createdAt).toLocaleDateString(currentUILanguage) : 'Data não disponível';
+            const joinDate = profileData.createdAt ? new Date(profileData.createdAt).toLocaleDateString('pt-BR') : 'Data não disponível';
             const userInitial = (profileData.username || 'U').charAt(0).toUpperCase();
 
             dom.profileContent.innerHTML = `
                 <div class="profile-header">
                     <button id="close-profile-modal">&times;</button>
                     <div class="profile-avatar">${userInitial}</div>
-                    <h2 class="profile-name">${profileData.username || translations[currentUILanguage].anonymous_user}</h2>
-                    <p class="profile-joindate">${translations[currentUILanguage].member_since} ${joinDate}</p>
+                    <h2 class="profile-name">${profileData.username || 'Usuário Anônimo'}</h2>
+                    <p class="profile-joindate">Membro desde ${joinDate}</p>
                 </div>
                 <div class="profile-stats">
                     <div class="stat-card">
                         <div class="value">${profileData.totalScore || 0}</div>
-                        <div class="label">${translations[currentUILanguage].total_xp}</div>
+                        <div class="label">Total XP</div>
                     </div>
                     <div class="stat-card">
                         <div class="value">${profileData.correctAnswers || 0}</div>
-                        <div class="label">${translations[currentUILanguage].correct_answers}</div>
+                        <div class="label">Respostas Corretas</div>
                     </div>
                 </div>
                 <div class="profile-league-card">
                     <div id="profile-patent-icon">${getPatentIcon(profileData.patentLevel || 0)}</div>
                     <div>
                         <p class="font-bold">${patent.name}</p>
-                        <p class="text-sm text-gray-600">${translations[currentUILanguage].weekly_points}: ${profileData.weeklyScore || 0}</p>
+                        <p class="text-sm text-gray-600">Pontos da semana: ${profileData.weeklyScore || 0}</p>
                     </div>
                 </div>
             `;
@@ -2534,7 +2110,7 @@
 
         // --- SEÇÃO DE ESTATÍSTICAS ---
         async function fetchAllUserData() {
-            const modes = ['kanji', 'hiragana', 'katakana', 'english'];
+            const modes = ['kanji', 'hiragana', 'katakana'];
             const allCards = [];
             for (const mode of modes) {
                 const modePath = `artifacts/${appId}/users/${userId}/${mode}Cards`;
@@ -2552,13 +2128,13 @@
         async function renderStatsView() {
             dom.statsContainer.innerHTML = `
                 <div class="text-center">
-                    <h1 class="text-4xl font-bold" data-translate="statistics_title">${translations[currentUILanguage].statistics_title}</h1>
-                    <p class="text-gray-500 mt-2" data-translate="statistics_subtitle">${translations[currentUILanguage].statistics_subtitle}</p>
+                    <h1 class="text-4xl font-bold">Estatísticas</h1>
+                    <p class="text-gray-500 mt-2">Seu progresso de aprendizado ao longo do tempo.</p>
                 </div>
                 <div id="stats-grid" class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div class="md:col-span-2 lg:col-span-3 text-center p-8">
                         <div class="loader-icon" style="animation: none;">📊</div>
-                        <p data-translate="calculating_stats">${translations[currentUILanguage].calculating_stats}</p>
+                        <p>Calculando estatísticas...</p>
                     </div>
                 </div>`;
 
@@ -2569,23 +2145,24 @@
             const totalCards = allUserCards.length;
             const learnedCards = allUserCards.filter(c => c.srsInterval && c.srsInterval > 21).length;
             grid.innerHTML += `
-                <div class="stat-card"> <div class="value">${totalCards}</div> <div class="label">${translations[currentUILanguage].cards_added}</div> </div>
-                <div class="stat-card"> <div class="value">${learnedCards}</div> <div class="label">${translations[currentUILanguage].cards_completed}</div> </div>
-                <div class="stat-card"> <div class="value">${(userProfile.totalScore || 0)}</div> <div class="label">${translations[currentUILanguage].total_xp}</div> </div>`;
+                <div class="stat-card"> <div class="value">${totalCards}</div> <div class="label">Cards Adicionados</div> </div>
+                <div class="stat-card"> <div class="value">${learnedCards}</div> <div class="label">Cards Concluídos</div> </div>
+                <div class="stat-card"> <div class="value">${(userProfile.totalScore || 0)}</div> <div class="label">Total XP</div> </div>`;
             
             const correct = userProfile.correctAnswers || 0;
             const incorrect = userProfile.incorrectAnswers || 0;
             const accuracy = (correct + incorrect > 0) ? ((correct / (correct + incorrect)) * 100).toFixed(1) : "0.0";
             
+            // MODIFICADO: Layout do gráfico e texto colorido
             grid.innerHTML += `
                 <div class="stat-card md:col-span-2">
-                    <h3 class="text-left font-bold mb-4">${translations[currentUILanguage].study_results}</h3>
+                    <h3 class="text-left font-bold mb-4">Resultados de Estudo</h3>
                     <div class="flex flex-col sm:flex-row items-center gap-4">
                         <div class="w-full sm:w-1/2 max-w-[200px] mx-auto"><canvas id="studyResultsChart"></canvas></div>
                         <div class="w-full sm:w-1/2 text-left space-y-2">
-                            <p style="color: var(--success);"><strong>${translations[currentUILanguage].correct_answers}:</strong> ${correct}</p>
-                            <p style="color: var(--danger);"><strong>${translations.pt.incorrect_answers_short.charAt(0).toUpperCase() + translations.pt.incorrect_answers_short.slice(1)}:</strong> ${incorrect}</p>
-                            <p class="mt-4 pt-2 border-t"><strong>${translations[currentUILanguage].accuracy}:</strong> ${accuracy}%</p>
+                            <p style="color: var(--success);"><strong>Corretos:</strong> ${correct}</p>
+                            <p style="color: var(--danger);"><strong>Incorretos:</strong> ${incorrect}</p>
+                            <p class="mt-4 pt-2 border-t"><strong>Precisão:</strong> ${accuracy}%</p>
                         </div>
                     </div>
                 </div>`;
@@ -2607,9 +2184,21 @@
             });
             grid.innerHTML += `
                  <div class="stat-card">
-                    <h3 class="text-left font-bold mb-4">${translations[currentUILanguage].study_forecast}</h3>
+                    <h3 class="text-left font-bold mb-4">Previsão de Estudo</h3>
                     <div class="space-y-4 text-left">
-                        <div> <p class="value">${cardsTomorrow}</p> <p class="label">${translations[currentUILanguage].cards_to_review_tomorrow}</p> </div>
+                        <div> <p class="value">${cardsTomorrow}</p> <p class="label">Cards para revisar amanhã</p> </div>
+                         <div> <p class="value text-gray-400">Em breve</p> <p class="label">Média de cards/mês</p> </div>
+                    </div>
+                </div>`;
+
+            grid.innerHTML += `
+                 <div class="stat-card md:col-span-3">
+                    <h3 class="text-left font-bold mb-4">Engajamento (Em Breve)</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div><p class="value text-gray-400">--</p><p class="label">Tempo médio/sessão</p></div>
+                        <div><p class="value text-gray-400">--</p><p class="label">Tempo médio em jogos</p></div>
+                        <div><p class="value text-gray-400">--</p><p class="label">Cards adicionados/mês</p></div>
+                        <div><p class="value text-gray-400">--</p><p class="label">Tendência de acertos</p></div>
                     </div>
                 </div>`;
             
@@ -2618,9 +2207,10 @@
             studyResultsChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: [translations[currentUILanguage].correct_answers, translations.pt.incorrect_answers_short],
+                    labels: ['Acertos', 'Erros'],
                     datasets: [{
                         data: [correct, incorrect],
+                        // MODIFICADO: Cores pastéis para o gráfico
                         backgroundColor: ['var(--success-light)', 'var(--danger-light)'],
                         borderColor: ['var(--success)', 'var(--danger)'],
                         borderWidth: 2,
@@ -2635,12 +2225,12 @@
         // --- GEMINI API E FORMULÁRIO DE CARD ---
         dom.generateAiBtn.addEventListener('click', async () => { 
             const character = dom.kanjiInput.value; 
-            if (!character.trim()) { alert("Por favor, insira um caractere ou palavra."); return; } 
+            if (!character.trim()) { alert("Por favor, insira um caractere."); return; } 
             dom.generateAiBtn.disabled = true; 
             dom.aiBtnText.style.display = 'none'; 
             dom.aiBtnSpinner.style.display = 'block'; 
             try { 
-                const geminiData = await fetchGeminiDataForFields(character, currentLearningLanguage, currentLearningMode); 
+                const geminiData = await fetchGeminiDataForFields(character, currentLearningMode); 
                 if (geminiData) { 
                     dom.pronunciationInput.value = geminiData.pronunciation || ''; 
                     dom.meaningInput.value = geminiData.meaning || ''; 
@@ -2659,26 +2249,48 @@
             } 
         }); 
         
-        async function fetchGeminiDataForFields(character, lang, mode) {
-            const apiKey = "AIzaSyCpNSwWWEbyWhklPL96AAweF2qhjeLrWlM"; 
+        async function fetchGeminiDataForFields(character, mode) {
+            // ATENÇÃO: NUNCA exponha sua chave de API diretamente no código do cliente (front-end).
+            // Isso é um grande risco de segurança. O ideal é que as chamadas para a API Gemini
+            // sejam feitas a partir de um backend (como um Cloud Function) que mantém a chave segura.
+            // A chave foi removida daqui para proteger sua conta.
+            const apiKey = "AIzaSyCpNSwWWEbyWhklPL96AAweF2qhjeLrWlM"; // A funcionalidade de IA NÃO funcionará com esta chave de exemplo.
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`; 
             
             let userQuery = ''; 
-            let systemPrompt = `Você é um professor de idiomas para falantes de português. Forneça informações concisas e úteis. Responda em JSON.`; 
-            let responseSchema;
-
-            if (lang === 'jp') { 
-                userQuery = `Analise o caractere de ${mode} "${character}". Quero informações para um flashcard. Forneça o seguinte em JSON: "pronunciation" (leitura romaji), "meaning" (significado principal), "commonUsage" (a palavra japonesa mais comum que usa este caractere, SEM romaji. Se for usado sozinho, retorne apenas o caractere), "sentences" (duas frases de exemplo com "japanese", "reading" e "portuguese"), "curiosities" (curiosidade sobre origem/uso ou dica de memorização), e "grammar" (dica gramatical ou de uso).`;
-                responseSchema = { type: "OBJECT", properties: { "pronunciation": { "type": "STRING" }, "meaning": { "type": "STRING" }, "commonUsage": { "type": "STRING" }, "sentences": { type: "ARRAY", items: { type: "OBJECT", properties: { "japanese": { "type": "STRING" }, "reading": { "type": "STRING" }, "portuguese": { "type": "STRING" } }, required: ["japanese", "reading", "portuguese"]}}, "curiosities": { "type": "STRING" }, "grammar": { "type": "STRING" } }, required: ["pronunciation", "meaning", "commonUsage", "sentences", "curiosities", "grammar"] };
-            } else { // English
-                userQuery = `Analise a palavra em inglês "${character}". Quero informações para um flashcard para um falante de português. Forneça o seguinte em JSON: "pronunciation" (pronúncia figurada ou fonética simplificada), "meaning" (significado principal em português), "commonUsage" (a própria palavra em inglês), "sentences" (duas frases de exemplo simples com "english" e sua "translation" para o português), "curiosities" (uma curiosidade sobre a origem, uso ou uma dica de memorização), e "grammar" (uma dica gramatical rápida sobre o uso da palavra, ex: se é verbo, substantivo, etc.).`;
-                responseSchema = { type: "OBJECT", properties: { "pronunciation": { "type": "STRING" }, "meaning": { "type": "STRING" }, "commonUsage": { "type": "STRING" }, "sentences": { type: "ARRAY", items: { type: "OBJECT", properties: { "english": { "type": "STRING" }, "translation": { "type": "STRING" } }, required: ["english", "translation"]}}, "curiosities": { "type": "STRING" }, "grammar": { "type": "STRING" } }, required: ["pronunciation", "meaning", "commonUsage", "sentences", "curiosities", "grammar"] };
-            }
+            const systemPrompt = `Você é um professor de japonês para falantes de português. Forneça informações concisas e úteis sobre um caractere japonês. Responda em JSON.`; 
+            
+            if (mode === 'kanji') { 
+                userQuery = `Analise o kanji "${character}". Quero informações para um flashcard. Forneça o seguinte em JSON: "pronunciation" (leitura romaji), "meaning" (significado principal), "commonUsage" (a palavra mais comum que usa este kanji, ex: 大きい para o kanji 大. Se for usado principalmente sozinho, retorne apenas o kanji.), "sentences" (duas frases de exemplo com "japanese", "reading" e "portuguese"), "curiosities" (curiosidade sobre origem/uso), e "grammar" (dica gramatical).`; 
+            } else { 
+                userQuery = `Analise o caractere de ${mode} "${character}". Quero informações para um flashcard. Forneça o seguinte em JSON: "pronunciation" (leitura romaji), "meaning" (para o que é usado, ex: som 'a'), "commonUsage" (o próprio caractere), "sentences" (duas palavras de exemplo simples usando o caractere, com "japanese", "reading" e "portuguese"), "curiosities" (dica de memorização ou traçado), e "grammar" (dica de uso ou partículas comuns).`; 
+            } 
             
             const payload = { 
                 contents: [{ parts: [{ text: userQuery }] }], 
                 systemInstruction: { parts: [{ text: systemPrompt }] }, 
-                generationConfig: { responseMimeType: "application/json", responseSchema: responseSchema } 
+                generationConfig: { 
+                    responseMimeType: "application/json", 
+                    responseSchema: { 
+                        type: "OBJECT", 
+                        properties: { 
+                            "pronunciation": { "type": "STRING" }, 
+                            "meaning": { "type": "STRING" }, 
+                            "commonUsage": { "type": "STRING" }, 
+                            "sentences": { 
+                                type: "ARRAY", 
+                                items: { 
+                                    type: "OBJECT", 
+                                    properties: { "japanese": { "type": "STRING" }, "reading": { "type": "STRING" }, "portuguese": { "type": "STRING" } }, 
+                                    required: ["japanese", "reading", "portuguese"]
+                                }
+                            }, 
+                            "curiosities": { "type": "STRING" }, 
+                            "grammar": { "type": "STRING" } 
+                        }, 
+                        required: ["pronunciation", "meaning", "commonUsage", "sentences", "curiosities", "grammar"] 
+                    } 
+                } 
             }; 
             try { 
                 const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); 
@@ -2727,10 +2339,10 @@
             const isRegister = mode === 'register';
             const isRecover = mode === 'recover';
 
-            authForm.authModalTitle.textContent = isLogin ? translations[currentUILanguage].login : isRegister ? translations[currentUILanguage].create_account : translations[currentUILanguage].recover_password;
-            authForm.authBtn.textContent = isLogin ? translations[currentUILanguage].login : isRegister ? translations[currentUILanguage].create_account : translations[currentUILanguage].verify_and_send_email;
+            authForm.authModalTitle.textContent = isLogin ? 'Entrar' : isRegister ? 'Criar Conta' : 'Recuperar Senha';
+            authForm.authBtn.textContent = isLogin ? 'Entrar' : isRegister ? 'Criar Conta' : 'Verificar e Enviar E-mail';
             
-            authForm.toggleAuthMode.textContent = isLogin ? translations[currentUILanguage].no_account_yet : translations[currentUILanguage].already_have_account;
+            authForm.toggleAuthMode.textContent = isLogin ? 'Ainda não tem uma conta? Crie uma.' : 'Já tem uma conta? Entrar.';
             
             authForm.usernameInput.style.display = isRegister ? 'block' : 'none';
             authForm.passwordInput.style.display = isRecover ? 'none' : 'block';
@@ -2741,14 +2353,14 @@
             else if (isRecover) { authForm.keywordInput.placeholder = "Sua Palavra-chave de Segurança"; }
 
             authForm.toggleAuthMode.style.display = isRecover ? 'none' : 'block';
-            authForm.forgotPasswordLink.textContent = isRecover ? translations[currentUILanguage].back_to_login : translations[currentUILanguage].forgot_password;
+            authForm.forgotPasswordLink.textContent = isRecover ? 'Voltar para o Login' : 'Esqueceu sua senha?';
         }
 
         authForm.toggleAuthMode.addEventListener('click', () => { setAuthMode(currentAuthMode === 'login' ? 'register' : 'login'); });
         authForm.forgotPasswordLink.addEventListener('click', () => { setAuthMode(currentAuthMode === 'recover' ? 'login' : 'recover'); });
         
         authForm.authBtn.addEventListener('click', async () => { 
-            authForm.authStatusMessage.textContent = `${translations[currentUILanguage].processing}`;
+            authForm.authStatusMessage.textContent = 'Processando...';
             authForm.authStatusMessage.style.color = 'var(--text-secondary)';
             const email = authForm.emailInput.value; 
 
@@ -2782,12 +2394,12 @@
                         if (!userFound) throw new Error('E-mail não encontrado.');
                         if (!keywordMatch) throw new Error('Palavra-chave de segurança incorreta.');
                         await sendPasswordResetEmail(auth, email);
-                        authForm.authStatusMessage.textContent = `${translations[currentUILanguage].success_email_sent}`;
+                        authForm.authStatusMessage.textContent = "Verificação bem-sucedida! E-mail de recuperação enviado.";
                         authForm.authStatusMessage.style.color = 'var(--success)';
                         return;
                 }
             } catch (error) { 
-                authForm.authStatusMessage.textContent = `${translations[currentUILanguage].failure}: ` + error.message; 
+                authForm.authStatusMessage.textContent = "Falha: " + error.message; 
                 authForm.authStatusMessage.style.color = 'var(--danger)';
             } 
         }); 
@@ -2796,17 +2408,17 @@
             e.preventDefault();
             const newUsername = dom.newUsernameInput.value.trim();
             const statusEl = dom.updateUsernameStatus;
-            if (!newUsername) { statusEl.textContent = translations[currentUILanguage].username_not_empty; statusEl.style.color = 'var(--danger)'; return; }
-            statusEl.textContent = `${translations[currentUILanguage].saving}`; statusEl.style.color = 'var(--text-secondary)';
+            if (!newUsername) { statusEl.textContent = 'O nome de usuário não pode ser vazio.'; statusEl.style.color = 'var(--danger)'; return; }
+            statusEl.textContent = 'Salvando...'; statusEl.style.color = 'var(--text-secondary)';
             try {
                 const updates = { username: newUsername };
                 await update(ref(db, getDbPath('profile')), updates);
                 if (userProfile.leagueId && userProfile.leagueWeek) {
                     await update(ref(db, `${getDbPath('leagues')}/${userProfile.leagueWeek}/${userProfile.leagueId}/members/${userId}`), updates);
                 }
-                statusEl.textContent = translations[currentUILanguage].name_updated; statusEl.style.color = 'var(--success)';
+                statusEl.textContent = 'Nome atualizado com sucesso!'; statusEl.style.color = 'var(--success)';
                 setTimeout(() => { statusEl.textContent = ''; }, 3000);
-            } catch (error) { console.error("Erro ao atualizar nome de usuário:", error); statusEl.textContent = translations[currentUILanguage].error_saving; statusEl.style.color = 'var(--danger)'; }
+            } catch (error) { console.error("Erro ao atualizar nome de usuário:", error); statusEl.textContent = 'Erro ao salvar. Tente novamente.'; statusEl.style.color = 'var(--danger)'; }
         });
 
         dom.updateKeywordForm.addEventListener('submit', async (e) => {
@@ -2814,32 +2426,26 @@
             const newKeyword = dom.newKeywordInput.value.trim();
             const currentPassword = dom.currentPasswordForKeyword.value;
             const statusEl = dom.updateKeywordStatus;
-            if (!newKeyword || !currentPassword) { statusEl.textContent = translations[currentUILanguage].fields_required; statusEl.style.color = 'var(--danger)'; return; }
-            statusEl.textContent = `${translations[currentUILanguage].verifying_and_saving}`; statusEl.style.color = 'var(--text-secondary)';
+            if (!newKeyword || !currentPassword) { statusEl.textContent = 'Todos os campos são obrigatórios.'; statusEl.style.color = 'var(--danger)'; return; }
+            statusEl.textContent = 'Verificando e salvando...'; statusEl.style.color = 'var(--text-secondary)';
             try {
                 const user = auth.currentUser;
                 const credential = EmailAuthProvider.credential(user.email, currentPassword);
                 await reauthenticateWithCredential(user, credential);
                 await update(ref(db, getDbPath('profile')), { keyword: newKeyword });
-                statusEl.textContent = translations[currentUILanguage].keyword_updated; statusEl.style.color = 'var(--success)';
+                statusEl.textContent = 'Palavra-chave atualizada com sucesso!'; statusEl.style.color = 'var(--success)';
                 dom.updateKeywordForm.reset();
                 setTimeout(() => { statusEl.textContent = ''; }, 3000);
             } catch (error) {
                 console.error("Erro ao atualizar palavra-chave:", error);
-                let message = translations[currentUILanguage].error_saving;
-                if (error.code === 'auth/wrong-password') message = translations[currentUILanguage].wrong_password;
+                let message = 'Erro ao salvar. Tente novamente.';
+                if (error.code === 'auth/wrong-password') message = 'Senha atual incorreta.';
                 statusEl.textContent = message; statusEl.style.color = 'var(--danger)';
             }
         });
 
-        dom.updatePasswordForm.addEventListener('submit', async (e) => { e.preventDefault(); const newPassword = document.getElementById('new-password-input').value; const confirmPassword = document.getElementById('confirm-new-password-input').value; const statusEl = dom.updatePasswordStatus; if (newPassword !== confirmPassword) { statusEl.textContent = translations[currentUILanguage].passwords_dont_match; statusEl.style.color = 'var(--danger)'; return; } if(newPassword.length < 6) { statusEl.textContent = translations[currentUILanguage].password_min_length; statusEl.style.color = 'var(--danger)'; return; } statusEl.textContent = `${translations[currentUILanguage].updating}`; statusEl.style.color = 'var(--text-secondary)'; try { const user = auth.currentUser; await updatePassword(user, newPassword); statusEl.textContent = translations[currentUILanguage].password_updated; statusEl.style.color = 'var(--success)'; setTimeout(() => { dom.userManageModal.classList.remove('visible'); statusEl.textContent = ''; dom.updatePasswordForm.reset(); }, 2000); } catch (error) { console.error("Erro ao atualizar senha:", error); statusEl.textContent = translations[currentUILanguage].error_updating_password; statusEl.style.color = 'var(--danger)'; } });
-   
-        // Inicialização
-        document.addEventListener('DOMContentLoaded', () => {
-            translateUI('pt'); // Define o idioma inicial da UI
-            setLearningLanguage('jp'); // Define o idioma inicial de aprendizado
-        });
-
+        dom.updatePasswordForm.addEventListener('submit', async (e) => { e.preventDefault(); const newPassword = document.getElementById('new-password-input').value; const confirmPassword = document.getElementById('confirm-new-password-input').value; const statusEl = dom.updatePasswordStatus; if (newPassword !== confirmPassword) { statusEl.textContent = 'As senhas não coincidem.'; statusEl.style.color = 'var(--danger)'; return; } if(newPassword.length < 6) { statusEl.textContent = 'A senha deve ter no mínimo 6 caracteres.'; statusEl.style.color = 'var(--danger)'; return; } statusEl.textContent = 'Atualizando...'; statusEl.style.color = 'var(--text-secondary)'; try { const user = auth.currentUser; await updatePassword(user, newPassword); statusEl.textContent = 'Senha atualizada com sucesso!'; statusEl.style.color = 'var(--success)'; setTimeout(() => { dom.userManageModal.classList.remove('visible'); statusEl.textContent = ''; dom.updatePasswordForm.reset(); }, 2000); } catch (error) { console.error("Erro ao atualizar senha:", error); statusEl.textContent = 'Erro ao atualizar. Requer login recente.'; statusEl.style.color = 'var(--danger)'; } });
     </script>
 </body>
 </html>
+
