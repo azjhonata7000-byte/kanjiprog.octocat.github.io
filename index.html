@@ -2231,78 +2231,32 @@
          * @param {string} text O texto a ser falado.
          * @param {string} lang O código do idioma (ex: 'jp', 'en').
          */
-        async function speakGemini(text, lang, buttonElement) {
-            if (!text) return;
-
-            let icon, spinner;
-            if (buttonElement) {
-                icon = buttonElement.querySelector('i');
-                spinner = buttonElement.querySelector('svg');
-                buttonElement.disabled = true;
-                if (icon) icon.style.display = 'none';
-                if (spinner) spinner.style.display = 'block';
+        function speak(text, lang) {
+            if (!text || typeof window.speechSynthesis === 'undefined') {
+                console.error("Síntese de voz não suportada ou texto vazio.");
+                return;
             }
 
-            try {
-                const apiKey = "AIzaSyCpNSwWWEbyWhklPL96AAweF2qhjeLrWlM";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+            // Cancela qualquer fala anterior para evitar sobreposição
+            window.speechSynthesis.cancel();
 
-                const langMap = { 'jp': 'ja-JP', 'en': 'en-US' };
+            const utterance = new SpeechSynthesisUtterance(text);
+            const langCode = lang === 'jp' ? 'ja-JP' : 'en-US';
+            utterance.lang = langCode;
 
-                const payload = {
-                    contents: [{ parts: [{ text: `Fale em ${langMap[lang]}: ${text}` }] }],
-                    generationConfig: {
-                        responseModalities: ["AUDIO"],
-                        speechConfig: {
-                            voiceConfig: {
-                                prebuiltVoiceConfig: { voiceName: lang === 'jp' ? "Kore" : "Puck" }
-                            }
-                        }
-                    },
-                    model: "gemini-2.5-flash-preview-tts"
-                };
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) throw new Error(`API error: ${response.status}`);
-
-                const result = await response.json();
-                const part = result?.candidates?.[0]?.content?.parts?.[0];
-                const audioData = part?.inlineData?.data;
-                const mimeType = part?.inlineData?.mimeType;
-
-                if (audioData && mimeType && mimeType.startsWith("audio/")) {
-                    const sampleRate = parseInt(mimeType.match(/rate=(\d+)/)[1], 10);
-                    const pcmData = base64ToArrayBuffer(audioData);
-                    const pcm16 = new Int16Array(pcmData);
-                    const wavBlob = pcmToWav(pcm16, sampleRate);
-                    const audioUrl = URL.createObjectURL(wavBlob);
-                    const audio = new Audio(audioUrl);
-                    audio.play();
-                } else {
-                    throw new Error("Resposta da API de áudio inválida.");
-                }
-
-            } catch (error) {
-                console.error("Erro ao gerar áudio com Gemini TTS:", error);
-                playIncorrectSound(); // Toca um som de erro
-            } finally {
-                if (buttonElement) {
-                    setTimeout(() => {
-                        buttonElement.disabled = false;
-                        if (icon) icon.style.display = 'block';
-                        if (spinner) spinner.style.display = 'none';
-                    }, 500); // Pequeno delay para evitar cliques rápidos
-                }
+            // Tenta encontrar uma voz específica para o idioma para melhorar a qualidade
+            const voices = window.speechSynthesis.getVoices();
+            const specificVoice = voices.find(voice => voice.lang === langCode);
+            if (specificVoice) {
+                utterance.voice = specificVoice;
             }
+
+            utterance.rate = 0.9; // Um pouco mais lento para clareza
+            utterance.pitch = 1;
+
+            window.speechSynthesis.speak(utterance);
         }
-        window.speakGemini = speakGemini; // Exponha a função globalmente
-        // ...
-
+        window.speak = speak; // Expor a função globalmente
         // Estado da aplicação
         let allCards = {};
         let userProfile = { totalScore: 0, weeklyScore: 0, patentLevel: 0, leagueId: null, email: '', username: '', keyword: '', createdAt: '' };
@@ -2322,7 +2276,14 @@
         let manageCurrentPage = 1;
         let currentAuthMode = 'login'; // 'login', 'register', 'recover'
         const ITEMS_PER_PAGE = 10;
+        // ...
         let studyResultsChart = null;
+        // EXPLICAÇÃO: Adicionamos este objeto. Ele irá funcionar como o nosso
+        // "armazém" de áudios, onde a chave será o texto e o valor será o áudio já gerado.
+        const audioCache = {};
+
+        // ...
+
 
         // Elementos do DOM
         const dom = {
@@ -2925,7 +2886,7 @@
                 const escapedTextToSpeak = textToSpeak ? textToSpeak.replace(/['`]/g, "\\$&").replace(/\n/g, ' ') : '';
                 // EXPLICAÇÃO: Atualizamos o botão para incluir um spinner e chamar a nova função 'speakGemini', passando 'this' como referência.
                 frontHTML = `
-    <button class="sound-btn" onclick="window.speakGemini('${escapedTextToSpeak}', '${currentLearningLanguage}', this)">
+    <button class="sound-btn" onclick="window.speak('${escapedTextToSpeak}', '${currentLearningLanguage}', this)">
         <i class="ph ph-speaker-high text-2xl"></i>
         <svg class="animate-spin h-6 w-6" style="display: none;" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
     </button>
@@ -2947,7 +2908,7 @@
             const escapedTextToSpeakOnBack = textToSpeakOnBack.replace(/['`]/g, "\\$&");
 
             const mainSoundBtnHTML = `
-        <button class="sound-btn" onclick="window.speakGemini('${escapedTextToSpeakOnBack}', '${currentLearningLanguage}', this)">
+        <button class="sound-btn" onclick="window.speak('${escapedTextToSpeakOnBack}', '${currentLearningLanguage}', this)">
             <i class="ph ph-speaker-high text-2xl"></i>
             <svg class="animate-spin h-6 w-6" style="display: none;" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
         </button>`;
@@ -2968,7 +2929,7 @@
                         const reading = s[readingKey] ? `<p class="reading">${s[readingKey]}</p>` : '';
 
                         const sentenceSoundBtnHTML = `
-                    <button class="sound-btn-sentence" onclick="window.speakGemini(\`${escapedSentence}\`, '${currentLearningLanguage}', this)">
+                    <button class="sound-btn-sentence" onclick="window.speak(\`${escapedSentence}\`, '${currentLearningLanguage}', this)">
                         <i class="ph ph-speaker-high text-xl"></i>
                         <svg class="animate-spin h-5 w-5" style="display: none;" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                     </button>`;
