@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!-- © 2024 Firefly Designer. Todos os direitos reservados. -->
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Lexend:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Lexend:wght@400;500;700;800&display=swap"
+        rel="stylesheet">
     <!-- CORREÇÃO: Corrigido o URL para carregar os ícones corretamente -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <!-- Adicionado Chart.js para a nova seção de estatísticas -->
@@ -18,20 +21,32 @@
         /* © 2024 Firefly Designer. Todos os direitos reservados. */
         :root {
             /* Paleta de Cores Vibrante e Moderna */
-            --bg-primary: #F9FAFB;      /* Cinza muito claro, quase branco */
+            --bg-primary: #F9FAFB;
+            /* Cinza muito claro, quase branco */
             --bg-secondary: #FFFFFF;
-            --bg-accent: #F4F0FF;       /* Lilás pastel para fundos de destaque */
-            --text-primary: #1F2937;    /* Preto suave */
-            --text-secondary: #6B7280;  /* Cinza para textos secundários */
-            --accent-primary: #7C3AED;  /* Roxo vibrante (Violet-600) */
-            --accent-primary-dark: #6D28D9; /* Roxo mais escuro (Violet-700) */
-            --accent-primary-light: #A78BFA; /* Roxo claro (Violet-400) */
-            --success: #16A34A;         /* Verde (Green-600) */
-            --success-light: #D1FAE5;   /* Verde pastel (Green-100) */
-            --danger: #DC2626;          /* Vermelho (Red-600) */
-            --danger-light: #FEE2E2;    /* Vermelho pastel (Red-100) */
-            --border-color: #E5E7EB;    /* Borda cinza clara (Gray-200) */
-            
+            --bg-accent: #F4F0FF;
+            /* Lilás pastel para fundos de destaque */
+            --text-primary: #1F2937;
+            /* Preto suave */
+            --text-secondary: #6B7280;
+            /* Cinza para textos secundários */
+            --accent-primary: #7C3AED;
+            /* Roxo vibrante (Violet-600) */
+            --accent-primary-dark: #6D28D9;
+            /* Roxo mais escuro (Violet-700) */
+            --accent-primary-light: #A78BFA;
+            /* Roxo claro (Violet-400) */
+            --success: #16A34A;
+            /* Verde (Green-600) */
+            --success-light: #D1FAE5;
+            /* Verde pastel (Green-100) */
+            --danger: #DC2626;
+            /* Vermelho (Red-600) */
+            --danger-light: #FEE2E2;
+            /* Vermelho pastel (Red-100) */
+            --border-color: #E5E7EB;
+            /* Borda cinza clara (Gray-200) */
+
             /* Tipografia */
             --font-jp: 'Noto Sans JP', sans-serif;
             --font-ui: 'Lexend', sans-serif;
@@ -50,19 +65,22 @@
             color: var(--text-primary);
             overscroll-behavior-y: contain;
         }
-        
+
         /* --- ESTRUTURA E LAYOUT --- */
-        .main-container, .game-container, .stats-container {
+        .main-container,
+        .game-container,
+        .stats-container {
             width: 100%;
             max-width: 768px;
             margin: auto;
-            min-height: calc(100vh - 120px); /* Ajustado para footer */
+            min-height: calc(100vh - 120px);
+            /* Ajustado para footer */
             display: flex;
             flex-direction: column;
             justify-content: center;
             padding: 1rem;
         }
-        
+
         .stats-container {
             max-width: 1024px;
         }
@@ -71,18 +89,32 @@
         header {
             background-color: var(--bg-secondary);
             border-bottom: 1px solid var(--border-color);
-            position: sticky; top: 0; z-index: 500; height: 80px;
+            position: sticky;
+            top: 0;
+            z-index: 500;
+            height: 80px;
         }
+
         .nav-link {
-            font-weight: 500; color: var(--text-secondary);
-            transition: all 0.2s; padding: 0.5rem 1rem;
-            border-radius: 0.5rem; border: 2px solid transparent;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 2px solid transparent;
         }
-        .nav-link:hover { color: var(--accent-primary); background-color: var(--bg-accent); }
+
+        .nav-link:hover {
+            color: var(--accent-primary);
+            background-color: var(--bg-accent);
+        }
+
         .nav-link.active {
-            color: var(--accent-primary); font-weight: 700;
+            color: var(--accent-primary);
+            font-weight: 700;
             border-bottom: 2px solid var(--accent-primary);
-            border-radius: 0; padding-bottom: calc(0.5rem - 2px);
+            border-radius: 0;
+            padding-bottom: calc(0.5rem - 2px);
             background-color: transparent;
         }
 
@@ -97,67 +129,126 @@
             align-items: center;
             gap: 0.75rem;
         }
+
         .nav-link-mobile:hover {
             color: var(--accent-primary);
             background-color: var(--bg-accent);
         }
+
         .nav-link-mobile.active {
             color: var(--accent-primary);
             font-weight: 700;
             background-color: var(--bg-accent);
         }
+
         #mobile-menu nav {
-            overflow-y: auto; /* Permite a rolagem do menu lateral */
+            overflow-y: auto;
+            /* Permite a rolagem do menu lateral */
             flex-grow: 1;
-            padding-bottom: 2rem; /* Espaço extra no final */
+            padding-bottom: 2rem;
+            /* Espaço extra no final */
         }
+
         .caret-icon.open {
             transform: rotate(180deg);
         }
 
 
         /* --- DROPDOWNS --- */
-        .dropdown { position: relative; }
+        .dropdown {
+            position: relative;
+        }
+
         .dropdown-content {
-            display: none; position: absolute; top: calc(100% + 15px); left: 50%;
-            transform: translateX(-50%); background-color: var(--bg-secondary);
-            min-width: 220px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
-            z-index: 10; border-radius: 0.75rem; padding: 0.5rem;
+            display: none;
+            position: absolute;
+            top: calc(100% + 15px);
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--bg-secondary);
+            min-width: 220px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            border-radius: 0.75rem;
+            padding: 0.5rem;
             border: 1px solid var(--border-color);
         }
-        .dropdown-content.visible { display: block; }
-        .dropdown-content a, .dropdown-content button {
-            color: var(--text-primary); padding: 0.75rem 1rem; text-decoration: none;
-            display: flex; align-items: center; gap: 0.5rem; border-radius: 0.5rem; font-weight: 500;
-            width: 100%; text-align: left;
+
+        .dropdown-content.visible {
+            display: block;
         }
-        .dropdown-content a:hover, .dropdown-content button:hover { background-color: var(--bg-accent); color: var(--accent-primary); }
+
+        .dropdown-content a,
+        .dropdown-content button {
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-content a:hover,
+        .dropdown-content button:hover {
+            background-color: var(--bg-accent);
+            color: var(--accent-primary);
+        }
+
         .dropdown-content .active {
-             background-color: var(--bg-accent); color: var(--accent-primary); font-weight: 700;
+            background-color: var(--bg-accent);
+            color: var(--accent-primary);
+            font-weight: 700;
         }
-        #user-menu-dropdown { right: 0; left: auto; transform: none; min-width: 200px; }
-        
+
+        #user-menu-dropdown {
+            right: 0;
+            left: auto;
+            transform: none;
+            min-width: 200px;
+        }
+
         /* --- CARD DE REVISÃO --- */
-        .review-card-container { perspective: 1000px; }
+        .review-card-container {
+            perspective: 1000px;
+        }
+
         .review-card {
-            background: var(--bg-secondary); border-radius: 1.5rem;
+            background: var(--bg-secondary);
+            border-radius: 1.5rem;
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 10px -2px rgba(124, 58, 237, 0.05);
             transition: transform 0.6s, box-shadow 0.3s ease;
-            transform-style: preserve-3d; position: relative;
-            min-height: 450px; display: flex;
+            transform-style: preserve-3d;
+            position: relative;
+            min-height: 450px;
+            display: flex;
         }
-        .review-card.is-flipped { transform: rotateY(180deg); }
+
+        .review-card.is-flipped {
+            transform: rotateY(180deg);
+        }
 
         .card-face {
-            width: 100%; height: 100%; padding: 1.5rem;
-            backface-visibility: hidden; -webkit-backface-visibility: hidden;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            position: absolute; top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 1.5rem;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
-        .card-face-back { 
-            transform: rotateY(180deg); 
+
+        .card-face-back {
+            transform: rotateY(180deg);
             justify-content: flex-start;
             overflow-y: auto;
         }
@@ -165,111 +256,277 @@
         .question-text {
             /* ALTERAÇÃO: Aumentado o tamanho da fonte para melhor visualização em celulares */
             font-size: clamp(4rem, 18vw, 8rem);
-            font-weight: 700; line-height: 1.1; text-align: center;
+            font-weight: 700;
+            line-height: 1.1;
+            text-align: center;
         }
-        .question-text.jp { font-family: var(--font-jp); }
-        .question-text.en { font-family: var(--font-ui); }
+
+        .question-text.jp {
+            font-family: var(--font-jp);
+        }
+
+        .question-text.en {
+            font-family: var(--font-ui);
+        }
 
 
         .question-hint {
-            font-size: 1.25rem; color: var(--text-secondary);
-            margin-top: 0.5rem; text-align: center;
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            text-align: center;
         }
-        
-        .gemini-info-section h3 {
-             font-size: 0.875rem; font-weight: 700; color: var(--accent-primary);
-             text-transform: uppercase; letter-spacing: 0.05em; margin-top: 1rem;
-             padding-bottom: 0.25rem; border-bottom: 2px solid var(--bg-accent);
-        }
-        .gemini-info-section p, .gemini-info-section li {
-            font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6;
-        }
-        .gemini-info-section ul { list-style-position: inside; padding-left: 0.5rem; }
-        .gemini-info-section .sentence { margin-bottom: 0.75rem; }
-        .gemini-info-section .sentence .jp { font-family: var(--font-jp); font-size: 1.2rem; color: var(--text-primary); }
-        .gemini-info-section .sentence .en { font-family: var(--font-ui); font-size: 1.1rem; color: var(--text-primary); font-weight: 500;}
 
-        .gemini-info-section .sentence .reading { font-size: 0.85rem; color: var(--text-secondary); font-style: italic;}
+        .gemini-info-section h3 {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 1rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 2px solid var(--bg-accent);
+        }
+
+        .gemini-info-section p,
+        .gemini-info-section li {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .gemini-info-section ul {
+            list-style-position: inside;
+            padding-left: 0.5rem;
+        }
+
+        .gemini-info-section .sentence {
+            margin-bottom: 0.75rem;
+        }
+
+        .gemini-info-section .sentence .jp {
+            font-family: var(--font-jp);
+            font-size: 1.2rem;
+            color: var(--text-primary);
+        }
+
+        .gemini-info-section .sentence .en {
+            font-family: var(--font-ui);
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .gemini-info-section .sentence .reading {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
 
         /* --- BOTÕES E INTERAÇÕES --- */
         .btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
-            padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700;
-            font-size: 0.875rem; transition: all 0.2s ease-in-out;
-            border: 1px solid transparent; cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 700;
+            font-size: 0.875rem;
+            transition: all 0.2s ease-in-out;
+            border: 1px solid transparent;
+            cursor: pointer;
         }
-        .btn:disabled { cursor: not-allowed; opacity: 0.6; }
-        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .btn-primary { 
-            background-color: var(--accent-primary); color: white;
+
+        .btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
         }
-        .btn-primary:hover:not(:disabled) { background-color: var(--accent-primary-dark); }
-        .btn-secondary { 
-            background-color: var(--bg-secondary); color: var(--accent-primary);
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background-color: var(--accent-primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-secondary);
+            color: var(--accent-primary);
             border: 1px solid var(--border-color);
-         }
-        .btn-secondary:hover:not(:disabled) { background-color: var(--bg-accent); }
-        .btn-success { background-color: var(--success-light); color: var(--success); border-color: #A7F3D0; }
-        .btn-success:hover { background-color: #A7F3D0; }
-        .btn-danger { background-color: var(--danger-light); color: var(--danger); border-color: #FECACA; }
-        .btn-danger:hover { background-color: #FECACA; }
-        
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background-color: var(--bg-accent);
+        }
+
+        .btn-success {
+            background-color: var(--success-light);
+            color: var(--success);
+            border-color: #A7F3D0;
+        }
+
+        .btn-success:hover {
+            background-color: #A7F3D0;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-light);
+            color: var(--danger);
+            border-color: #FECACA;
+        }
+
+        .btn-danger:hover {
+            background-color: #FECACA;
+        }
+
         .sound-btn {
-            position: absolute; top: 1.5rem; right: 1.5rem;
-            background: none; border: none; cursor: pointer; color: var(--text-secondary);
-            padding: 0.5rem; border-radius: 50%; z-index: 10;
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            border-radius: 50%;
+            z-index: 10;
         }
-        .sound-btn:hover { color: var(--accent-primary); background-color: var(--bg-accent); }
-        .sound-btn i { font-size: 1.5rem; vertical-align: middle; }
+
+        .sound-btn:hover {
+            color: var(--accent-primary);
+            background-color: var(--bg-accent);
+        }
+
+        .sound-btn i {
+            font-size: 1.5rem;
+            vertical-align: middle;
+        }
+
         .sound-btn-sentence {
-            background: none; border: none; cursor: pointer; color: var(--text-secondary);
-            padding: 0.25rem; border-radius: 50%; flex-shrink: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0.25rem;
+            border-radius: 50%;
+            flex-shrink: 0;
         }
-        .sound-btn-sentence:hover { color: var(--accent-primary); background-color: var(--bg-accent); }
+
+        .sound-btn-sentence:hover {
+            color: var(--accent-primary);
+            background-color: var(--bg-accent);
+        }
 
         /* --- TELAS DE JOGO (ALINHAMENTO MELHORADO) --- */
-        .game-board { display: grid; gap: 1rem; width: 100%; }
+        .game-board {
+            display: grid;
+            gap: 1rem;
+            width: 100%;
+        }
+
         .game-option {
-            padding: 1.5rem; /* Mais espaço interno */
+            padding: 1.5rem;
+            /* Mais espaço interno */
             background-color: var(--bg-secondary);
             border: 2px solid var(--border-color);
             border-radius: 0.75rem;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             text-align: center;
-            font-size: clamp(1rem, 5vw, 1.25rem); /* Fonte responsiva */
+            font-size: clamp(1rem, 5vw, 1.25rem);
+            /* Fonte responsiva */
             font-weight: 500;
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 80px;
-            word-break: break-word; /* Garante que o texto não saia do card */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            word-break: break-word;
+            /* Garante que o texto não saia do card */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
+
         /* ALTERAÇÃO: Aumentado o tamanho da fonte para melhor visualização em celulares */
-        .game-option.jp { font-family: var(--font-jp); font-size: 2rem; }
-        .game-option:hover { 
-            border-color: var(--accent-primary-light); 
-            transform: scale(1.03); 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        .game-option.jp {
+            font-family: var(--font-jp);
+            font-size: 2rem;
         }
-        .game-option.selected { background-color: var(--accent-primary-light); border-color: var(--accent-primary); color: var(--accent-primary-dark); }
-        .game-option.correct { background-color: var(--success-light); color: var(--success); border-color: var(--success); cursor: not-allowed; transform: scale(1.05); animation: pulse 0.5s; }
-        .game-option.incorrect { background-color: var(--danger-light); color: var(--danger); border-color: var(--danger); animation: shake 0.5s; }
+
+        .game-option:hover {
+            border-color: var(--accent-primary-light);
+            transform: scale(1.03);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-option.selected {
+            background-color: var(--accent-primary-light);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary-dark);
+        }
+
+        .game-option.correct {
+            background-color: var(--success-light);
+            color: var(--success);
+            border-color: var(--success);
+            cursor: not-allowed;
+            transform: scale(1.05);
+            animation: pulse 0.5s;
+        }
+
+        .game-option.incorrect {
+            background-color: var(--danger-light);
+            color: var(--danger);
+            border-color: var(--danger);
+            animation: shake 0.5s;
+        }
+
         @keyframes shake {
-            0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
         }
+
         @keyframes pulse {
-            0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.08);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
-        
+
         .memory-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
             gap: 1rem;
         }
+
         @media (min-width: 420px) {
-            .memory-grid { grid-template-columns: repeat(4, 1fr); }
+            .memory-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
         }
 
         .memory-card {
@@ -282,6 +539,7 @@
             -webkit-tap-highlight-color: transparent;
             position: relative;
         }
+
         .memory-card-face {
             position: absolute;
             width: 100%;
@@ -295,29 +553,39 @@
             overflow: hidden;
             font-size: clamp(1rem, 5vw, 1.5rem);
         }
+
         .memory-card-front {
             background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-light));
         }
+
         .memory-card-back {
             background-color: var(--bg-accent);
             color: var(--text-primary);
             transform: rotateY(180deg);
         }
+
         /* ALTERAÇÃO: Aumentado o tamanho da fonte para melhor visualização em celulares */
-        .memory-card .jp { font-family: var(--font-jp); font-size: clamp(2rem, 10vw, 3.5rem); }
+        .memory-card .jp {
+            font-family: var(--font-jp);
+            font-size: clamp(2rem, 10vw, 3.5rem);
+        }
+
         .memory-card.flipped {
             transform: rotateY(180deg);
         }
+
         .memory-card.matched {
             transform: rotateY(180deg);
             box-shadow: 0 0 15px var(--success);
             border-color: var(--success);
             cursor: not-allowed;
         }
+
         .memory-card.matched .memory-card-back {
             background-color: var(--success-light);
             color: var(--success);
         }
+
         .memory-card-gogo {
             width: 80%;
             height: 80%;
@@ -334,39 +602,68 @@
             animation: fadeIn 0.5s ease-out;
             width: 100%;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
+
         .completion-title {
             font-size: 2.5rem;
             font-weight: 800;
             color: var(--success);
             animation: slideInDown 0.6s ease-out;
         }
+
         @keyframes slideInDown {
-            from { transform: translateY(-30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
+
         .completion-subtitle {
             font-size: 1.125rem;
             color: var(--text-secondary);
             margin-top: 0.5rem;
             animation: slideInDown 0.6s 0.2s ease-out backwards;
         }
+
         .score-display {
             margin-top: 2rem;
             animation: popIn 0.7s 0.4s ease-out backwards;
         }
+
         @keyframes popIn {
-            from { transform: scale(0.5); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            from {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
+
         .score-display .label {
             font-size: 1rem;
             font-weight: 500;
             color: var(--text-secondary);
         }
+
         .score-display .score-value {
             font-size: 3.5rem;
             font-weight: 800;
@@ -374,11 +671,13 @@
             line-height: 1;
             margin-top: 0.25rem;
         }
+
         .score-details {
             font-size: 0.875rem;
             color: var(--text-secondary);
             margin-top: 0.5rem;
         }
+
         .completion-container .btn {
             margin-top: 2.5rem;
             animation: popIn 0.7s 0.6s ease-out backwards;
@@ -395,6 +694,7 @@
             height: 90vh;
             max-height: 700px;
         }
+
         #gogo-chan-mascot {
             width: 120px;
             height: auto;
@@ -402,14 +702,31 @@
             display: block;
             animation: float 4s ease-in-out infinite;
         }
-        @keyframes float { 
-            0%, 100% { transform: translateY(0) rotate(-3deg); } 
-            50% { transform: translateY(-15px) rotate(3deg); } 
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(-3deg);
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(3deg);
+            }
         }
+
         @keyframes wings-flap {
-            0%, 100% { transform: scaleY(1) rotate(10deg); }
-            50% { transform: scaleY(0.95) rotate(8deg); }
+
+            0%,
+            100% {
+                transform: scaleY(1) rotate(10deg);
+            }
+
+            50% {
+                transform: scaleY(0.95) rotate(8deg);
+            }
         }
+
         #league-header {
             text-align: center;
             padding: 1rem 1.5rem;
@@ -417,12 +734,13 @@
             position: relative;
             flex-shrink: 0;
         }
+
         #close-leaderboard-modal {
             position: absolute;
             top: 1rem;
             right: 1rem;
             color: var(--text-secondary);
-            background: rgba(255,255,255,0.5);
+            background: rgba(255, 255, 255, 0.5);
             border-radius: 50%;
             width: 32px;
             height: 32px;
@@ -433,12 +751,19 @@
             line-height: 1;
             transition: background-color 0.2s;
         }
-        #close-leaderboard-modal:hover { background: rgba(255,255,255,0.8); }
-        #league-header h2 {
-            font-size: clamp(1.75rem, 7vw, 2rem); /* Fonte responsiva */
-            font-weight: 800;
-            word-break: keep-all; /* Evita quebra de linha estranha */
+
+        #close-leaderboard-modal:hover {
+            background: rgba(255, 255, 255, 0.8);
         }
+
+        #league-header h2 {
+            font-size: clamp(1.75rem, 7vw, 2rem);
+            /* Fonte responsiva */
+            font-weight: 800;
+            word-break: keep-all;
+            /* Evita quebra de linha estranha */
+        }
+
         #patent-info {
             display: flex;
             align-items: center;
@@ -446,10 +771,12 @@
             gap: 0.75rem;
             margin-top: 0.5rem;
         }
+
         #patent-name {
             font-size: 1.25rem;
             font-weight: 700;
         }
+
         #league-timer {
             margin-top: 0.25rem;
             font-size: 0.875rem;
@@ -464,10 +791,20 @@
             gap: 0.5rem;
             flex-grow: 1;
         }
-        #leaderboard-list::-webkit-scrollbar { width: 6px; }
-        #leaderboard-list::-webkit-scrollbar-track { background: transparent; }
-        #leaderboard-list::-webkit-scrollbar-thumb { background: var(--accent-primary-light); border-radius: 3px; }
-        
+
+        #leaderboard-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #leaderboard-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #leaderboard-list::-webkit-scrollbar-thumb {
+            background: var(--accent-primary-light);
+            border-radius: 3px;
+        }
+
         .leaderboard-item {
             display: flex;
             align-items: center;
@@ -478,9 +815,10 @@
             transition: transform 0.2s, box-shadow 0.2s;
             cursor: pointer;
         }
+
         .leaderboard-item:hover {
             transform: scale(1.02);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
         }
 
         .leaderboard-item .rank {
@@ -494,7 +832,11 @@
             align-items: center;
             justify-content: center;
         }
-        .leaderboard-item .medal { font-size: 1.5rem; }
+
+        .leaderboard-item .medal {
+            font-size: 1.5rem;
+        }
+
         .leaderboard-item .user-avatar {
             width: 40px;
             height: 40px;
@@ -510,43 +852,52 @@
             overflow: hidden;
             flex-shrink: 0;
         }
+
         .leaderboard-item .user-info {
             flex-grow: 1;
             overflow: hidden;
-            min-width: 0; /* Ajuda no alinhamento em flexbox */
+            min-width: 0;
+            /* Ajuda no alinhamento em flexbox */
         }
+
         .leaderboard-item .user-name {
             font-weight: 500;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .leaderboard-item .user-score {
             font-weight: 700;
             color: var(--accent-primary);
             margin-left: 1rem;
         }
+
         .leaderboard-item.current-user {
             background-color: var(--bg-accent);
             border: 2px solid var(--accent-primary);
         }
+
         .leaderboard-item.current-user .user-name {
             font-weight: 700;
         }
-        
+
         .league-zone {
             border-radius: 1rem;
             padding: 0.5rem;
             margin: 0.5rem 0;
         }
+
         .league-zone-promotion {
             background: var(--promotion-bg);
             border: 1px solid rgba(22, 163, 74, 0.3);
         }
-         .league-zone-demotion {
+
+        .league-zone-demotion {
             background: var(--demotion-bg);
             border: 1px solid rgba(220, 38, 38, 0.3);
         }
+
         .league-zone .zone-title {
             text-align: center;
             font-weight: 700;
@@ -555,10 +906,17 @@
             letter-spacing: 0.05em;
             padding: 0.5rem;
         }
-        .league-zone-promotion .zone-title { color: #14532D; }
-        .league-zone-demotion .zone-title { color: #991B1B; }
+
+        .league-zone-promotion .zone-title {
+            color: #14532D;
+        }
+
+        .league-zone-demotion .zone-title {
+            color: #991B1B;
+        }
+
         .league-zone .leaderboard-item {
-             background-color: #fff;
+            background-color: #fff;
         }
 
         /* --- PAGINAÇÃO --- */
@@ -570,6 +928,7 @@
             gap: 0.5rem;
             flex-shrink: 0;
         }
+
         .page-btn {
             padding: 0.5rem 0.75rem;
             border-radius: 0.5rem;
@@ -580,14 +939,17 @@
             cursor: pointer;
             transition: all 0.2s;
         }
+
         .page-btn:hover:not(:disabled) {
             background-color: var(--accent-primary-light);
             color: var(--accent-primary);
         }
+
         .page-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
+
         .page-btn.active {
             background-color: var(--accent-primary);
             color: white;
@@ -596,57 +958,112 @@
 
         /* --- MODAIS E OVERLAYS --- */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-color: rgba(31, 41, 55, 0.5);
-            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 1000; opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
             padding: 1rem;
         }
-        .modal-overlay.visible { opacity: 1; pointer-events: auto; }
-        .modal-content {
-            background-color: var(--bg-secondary); border-radius: 1.5rem;
-            padding: 2rem; width: 100%; max-width: 500px; max-height: 90vh;
-            display: flex; flex-direction: column;
-            transform: scale(0.95); transition: transform 0.3s ease;
+
+        .modal-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
         }
-        .modal-overlay.visible .modal-content { transform: scale(1); }
+
+        .modal-content {
+            background-color: var(--bg-secondary);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.visible .modal-content {
+            transform: scale(1);
+        }
+
         .modal-scrollable-content {
-             overflow-y: auto;
-             padding-right: 0.5rem; 
-             margin-right: -0.5rem;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+            margin-right: -0.5rem;
         }
 
         /* --- INPUTS E FORMULÁRIOS --- */
-        .input, .textarea, .select {
-            padding: 0.75rem; border-radius: 0.75rem;
+        .input,
+        .textarea,
+        .select {
+            padding: 0.75rem;
+            border-radius: 0.75rem;
             background-color: var(--bg-primary);
             border: 2px solid var(--border-color);
-            color: var(--text-primary); width: 100%;
+            color: var(--text-primary);
+            width: 100%;
             transition: border-color 0.2s, background-color 0.2s;
         }
-        .input:focus, .textarea:focus, .select:focus {
-            outline: none; border-color: var(--accent-primary);
+
+        .input:focus,
+        .textarea:focus,
+        .select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
             background-color: var(--bg-secondary);
         }
 
         /* --- TELA DE CARREGAMENTO --- */
-        #loading-overlay { z-index: 1001; }
+        #loading-overlay {
+            z-index: 1001;
+        }
+
         .loader-icon {
-            font-family: var(--font-jp); font-size: 4rem; color: var(--accent-primary);
+            font-family: var(--font-jp);
+            font-size: 4rem;
+            color: var(--accent-primary);
             animation: bounce 1.5s infinite;
         }
+
         @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-30px); } 60% { transform: translateY(-15px); }
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-30px);
+            }
+
+            60% {
+                transform: translateY(-15px);
+            }
         }
 
         /* --- PERFIL E ESTATÍSTICAS (NOVO) --- */
-        #profile-modal .modal-content, #stats-modal .modal-content {
+        #profile-modal .modal-content,
+        #stats-modal .modal-content {
             padding: 0;
             overflow: hidden;
             background: var(--bg-primary);
         }
+
         .profile-header {
             background-color: var(--accent-primary);
             color: white;
@@ -654,6 +1071,7 @@
             text-align: center;
             position: relative;
         }
+
         .profile-avatar {
             width: 90px;
             height: 90px;
@@ -667,28 +1085,41 @@
             font-weight: 800;
             margin: 0 auto 1rem;
             border: 4px solid white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
+
         .profile-name {
             font-size: 1.75rem;
             font-weight: 700;
         }
+
         .profile-joindate {
             font-size: 0.875rem;
             opacity: 0.8;
         }
+
         #close-profile-modal {
-            position: absolute; top: 1rem; right: 1rem;
-            background: rgba(0,0,0,0.2); border: none; color: white;
-            border-radius: 50%; width: 32px; height: 32px;
-            font-size: 1.5rem; line-height: 1;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 1.5rem;
+            line-height: 1;
         }
-        .profile-stats, .stats-section-content {
+
+        .profile-stats,
+        .stats-section-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
             padding: 1.5rem;
         }
+
         .stat-card {
             background-color: var(--bg-secondary);
             border-radius: 1rem;
@@ -696,11 +1127,13 @@
             text-align: center;
             border: 1px solid var(--border-color);
         }
+
         .stat-card .value {
             font-size: 1.75rem;
             font-weight: 700;
             color: var(--accent-primary);
         }
+
         .stat-card .label {
             font-size: 0.8rem;
             color: var(--text-secondary);
@@ -708,6 +1141,7 @@
             margin-top: 0.25rem;
             text-transform: uppercase;
         }
+
         .profile-league-card {
             margin: 0 1.5rem 1.5rem;
             background-color: var(--bg-secondary);
@@ -722,9 +1156,12 @@
         .stats-container .stat-card {
             padding: 1.5rem;
         }
+
         .stats-container .stat-card.full-width {
-            grid-column: 1 / -1; /* Ocupa a largura total */
+            grid-column: 1 / -1;
+            /* Ocupa a largura total */
         }
+
         .stats-container h2 {
             font-size: 1.5rem;
             font-weight: 700;
@@ -732,15 +1169,16 @@
             padding-bottom: 0.5rem;
             border-bottom: 1px solid var(--border-color);
         }
-
-
     </style>
 </head>
+
 <body class="min-h-screen flex flex-col items-center">
-    
+
     <!-- MENU LATERAL PARA DISPOSITIVOS MÓVEIS -->
-    <div id="menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[998] transition-opacity duration-300" style="display: none; opacity: 0;"></div>
-    <aside id="mobile-menu" class="fixed top-0 left-0 h-full w-72 bg-white shadow-xl z-[999] p-6 transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+    <div id="menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[998] transition-opacity duration-300"
+        style="display: none; opacity: 0;"></div>
+    <aside id="mobile-menu"
+        class="fixed top-0 left-0 h-full w-72 bg-white shadow-xl z-[999] p-6 transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
         <div class="flex justify-between items-center mb-10 flex-shrink-0">
             <div class="font-black text-2xl" style="color: var(--accent-primary);">語</div>
             <button id="close-mobile-menu-btn" class="p-1 rounded-full hover:bg-gray-100">
@@ -750,36 +1188,42 @@
         <nav class="flex flex-col space-y-2">
             <!-- Seletor de Idioma de Aprendizado (Mobile) -->
             <div>
-                 <button id="nav-lang-mobile-toggle" class="w-full text-left nav-link-mobile flex justify-between items-center">
+                <button id="nav-lang-mobile-toggle"
+                    class="w-full text-left nav-link-mobile flex justify-between items-center">
                     <div class="flex items-center gap-3">
                         <i class="ph ph-translate w-6"></i>
-                        <span id="lang-learn-text-mobile" data-translate="learn_language_select">Aprender: Japonês</span>
+                        <span id="lang-learn-text-mobile" data-translate="learn_language_select">Aprender:
+                            Japonês</span>
                     </div>
                     <i id="lang-learn-caret-mobile" class="ph ph-caret-down transition-transform caret-icon"></i>
                 </button>
-                 <div id="nav-lang-mobile-dropdown" class="pl-8 mt-1 space-y-1" style="display: none;">
-                    <button data-lang="jp" class="lang-learn-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left active">Japonês</button>
-                    <button data-lang="en" class="lang-learn-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left">Inglês</button>
+                <div id="nav-lang-mobile-dropdown" class="pl-8 mt-1 space-y-1" style="display: none;">
+                    <button data-lang="jp"
+                        class="lang-learn-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left active">Japonês</button>
+                    <button data-lang="en"
+                        class="lang-learn-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left">Inglês</button>
                 </div>
             </div>
 
             <!-- Modos de Estudo (Mobile) -->
             <div>
-                 <button id="nav-study-mobile-toggle" class="w-full text-left nav-link-mobile flex justify-between items-center">
+                <button id="nav-study-mobile-toggle"
+                    class="w-full text-left nav-link-mobile flex justify-between items-center">
                     <div class="flex items-center gap-3">
                         <i class="ph ph-book-open w-6"></i>
                         <span id="study-mode-text-mobile">Estudar: Kanji</span>
                     </div>
                     <i id="study-caret-mobile" class="ph ph-caret-down transition-transform caret-icon"></i>
                 </button>
-                 <div id="nav-study-mobile-dropdown" class="pl-8 mt-1 space-y-1" style="display: none;">
+                <div id="nav-study-mobile-dropdown" class="pl-8 mt-1 space-y-1" style="display: none;">
                     {/* Conteúdo dinâmico aqui */}
                 </div>
             </div>
 
             <!-- Jogos (Mobile) -->
             <div>
-                <button id="nav-games-mobile-toggle" class="w-full text-left nav-link-mobile flex justify-between items-center">
+                <button id="nav-games-mobile-toggle"
+                    class="w-full text-left nav-link-mobile flex justify-between items-center">
                     <div class="flex items-center gap-3">
                         <i class="ph ph-game-controller w-6"></i>
                         <span data-translate="games">Jogos</span>
@@ -812,8 +1256,8 @@
                 <a href="#" id="home-logo">語</a>
             </div>
             <nav class="hidden md:flex items-center space-x-2">
-                 <!-- Seletor de Idioma de Aprendizado -->
-                 <div class="dropdown">
+                <!-- Seletor de Idioma de Aprendizado -->
+                <div class="dropdown">
                     <a href="#" class="nav-link flex items-center gap-2" id="nav-lang-learn">
                         <span id="lang-learn-text" data-translate="learn_language_select">Aprender: Japonês</span>
                         <i class="ph ph-caret-down"></i>
@@ -824,8 +1268,8 @@
                     </div>
                 </div>
 
-                 <!-- Modos de Estudo -->
-                 <div class="dropdown">
+                <!-- Modos de Estudo -->
+                <div class="dropdown">
                     <a href="#" class="nav-link active flex items-center gap-2" id="nav-study">
                         <span id="study-mode-text">Estudar: Kanji</span>
                         <i class="ph ph-caret-down"></i>
@@ -838,7 +1282,7 @@
                 <div class="dropdown">
                     <a href="#" class="nav-link" id="nav-games" data-translate="games">Jogos</a>
                     <div id="nav-games-dropdown" class="dropdown-content">
-                         {/* Conteúdo dinâmico aqui */}
+                        {/* Conteúdo dinâmico aqui */}
                     </div>
                 </div>
                 <a href="#" class="nav-link" id="nav-manage" data-translate="manage">Gerenciar</a>
@@ -846,23 +1290,26 @@
                 <a href="#" class="nav-link" id="nav-leaderboard" data-translate="leagues">Ligas</a>
             </nav>
             <div class="flex items-center space-x-2">
-                 <!-- Seletor de Idioma da UI -->
+                <!-- Seletor de Idioma da UI -->
                 <div class="dropdown">
                     <button id="lang-ui-btn" class="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100">
                         <i class="ph ph-globe text-2xl"></i>
                     </button>
-                    <div id="lang-ui-dropdown" class="dropdown-content" style="right: 0; left: auto; transform: none; min-width: 150px;">
+                    <div id="lang-ui-dropdown" class="dropdown-content"
+                        style="right: 0; left: auto; transform: none; min-width: 150px;">
                         <button data-lang="pt" class="lang-ui-btn active"><span>🇧🇷</span> Português</button>
                         <button data-lang="en" class="lang-ui-btn"><span>🇺🇸</span> English</button>
                     </div>
                 </div>
-                
+
                 <div id="userInfoContainer" class="relative">
                     <div id="auth-links" style="display: none;">
-                         <button id="login-nav-btn" class="btn btn-secondary text-sm" data-translate="login">Entrar</button>
+                        <button id="login-nav-btn" class="btn btn-secondary text-sm"
+                            data-translate="login">Entrar</button>
                     </div>
                     <div id="user-menu" class="relative" style="display: none;">
-                        <button id="user-menu-btn" class="flex items-center space-x-2 text-sm font-medium text-gray-600 hover:text-accent-primary">
+                        <button id="user-menu-btn"
+                            class="flex items-center space-x-2 text-sm font-medium text-gray-600 hover:text-accent-primary">
                             <span id="user-name-display" class="truncate max-w-[150px]"></span>
                             <i class="ph ph-caret-down"></i>
                         </button>
@@ -873,9 +1320,10 @@
                         </div>
                     </div>
                 </div>
-                 <!-- Botão Hamburger -->
+                <!-- Botão Hamburger -->
                 <div class="md:hidden">
-                    <button id="hamburger-btn" class="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500">
+                    <button id="hamburger-btn"
+                        class="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500">
                         <i class="ph ph-list text-2xl"></i>
                     </button>
                 </div>
@@ -887,30 +1335,40 @@
     <div id="loading-overlay" class="modal-overlay visible">
         <div class="text-center">
             <div class="loader-icon">語</div>
-            <p id="loading-text" class="mt-4 text-lg font-bold" style="color: var(--text-primary);" data-translate="loading_learning">Carregando seu aprendizado...</p>
+            <p id="loading-text" class="mt-4 text-lg font-bold" style="color: var(--text-primary);"
+                data-translate="loading_learning">Carregando seu aprendizado...</p>
         </div>
     </div>
-    
+
     <!-- MODAL DE AUTENTICAÇÃO -->
     <div id="auth-modal" class="modal-overlay">
         <div class="modal-content text-center">
-             <h2 class="text-3xl font-bold mb-6" id="auth-modal-title" data-translate="login">Entrar</h2>
+            <h2 class="text-3xl font-bold mb-6" id="auth-modal-title" data-translate="login">Entrar</h2>
             <div id="auth-form-fields" class="flex flex-col space-y-4">
-                <input type="text" id="usernameInput" data-translate-placeholder="username" placeholder="Nome de Usuário" class="input" style="display: none;">
-                <input type="email" id="emailInput" data-translate-placeholder="email" placeholder="Email" class="input">
-                <input type="password" id="passwordInput" data-translate-placeholder="password" placeholder="Senha" class="input">
-                <input type="password" id="confirmPasswordInput" data-translate-placeholder="confirm_password" placeholder="Confirmar Senha" class="input" style="display: none;">
-                <input type="text" id="keywordInput" data-translate-placeholder="security_keyword" placeholder="Palavra-chave de Segurança" class="input" style="display: none;" data-translate-title="keyword_tooltip" title="Use esta palavra para confirmar alterações importantes na sua conta.">
+                <input type="text" id="usernameInput" data-translate-placeholder="username"
+                    placeholder="Nome de Usuário" class="input" style="display: none;">
+                <input type="email" id="emailInput" data-translate-placeholder="email" placeholder="Email"
+                    class="input">
+                <input type="password" id="passwordInput" data-translate-placeholder="password" placeholder="Senha"
+                    class="input">
+                <input type="password" id="confirmPasswordInput" data-translate-placeholder="confirm_password"
+                    placeholder="Confirmar Senha" class="input" style="display: none;">
+                <input type="text" id="keywordInput" data-translate-placeholder="security_keyword"
+                    placeholder="Palavra-chave de Segurança" class="input" style="display: none;"
+                    data-translate-title="keyword_tooltip"
+                    title="Use esta palavra para confirmar alterações importantes na sua conta.">
             </div>
-             <div class="mt-4">
+            <div class="mt-4">
                 <button id="authBtn" class="btn btn-primary w-full" data-translate="login">Entrar</button>
-                <p id="toggleAuthMode" class="text-sm cursor-pointer hover:underline text-gray-500 mt-4" data-translate="no_account_yet">Ainda não tem uma conta? Crie uma.</p>
-                <p id="forgotPassword" class="text-sm cursor-pointer hover:underline text-gray-500 mt-2" data-translate="forgot_password">Esqueceu sua senha?</p>
-             </div>
+                <p id="toggleAuthMode" class="text-sm cursor-pointer hover:underline text-gray-500 mt-4"
+                    data-translate="no_account_yet">Ainda não tem uma conta? Crie uma.</p>
+                <p id="forgotPassword" class="text-sm cursor-pointer hover:underline text-gray-500 mt-2"
+                    data-translate="forgot_password">Esqueceu sua senha?</p>
+            </div>
             <p id="auth-status-message" class="mt-4 text-sm min-h-[20px]"></p>
         </div>
     </div>
-    
+
     <!-- CONTEÚDO PRINCIPAL (ESTUDO) -->
     <main class="main-container" style="display: none;">
         <div class="flex flex-col items-center">
@@ -923,19 +1381,21 @@
 
             <div class="w-full mt-2">
                 <div class="h-2 rounded-full" style="background-color: var(--bg-accent);">
-                    <div id="progress-bar" class="h-2 bg-green-500 rounded-full transition-all duration-300 ease-in-out" style="width: 0%; background-color: var(--accent-primary);"></div>
+                    <div id="progress-bar" class="h-2 bg-green-500 rounded-full transition-all duration-300 ease-in-out"
+                        style="width: 0%; background-color: var(--accent-primary);"></div>
                 </div>
                 <p id="progress-text" class="text-right text-sm text-gray-500 mt-1 font-bold">0 / 0</p>
             </div>
-            
+
             <div id="action-buttons" class="mt-6 flex flex-col space-y-4 items-center w-full max-w-md">
                 <div id="feedback-buttons-container" class="grid grid-cols-2 gap-4 w-full"></div>
-                <button id="studyMoreBtn" class="btn btn-secondary w-full" data-translate="study_more">Estudar Mais</button>
+                <button id="studyMoreBtn" class="btn btn-secondary w-full" data-translate="study_more">Estudar
+                    Mais</button>
             </div>
         </div>
         <p id="userIdDisplay" class="text-xs text-gray-400 text-center mt-8"></p>
     </main>
-    
+
     <!-- CONTEÚDO DO JOGO -->
     <div id="game-container" class="game-container" style="display: none;">
         <!-- O conteúdo do jogo será renderizado aqui pelo JS -->
@@ -951,51 +1411,80 @@
     <div id="manage-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-6 flex-shrink-0">
-                <h2 id="manage-modal-title" class="text-3xl font-bold" data-translate="manage_cards">Gerenciar Cards</h2>
+                <h2 id="manage-modal-title" class="text-3xl font-bold" data-translate="manage_cards">Gerenciar Cards
+                </h2>
                 <button id="close-manage-modal" class="text-2xl font-bold p-2 leading-none">&times;</button>
             </div>
-            <button id="add-new-card-btn" class="btn btn-primary w-full mb-6 flex-shrink-0" data-translate="add_new_card">Adicionar Novo Card</button>
+            <button id="add-new-card-btn" class="btn btn-primary w-full mb-6 flex-shrink-0"
+                data-translate="add_new_card">Adicionar Novo Card</button>
             <div id="card-list-container" class="space-y-3 modal-scrollable-content flex-grow min-h-0">
                 <!-- Lista de cards será inserida aqui -->
             </div>
             <div id="manage-pagination-container" class="pagination-container"></div>
         </div>
     </div>
-    
+
     <!-- MODAL DO PLACAR (LIGAS) -->
     <div id="leaderboard-modal" class="modal-overlay">
         <div class="modal-content">
             <div id="mascot-container" class="pt-4">
                 <svg id="gogo-chan-mascot" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                     <style>
-                        #gogo-chan-mascot .wing-l { animation: wings-flap 2s ease-in-out infinite; transform-origin: 90% 90%; }
-                        #gogo-chan-mascot .wing-r { animation: wings-flap 2s ease-in-out infinite; transform-origin: 10% 90%; animation-delay: 0.1s; }
-                        #gogo-chan-mascot .blush { opacity: 0; animation: blush-fade 4s ease-in-out infinite; }
-                        @keyframes blush-fade { 0%, 100% { opacity: 0; } 40% { opacity: 0.7; } 60% { opacity: 0.7; } }
+                        #gogo-chan-mascot .wing-l {
+                            animation: wings-flap 2s ease-in-out infinite;
+                            transform-origin: 90% 90%;
+                        }
+
+                        #gogo-chan-mascot .wing-r {
+                            animation: wings-flap 2s ease-in-out infinite;
+                            transform-origin: 10% 90%;
+                            animation-delay: 0.1s;
+                        }
+
+                        #gogo-chan-mascot .blush {
+                            opacity: 0;
+                            animation: blush-fade 4s ease-in-out infinite;
+                        }
+
+                        @keyframes blush-fade {
+
+                            0%,
+                            100% {
+                                opacity: 0;
+                            }
+
+                            40% {
+                                opacity: 0.7;
+                            }
+
+                            60% {
+                                opacity: 0.7;
+                            }
+                        }
                     </style>
                     <defs>
                         <filter id="glow-effect" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                            <feGaussianBlur stdDeviation="4" result="coloredBlur" />
                             <feMerge>
-                                <feMergeNode in="coloredBlur"/>
-                                <feMergeNode in="SourceGraphic"/>
+                                <feMergeNode in="coloredBlur" />
+                                <feMergeNode in="SourceGraphic" />
                             </feMerge>
                         </filter>
                     </defs>
                     <g transform="translate(50, 50)">
-                        <path class="wing-l" d="M-8, -10 C -30, -25 -25, 10 -8, 5 Z" fill="rgba(235, 226, 255, 0.9)"/>
-                        <path class="wing-r" d="M8, -10 C 30, -25 25, 10 8, 5 Z" fill="rgba(235, 226, 255, 0.9)"/>
-                        <ellipse cx="0" cy="18" rx="18" ry="22" fill="#FDE047" filter="url(#glow-effect)"/>
-                        <path d="M0,-15 Q20,-10 20,10 Q20,25 0,33 Q-20,25 -20,10 Q-20,-10 0,-15 Z" fill="#6D28D9"/>
-                        <circle cx="0" cy="-18" r="16" fill="#4C1D95"/>
-                        <circle cx="-6" cy="-20" r="4.5" fill="white"/>
-                        <circle cx="6" cy="-20" r="4.5" fill="white"/>
-                        <circle cx="-5" cy="-19" r="2" fill="black"/>
-                        <circle cx="7" cy="-19" r="2" fill="black"/>
-                        <circle cx="-4.5" cy="-20.5" r="0.8" fill="white"/>
-                        <circle cx="7.5" cy="-20.5" r="0.8" fill="white"/>
-                        <ellipse class="blush" cx="-12" cy="-15" rx="4" ry="2" fill="#FFA7C3"/>
-                        <ellipse class="blush" cx="12" cy="-15" rx="4" ry="2" fill="#FFA7C3"/>
+                        <path class="wing-l" d="M-8, -10 C -30, -25 -25, 10 -8, 5 Z" fill="rgba(235, 226, 255, 0.9)" />
+                        <path class="wing-r" d="M8, -10 C 30, -25 25, 10 8, 5 Z" fill="rgba(235, 226, 255, 0.9)" />
+                        <ellipse cx="0" cy="18" rx="18" ry="22" fill="#FDE047" filter="url(#glow-effect)" />
+                        <path d="M0,-15 Q20,-10 20,10 Q20,25 0,33 Q-20,25 -20,10 Q-20,-10 0,-15 Z" fill="#6D28D9" />
+                        <circle cx="0" cy="-18" r="16" fill="#4C1D95" />
+                        <circle cx="-6" cy="-20" r="4.5" fill="white" />
+                        <circle cx="6" cy="-20" r="4.5" fill="white" />
+                        <circle cx="-5" cy="-19" r="2" fill="black" />
+                        <circle cx="7" cy="-19" r="2" fill="black" />
+                        <circle cx="-4.5" cy="-20.5" r="0.8" fill="white" />
+                        <circle cx="7.5" cy="-20.5" r="0.8" fill="white" />
+                        <ellipse class="blush" cx="-12" cy="-15" rx="4" ry="2" fill="#FFA7C3" />
+                        <ellipse class="blush" cx="12" cy="-15" rx="4" ry="2" fill="#FFA7C3" />
                     </g>
                 </svg>
             </div>
@@ -1028,16 +1517,18 @@
     <!-- MODAL DE GERENCIAR CONTA -->
     <div id="user-manage-modal" class="modal-overlay">
         <div class="modal-content">
-             <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-between items-center mb-6">
                 <h2 class="text-3xl font-bold" data-translate="manage_account">Gerenciar Conta</h2>
-                <button type="button" id="cancel-user-manage-btn" class="text-2xl font-bold p-2 leading-none">&times;</button>
+                <button type="button" id="cancel-user-manage-btn"
+                    class="text-2xl font-bold p-2 leading-none">&times;</button>
             </div>
-            
+
             <div class="modal-scrollable-content pr-2">
                 <form id="update-username-form" class="flex flex-col space-y-4">
                     <h3 class="text-lg font-semibold" data-translate="change_username">Alterar Nome de Usuário</h3>
                     <div>
-                        <label for="new-username-input" class="font-bold text-sm" data-translate="username">Nome de Usuário</label>
+                        <label for="new-username-input" class="font-bold text-sm" data-translate="username">Nome de
+                            Usuário</label>
                         <input type="text" id="new-username-input" class="input mt-1" required>
                     </div>
                     <div class="flex justify-end">
@@ -1046,18 +1537,22 @@
                     <p id="update-username-status" class="text-sm mt-2 min-h-[20px]"></p>
                 </form>
 
-                 <form id="update-keyword-form" class="flex flex-col space-y-4 border-t border-gray-200 pt-4 mt-4">
-                    <h3 class="text-lg font-semibold" data-translate="change_keyword">Alterar Palavra-chave de Segurança</h3>
+                <form id="update-keyword-form" class="flex flex-col space-y-4 border-t border-gray-200 pt-4 mt-4">
+                    <h3 class="text-lg font-semibold" data-translate="change_keyword">Alterar Palavra-chave de Segurança
+                    </h3>
                     <div>
-                        <label for="new-keyword-input" class="font-bold text-sm" data-translate="new_keyword">Nova Palavra-chave</label>
+                        <label for="new-keyword-input" class="font-bold text-sm" data-translate="new_keyword">Nova
+                            Palavra-chave</label>
                         <input type="text" id="new-keyword-input" class="input mt-1" required>
                     </div>
                     <div>
-                        <label for="current-password-for-keyword" class="font-bold text-sm" data-translate="current_password_to_confirm">Senha Atual (para confirmar)</label>
+                        <label for="current-password-for-keyword" class="font-bold text-sm"
+                            data-translate="current_password_to_confirm">Senha Atual (para confirmar)</label>
                         <input type="password" id="current-password-for-keyword" class="input mt-1" required>
                     </div>
                     <div class="flex justify-end">
-                        <button type="submit" class="btn btn-primary" data-translate="save_keyword">Salvar Palavra-chave</button>
+                        <button type="submit" class="btn btn-primary" data-translate="save_keyword">Salvar
+                            Palavra-chave</button>
                     </div>
                     <p id="update-keyword-status" class="text-sm mt-2 min-h-[20px]"></p>
                 </form>
@@ -1065,15 +1560,18 @@
                 <form id="update-password-form" class="flex flex-col space-y-4 border-t border-gray-200 pt-4 mt-4">
                     <h3 class="text-lg font-semibold" data-translate="change_password">Alterar Senha</h3>
                     <div>
-                        <label for="new-password-input" class="font-bold text-sm" data-translate="new_password">Nova Senha</label>
+                        <label for="new-password-input" class="font-bold text-sm" data-translate="new_password">Nova
+                            Senha</label>
                         <input type="password" id="new-password-input" class="input mt-1" required>
                     </div>
-                     <div>
-                        <label for="confirm-new-password-input" class="font-bold text-sm" data-translate="confirm_new_password">Confirmar Nova Senha</label>
+                    <div>
+                        <label for="confirm-new-password-input" class="font-bold text-sm"
+                            data-translate="confirm_new_password">Confirmar Nova Senha</label>
                         <input type="password" id="confirm-new-password-input" class="input mt-1" required>
                     </div>
                     <div class="flex justify-end mt-4">
-                        <button type="submit" class="btn btn-primary" data-translate="update_password">Atualizar Senha</button>
+                        <button type="submit" class="btn btn-primary" data-translate="update_password">Atualizar
+                            Senha</button>
                     </div>
                     <p id="update-password-status" class="text-sm mt-2 min-h-[20px]"></p>
                 </form>
@@ -1087,46 +1585,94 @@
             <h2 class="text-3xl font-bold mb-6" id="add-edit-modal-title" data-translate="add_card">Adicionar Card</h2>
             <form id="add-edit-form" class="flex flex-col space-y-4">
                 <input type="hidden" id="card-id-input">
-                 <div class="flex items-end space-x-2">
-                    <div class="flex-grow">
-                        <label for="kanji-input" id="main-char-label" class="font-bold text-sm" data-translate="kanji">Kanji</label>
-                        <input type="text" id="kanji-input" class="input mt-1" required>
+                <input type="hidden" id="card-type-input" value="word"> <!-- Novo campo para controlar o tipo -->
+
+                <!-- Seletor de Tipo de Card -->
+                <div class="flex bg-gray-200 rounded-lg p-1">
+                    <button type="button" id="type-selector-word"
+                        class="flex-1 p-2 rounded-md text-sm font-bold bg-white shadow text-accent-primary"
+                        data-translate-base="word">Palavra</button>
+                    <button type="button" id="type-selector-question"
+                        class="flex-1 p-2 rounded-md text-sm font-bold text-gray-600"
+                        data-translate-base="question">Pergunta</button>
+                </div>
+
+                <!-- Campos para o tipo "Palavra" -->
+                <div id="fields-for-word">
+                    <div class="flex items-end space-x-2">
+                        <div class="flex-grow">
+                            <label for="kanji-input" id="main-char-label" class="font-bold text-sm"
+                                data-translate="kanji">Kanji</label>
+                            <input type="text" id="kanji-input" class="input mt-1">
+                        </div>
+                        <button type="button" id="generate-ai-btn" class="btn btn-primary flex-shrink-0">
+                            <span id="ai-btn-text" data-translate="generate_with_ai">Gerar com IA</span>
+                            <svg id="ai-btn-spinner" class="animate-spin h-5 w-5 text-white" style="display: none;"
+                                xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" fill="none"
+                                viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                        </button>
                     </div>
-                    <button type="button" id="generate-ai-btn" class="btn btn-primary flex-shrink-0">
-                        <span id="ai-btn-text" data-translate="generate_with_ai">Gerar com IA</span>
-                         <svg id="ai-btn-spinner" class="animate-spin h-5 w-5 text-white" style="display: none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                    </button>
+                    <div id="display-form-field">
+                        <label for="display-kanji-input" class="font-bold text-sm"
+                            data-translate="display_form_label">Forma de Exibição (Opcional)</label>
+                        <input type="text" id="display-kanji-input" class="input mt-1">
+                    </div>
+                    <div>
+                        <label for="pronunciation-input" id="pronunciation-label" class="font-bold text-sm"
+                            data-translate="reading_romaji">Leitura (Romaji)</label>
+                        <input type="text" id="pronunciation-input" class="input mt-1">
+                    </div>
+                    <div>
+                        <label for="meaning-input" class="font-bold text-sm"
+                            data-translate="meaning">Significado</label>
+                        <input type="text" id="meaning-input" class="input mt-1">
+                    </div>
                 </div>
-                <div id="display-form-field">
-                    <label for="display-kanji-input" class="font-bold text-sm" data-translate="display_form_label">Forma de Exibição (Opcional, ex: 大きい)</label>
-                    <input type="text" id="display-kanji-input" class="input mt-1">
+
+                <!-- Campos para o tipo "Pergunta" -->
+                <div id="fields-for-question" style="display: none;">
+                    <div>
+                        <label for="question-input" class="font-bold text-sm" data-translate="question_label">Sua
+                            Pergunta</label>
+                        <textarea id="question-input" class="textarea mt-1" rows="4"
+                            placeholder="Digite aqui a pergunta do concurso..."></textarea>
+                    </div>
+                    <div>
+                        <label for="answer-input" class="font-bold text-sm" data-translate="answer_label">Resposta (será
+                            gerada pela IA)</label>
+                        <textarea id="answer-input" class="textarea mt-1" rows="4" readonly></textarea>
+                    </div>
                 </div>
-                <div>
-                    <label for="pronunciation-input" id="pronunciation-label" class="font-bold text-sm" data-translate="reading_romaji">Leitura (Romaji)</label>
-                    <input type="text" id="pronunciation-input" class="input mt-1" required>
-                </div>
-                <div>
-                    <label for="meaning-input" class="font-bold text-sm" data-translate="meaning">Significado</label>
-                    <input type="text" id="meaning-input" class="input mt-1" required>
-                </div>
+
                 <input type="hidden" id="gemini-data-input">
+
                 <div class="flex justify-end space-x-4 mt-4">
-                    <button type="button" id="cancel-edit-btn" class="btn btn-secondary" data-translate="cancel">Cancelar</button>
+                    <button type="button" id="cancel-edit-btn" class="btn btn-secondary"
+                        data-translate="cancel">Cancelar</button>
                     <button type="submit" id="save-card-btn" class="btn btn-primary">
                         <span id="save-btn-text" data-translate="save">Salvar</span>
-                        <svg id="save-btn-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" style="display: none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        <svg id="save-btn-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                            style="display: none;" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)"
+                            fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
                         </svg>
                     </button>
                 </div>
             </form>
+
         </div>
     </div>
-    
+
     <!-- MODAL DE PLACAR PÓS-JOGO -->
     <div id="game-completion-modal" class="modal-overlay">
         <div id="game-completion-content" class="modal-content">
@@ -1135,10 +1681,13 @@
     </div>
 
     <footer class="w-full text-center p-4 mt-auto">
-        <p class="text-xs" style="color: var(--text-secondary);">&copy; 2024 Firefly Designer. Todos os direitos reservados.</p>
+        <p class="text-xs" style="color: var(--text-secondary);">&copy; 2024 Firefly Designer. Todos os direitos
+            reservados.</p>
     </footer>
 
     <script type="module">
+
+
         // © 2024 Firefly Designer. Todos os direitos reservados.
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updatePassword, sendPasswordResetEmail, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -1160,9 +1709,49 @@
         const db = getDatabase(app);
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
+
+
+        // --- LÓGICA DO SELETOR DE TIPO DE CARD ---
+        function setupCardTypeSelector() {
+            const wordBtn = dom.typeSelectorWord;
+            const questionBtn = dom.typeSelectorQuestion;
+
+            wordBtn.addEventListener('click', () => {
+                dom.cardTypeInput.value = 'word';
+                dom.fieldsForWord.style.display = 'block';
+                dom.fieldsForQuestion.style.display = 'none';
+                wordBtn.classList.add('bg-white', 'shadow', 'text-accent-primary');
+                questionBtn.classList.remove('bg-white', 'shadow', 'text-accent-primary');
+                // A função do botão de IA volta a ser para palavras
+                dom.generateAiBtn.style.display = 'flex';
+            });
+
+            questionBtn.addEventListener('click', () => {
+                dom.cardTypeInput.value = 'question';
+                dom.fieldsForWord.style.display = 'none';
+                dom.fieldsForQuestion.style.display = 'block';
+                questionBtn.classList.add('bg-white', 'shadow', 'text-accent-primary');
+                wordBtn.classList.remove('bg-white', 'shadow', 'text-accent-primary');
+                // O botão de IA agora fica dentro do campo de pergunta
+                // Movendo o botão para a lógica de geração de resposta
+                dom.generateAiBtn.style.display = 'flex';
+            });
+        }
+   
+
         // --- TRADUÇÃO DA UI ---
         const translations = {
             pt: {
+
+                // Adicione estas linhas dentro do objeto pt
+                question: "Pergunta",
+                question_label: "Sua Pergunta",
+                answer_label: "Resposta (será gerada pela IA)",
+
+                // Adicione estas linhas dentro do objeto en
+                question: "Question",
+                question_label: "Your Question",
+                answer_label: "Answer (will be AI-generated)",
                 // Geral
                 login: "Entrar",
                 logout: "Sair",
@@ -1390,7 +1979,7 @@
                 updating: "Updating...",
                 password_updated: "Password updated successfully!",
                 error_updating_password: "Error updating. Requires recent login.",
-                 // Games
+                // Games
                 congrats_challenge: "Congratulations!",
                 challenge_complete: "You've completed the challenge.",
                 points_earned: "Points Earned",
@@ -1437,13 +2026,13 @@
                     el.placeholder = translations[lang][key];
                 }
             });
-             document.querySelectorAll('[data-translate-title]').forEach(el => {
+            document.querySelectorAll('[data-translate-title]').forEach(el => {
                 const key = el.dataset.translateTitle;
                 if (translations[lang] && translations[lang][key]) {
                     el.title = translations[lang][key];
                 }
             });
-             document.querySelectorAll('[data-translate-base]').forEach(el => {
+            document.querySelectorAll('[data-translate-base]').forEach(el => {
                 const key = el.dataset.translateBase;
                 const baseText = translations[lang][key] || el.dataset.baseText;
                 if (!el.dataset.baseText) el.dataset.baseText = el.textContent.split(':')[0] + ':';
@@ -1534,8 +2123,8 @@
                 'jp': 'ja-JP',
                 'en': 'en-US'
             };
-            utterance.lang = langMap[lang] || lang; 
-            
+            utterance.lang = langMap[lang] || lang;
+
             // Aumenta um pouco a velocidade para uma pronúncia mais natural em japonês
             if (utterance.lang === 'ja-JP') {
                 utterance.rate = 1.0;
@@ -1570,8 +2159,8 @@
         let unsubscribeCards;
         let unsubscribeProfile;
         let isCardFlipped = false;
-        let isStudyMoreSession = false; 
-        let sessionInitialCount = 0; 
+        let isStudyMoreSession = false;
+        let sessionInitialCount = 0;
         let srsSessionStats = { correct: 0, incorrect: 0 };
         let currentLearningLanguage = 'jp'; // 'jp' ou 'en'
         let currentLearningMode = 'kanji'; // 'kanji', 'hiragana', 'katakana', 'english'
@@ -1580,13 +2169,20 @@
         let manageCurrentPage = 1;
         let currentAuthMode = 'login'; // 'login', 'register', 'recover'
         const ITEMS_PER_PAGE = 10;
-        let studyResultsChart = null; 
+        let studyResultsChart = null;
 
         // Elementos do DOM
         const dom = {
+            cardTypeInput: document.getElementById('card-type-input'),
+            typeSelectorWord: document.getElementById('type-selector-word'),
+            typeSelectorQuestion: document.getElementById('type-selector-question'),
+            fieldsForWord: document.getElementById('fields-for-word'),
+            fieldsForQuestion: document.getElementById('fields-for-question'),
+            questionInput: document.getElementById('question-input'),
+            answerInput: document.getElementById('answer-input'),
             mainContainer: document.querySelector('.main-container'),
             gameContainer: document.getElementById('game-container'),
-            statsContainer: document.getElementById('stats-container'), 
+            statsContainer: document.getElementById('stats-container'),
             loadingOverlay: document.getElementById('loading-overlay'),
             authModal: document.getElementById('auth-modal'),
             reviewCard: document.getElementById('review-card'),
@@ -1601,7 +2197,7 @@
             studyModeDropdown: document.getElementById('study-mode-dropdown'),
             navGames: document.getElementById('nav-games'),
             navManage: document.getElementById('nav-manage'),
-            navStats: document.getElementById('nav-stats'), 
+            navStats: document.getElementById('nav-stats'),
             navLeaderboard: document.getElementById('nav-leaderboard'),
             homeLogo: document.getElementById('home-logo'),
             navGamesDropdown: document.getElementById('nav-games-dropdown'),
@@ -1664,7 +2260,7 @@
             navGamesMobileDropdown: document.getElementById('nav-games-mobile-dropdown'),
             gamesCaretMobile: document.getElementById('games-caret-mobile'),
             navManageMobile: document.getElementById('nav-manage-mobile'),
-            navStatsMobile: document.getElementById('nav-stats-mobile'), 
+            navStatsMobile: document.getElementById('nav-stats-mobile'),
             navLeaderboardMobile: document.getElementById('nav-leaderboard-mobile'),
             profileModal: document.getElementById('profile-modal'),
             profileContent: document.getElementById('profile-content'),
@@ -1694,8 +2290,8 @@
                 setupRealtimeListeners();
             } else {
                 userId = null;
-                if(unsubscribeCards) unsubscribeCards();
-                if(unsubscribeProfile) unsubscribeProfile();
+                if (unsubscribeCards) unsubscribeCards();
+                if (unsubscribeProfile) unsubscribeProfile();
                 allCards = {};
                 userProfile = { totalScore: 0, weeklyScore: 0, patentLevel: 0, leagueId: null, email: '', username: '', keyword: '', createdAt: '' };
                 toggleUI(false);
@@ -1704,7 +2300,7 @@
 
         function toggleUI(isAuthenticated) {
             dom.loadingOverlay.classList.add('visible');
-            if(isAuthenticated) {
+            if (isAuthenticated) {
                 showView('srs');
                 dom.authModal.classList.remove('visible');
                 dom.authLinks.style.display = 'none';
@@ -1725,7 +2321,7 @@
                 dom.loadingOverlay.classList.remove('visible');
             }, 1000);
         }
-        
+
         // --- SINCRONIZAÇÃO COM FIREBASE ---
         function setupRealtimeListeners() {
             setupRealtimeCardListener();
@@ -1733,18 +2329,18 @@
         }
 
         function getDbPath(type = 'cards', targetUserId = null) {
-             const uid = targetUserId || userId;
-             if (!uid) return null;
+            const uid = targetUserId || userId;
+            if (!uid) return null;
 
-             const modePaths = { kanji: 'kanjiCards', hiragana: 'hiraganaCards', katakana: 'katakanaCards', english: 'englishCards' };
-             if (type === 'cards') return `artifacts/${appId}/users/${uid}/${modePaths[currentLearningMode]}`;
-             if (type === 'profile') return `artifacts/${appId}/userProfiles/${uid}`;
-             if (type === 'leagues') return `artifacts/${appId}/leagues`;
-             return `artifacts/${appId}`;
+            const modePaths = { kanji: 'kanjiCards', hiragana: 'hiraganaCards', katakana: 'katakanaCards', english: 'englishCards' };
+            if (type === 'cards') return `artifacts/${appId}/users/${uid}/${modePaths[currentLearningMode]}`;
+            if (type === 'profile') return `artifacts/${appId}/userProfiles/${uid}`;
+            if (type === 'leagues') return `artifacts/${appId}/leagues`;
+            return `artifacts/${appId}`;
         }
 
         function getCurrentDeck() { return allCards[currentLearningMode] || []; }
-        
+
         function setupRealtimeCardListener() {
             if (unsubscribeCards) unsubscribeCards();
             const path = getDbPath('cards');
@@ -1757,7 +2353,7 @@
                 if (dom.manageModal.classList.contains('visible')) renderManageView();
             }, (error) => console.error("Erro ao ouvir cards:", error));
         }
-        
+
         function setupRealtimeProfileListener() {
             if (unsubscribeProfile) unsubscribeProfile();
             const path = getDbPath('profile');
@@ -1768,7 +2364,7 @@
                     userProfile = { ...snapshot.val(), uid: userId };
                     await checkAndAssignLeague();
                     toggleUI(true); // Atualiza a UI com os dados do perfil
-                } 
+                }
             });
         }
 
@@ -1809,34 +2405,34 @@
         async function checkAndAssignLeague() {
             const currentWeekId = getWeekId();
             if (userProfile.leagueId && userProfile.leagueWeek === currentWeekId) {
-                return; 
+                return;
             }
-            
+
             const profileUpdates = {};
 
             if (userProfile.leagueWeek && userProfile.leagueWeek !== currentWeekId) {
-                 const oldLeagueRef = ref(db, `${getDbPath('leagues')}/${userProfile.leagueWeek}/${userProfile.leagueId}`);
-                 const oldLeagueSnap = await get(oldLeagueRef);
-                 if(oldLeagueSnap.exists()){
-                     const members = oldLeagueSnap.val().members;
-                     if (members) {
-                        const sortedMembers = Object.values(members).sort((a,b) => b.weeklyScore - a.weeklyScore);
+                const oldLeagueRef = ref(db, `${getDbPath('leagues')}/${userProfile.leagueWeek}/${userProfile.leagueId}`);
+                const oldLeagueSnap = await get(oldLeagueRef);
+                if (oldLeagueSnap.exists()) {
+                    const members = oldLeagueSnap.val().members;
+                    if (members) {
+                        const sortedMembers = Object.values(members).sort((a, b) => b.weeklyScore - a.weeklyScore);
                         const userRank = sortedMembers.findIndex(m => m.uid === userId);
                         if (userRank !== -1) {
                             if (userRank < 5) profileUpdates.patentLevel = Math.min(patents.length - 1, userProfile.patentLevel + 1);
                             else if (userRank >= 25) profileUpdates.patentLevel = Math.max(0, userProfile.patentLevel - 1);
                         }
-                     }
-                 }
+                    }
+                }
             }
 
             profileUpdates.weeklyScore = 0;
-            
+
             const leaguesRef = ref(db, `${getDbPath('leagues')}/${currentWeekId}`);
             const snapshot = await get(leaguesRef);
             const leagues = snapshot.val() || {};
             let assigned = false;
-            
+
             for (const leagueId in leagues) {
                 const league = leagues[leagueId];
                 if (league.patentLevel === (profileUpdates.patentLevel ?? userProfile.patentLevel) && league.members && Object.keys(league.members).length < 30) {
@@ -1851,7 +2447,7 @@
                 profileUpdates.leagueId = newLeagueRef.key;
                 await set(newLeagueRef, { patentLevel: (profileUpdates.patentLevel ?? userProfile.patentLevel), members: {}, createdAt: Date.now() });
             }
-            
+
             profileUpdates.leagueWeek = currentWeekId;
             const userInLeagueRef = ref(db, `${getDbPath('leagues')}/${currentWeekId}/${profileUpdates.leagueId}/members/${userId}`);
             await set(userInLeagueRef, { uid: userId, username: userProfile.username, weeklyScore: 0 });
@@ -1861,7 +2457,7 @@
         // --- NAVEGAÇÃO E UI GERAL ---
         dom.loginNavBtn.addEventListener('click', () => dom.authModal.classList.add('visible'));
         dom.userMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); dom.userMenuDropdown.classList.toggle('visible'); });
-        
+
         // Dropdown listeners
         window.addEventListener('click', (e) => {
             const closeDropdowns = (dropdownsToExclude = []) => {
@@ -1878,8 +2474,8 @@
             if (dom.navLangLearn.parentElement && !dom.navLangLearn.parentElement.contains(e.target)) dom.langLearnDropdown.classList.remove('visible');
         });
 
-        dom.langUiBtn.addEventListener('click', (e) => {e.stopPropagation(); dom.langUiDropdown.classList.toggle('visible'); });
-        dom.navLangLearn.addEventListener('click', (e) => {e.stopPropagation(); e.preventDefault(); dom.langLearnDropdown.classList.toggle('visible');});
+        dom.langUiBtn.addEventListener('click', (e) => { e.stopPropagation(); dom.langUiDropdown.classList.toggle('visible'); });
+        dom.navLangLearn.addEventListener('click', (e) => { e.stopPropagation(); e.preventDefault(); dom.langLearnDropdown.classList.toggle('visible'); });
 
 
         function showView(viewName) {
@@ -1899,10 +2495,10 @@
                 dom.navManage.classList.add('active');
                 dom.manageModal.classList.add('visible');
                 renderManageView();
-            } else if (viewName === 'stats') { 
+            } else if (viewName === 'stats') {
                 dom.statsContainer.style.display = 'flex';
                 dom.navStats.classList.add('active');
-                renderStatsView(); 
+                renderStatsView();
             } else if (viewName === 'leaderboard') {
                 dom.mainContainer.style.display = 'flex';
                 dom.navLeaderboard.classList.add('active');
@@ -1911,7 +2507,7 @@
         }
         dom.homeLogo.addEventListener('click', (e) => { e.preventDefault(); showView('srs'); filterCardsDueToday(); });
         dom.navGames.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); dom.navGamesDropdown.classList.toggle('visible'); });
-        dom.navStudy.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); if(e.target.closest('.dropdown')) { dom.studyModeDropdown.classList.toggle('visible'); } else { showView('srs'); filterCardsDueToday(); } });
+        dom.navStudy.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); if (e.target.closest('.dropdown')) { dom.studyModeDropdown.classList.toggle('visible'); } else { showView('srs'); filterCardsDueToday(); } });
 
         function updateStudyModeUI() {
             const studyDropdown = dom.studyModeDropdown;
@@ -1925,7 +2521,7 @@
             gamesDropdownMobile.innerHTML = '';
 
             const langPrefix = translations[currentUILanguage]['study_mode_select'] || 'Estudar';
-            
+
             if (currentLearningLanguage === 'jp') {
                 const modes = [
                     { key: 'kanji', name: 'Kanji' },
@@ -1936,12 +2532,12 @@
                     studyDropdown.innerHTML += `<button data-mode="${mode.key}" class="mode-select-btn">${mode.name}</button>`;
                     studyDropdownMobile.innerHTML += `<button data-mode="${mode.key}" class="mode-select-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left">${mode.name}</button>`;
                 });
-                
+
                 const games = [
-                    { id: 'match', name: 'Combine'},
-                    { id: 'quiz', name: 'Quiz'},
-                    { id: 'type', name: 'Digite a Leitura'},
-                    { id: 'memory', name: 'Jogo da Memória'},
+                    { id: 'match', name: 'Combine' },
+                    { id: 'quiz', name: 'Quiz' },
+                    { id: 'type', name: 'Digite a Leitura' },
+                    { id: 'memory', name: 'Jogo da Memória' },
                 ]
                 games.forEach(game => {
                     gamesDropdown.innerHTML += `<a href="#" class="game-start-btn" data-game="${game.id}">${game.name}</a>`;
@@ -1969,7 +2565,7 @@
                     e.preventDefault();
                     const gameId = btn.dataset.game;
                     const gameFunctions = { 'match': startMatchingGame, 'quiz': startQuizGame, 'type': startTypingGame, 'memory': startMemoryGame };
-                    if(gameFunctions[gameId]) gameFunctions[gameId]();
+                    if (gameFunctions[gameId]) gameFunctions[gameId]();
                     if (btn.classList.contains('game-start-btn-mobile')) closeMobileMenu();
                 });
             });
@@ -2008,7 +2604,7 @@
             showView('srs');
             setupRealtimeCardListener();
         }
-        
+
         document.querySelectorAll('.lang-learn-btn, .lang-learn-btn-mobile').forEach(btn => {
             btn.addEventListener('click', () => {
                 setLearningLanguage(btn.dataset.lang);
@@ -2036,53 +2632,63 @@
         dom.navManageMobile.addEventListener('click', (e) => { e.preventDefault(); showView('manage'); closeMobileMenu(); });
         dom.navStatsMobile.addEventListener('click', (e) => { e.preventDefault(); showView('stats'); closeMobileMenu(); });
         dom.navLeaderboardMobile.addEventListener('click', (e) => { e.preventDefault(); showView('leaderboard'); closeMobileMenu(); });
-        
+
         dom.navStats.addEventListener('click', (e) => { e.preventDefault(); showView('stats'); });
-        
+
         // --- LÓGICA DO SRS ---
-        function filterCardsDueToday() { isStudyMoreSession = false; srsSessionStats = { correct: 0, incorrect: 0 }; const now = new Date(); now.setHours(0, 0, 0, 0); const deck = getCurrentDeck(); dueCards = deck.filter(card => { const interval = card.srsInterval === undefined ? 0 : card.srsInterval; if (interval === 0) return true; const lastReviewDate = new Date(card.lastReview); lastReviewDate.setHours(0,0,0,0); lastReviewDate.setDate(lastReviewDate.getDate() + interval); return now >= lastReviewDate; }); dueCards.sort(() => Math.random() - 0.5); sessionInitialCount = dueCards.length; updateProgress(); nextCard(); } 
-        
-        function nextCard() { isCardFlipped = false; dom.reviewCard.classList.remove('is-flipped'); if (dueCards.length === 0) { currentCard = null; displayCompletion(); return; } currentCard = dueCards[0]; displayCard(); } 
-        
+        function filterCardsDueToday() { isStudyMoreSession = false; srsSessionStats = { correct: 0, incorrect: 0 }; const now = new Date(); now.setHours(0, 0, 0, 0); const deck = getCurrentDeck(); dueCards = deck.filter(card => { const interval = card.srsInterval === undefined ? 0 : card.srsInterval; if (interval === 0) return true; const lastReviewDate = new Date(card.lastReview); lastReviewDate.setHours(0, 0, 0, 0); lastReviewDate.setDate(lastReviewDate.getDate() + interval); return now >= lastReviewDate; }); dueCards.sort(() => Math.random() - 0.5); sessionInitialCount = dueCards.length; updateProgress(); nextCard(); }
+
+        function nextCard() { isCardFlipped = false; dom.reviewCard.classList.remove('is-flipped'); if (dueCards.length === 0) { currentCard = null; displayCompletion(); return; } currentCard = dueCards[0]; displayCard(); }
+
         // CORREÇÃO: Função modificada para exibir frases em inglês na frente do card
-        function displayCard() { 
-            let frontText, textToSpeak;
-            const langClass = currentLearningLanguage === 'jp' ? 'jp' : 'en';
-            const classFontSize = currentLearningLanguage ===  'jp' ? 'clamp(5rem, 10vw, 15em)' : 'clamp(1.5rem, 2.5vw, 4rem)';
+        function displayCard() {
+            let frontHTML = '';
+            let backHTML = '';
 
-            if (currentLearningLanguage === 'en' && currentCard.geminiInfo && currentCard.geminiInfo.sentences && currentCard.geminiInfo.sentences.length > 0) {
-                // Para inglês, mostra a primeira frase de exemplo na frente
-                frontText = currentCard.geminiInfo.sentences[0].english;
-                textToSpeak = frontText;
+            if (currentCard.type === 'question') {
+                // Lógica para card de pergunta
+                frontHTML = `<div class="p-6 text-center flex items-center justify-center h-full"><p class="question-text en" style="font-size: clamp(1.5rem, 5vw, 2.2rem); line-height: 1.4;">${currentCard.question}</p></div>`;
+                backHTML = `<div class="p-6 text-center flex flex-col items-center justify-center h-full"><p class="font-bold text-xl mb-4">${currentCard.question}</p><div class="w-full border-t border-gray-200 my-4"></div><p style="font-size: clamp(1.1rem, 4vw, 1.5rem); line-height: 1.6;">${currentCard.answer}</p></div>`;
+
             } else {
-                // Comportamento padrão para japonês ou se não houver frase em inglês
-                frontText = currentCard.displayKanji || currentCard.kanji;
-                textToSpeak = frontText;
-            }
-            
-            // Escapa caracteres especiais para o HTML onclick
-            const escapedTextToSpeak = textToSpeak.replace(/['`]/g, "\\$&").replace(/\n/g, ' ');
+                // Lógica original para card de palavra
+                let frontText, textToSpeak;
+                const langClass = currentLearningLanguage === 'jp' ? 'jp' : 'en';
+                const classFontSize = currentLearningLanguage === 'jp' ? 'clamp(5rem, 8vw, 10rem)' : 'clamp(1.5rem, 2.5vw, 4rem)';
 
-            // Usa ícone em vez de imagem e ajusta o estilo para frases
-            dom.cardFront.innerHTML = `<button class="sound-btn" onclick="window.speak('${escapedTextToSpeak}', '${currentLearningLanguage}')"><i class="ph ph-speaker-high text-2xl"></i></button><p class="question-text ${langClass}" style="font-size: ${classFontSize}; padding: 0 2rem;">${frontText}</p>`; 
-            dom.cardBack.innerHTML = renderAnswerContent(currentCard); 
-            renderActionButtons('show_answer'); 
-        } 
-        
-        function renderAnswerContent(card) { 
+                if (currentLearningLanguage === 'en' && currentCard.geminiInfo && currentCard.geminiInfo.sentences && currentCard.geminiInfo.sentences.length > 0) {
+                    frontText = currentCard.geminiInfo.sentences[0].english;
+                    textToSpeak = frontText;
+                } else {
+                    frontText = currentCard.displayKanji || currentCard.kanji;
+                    textToSpeak = frontText;
+                }
+
+                const escapedTextToSpeak = textToSpeak ? textToSpeak.replace(/['`]/g, "\\$&").replace(/\n/g, ' ') : '';
+                frontHTML = `<button class="sound-btn" onclick="window.speak('${escapedTextToSpeak}', '${currentLearningLanguage}')"><i class="ph ph-speaker-high text-2xl"></i></button><p class="question-text ${langClass}" style="font-size: ${classFontSize}; padding: 0 2rem;">${frontText}</p>`;
+                backHTML = renderAnswerContent(currentCard);
+            }
+
+            dom.cardFront.innerHTML = frontHTML;
+            dom.cardBack.innerHTML = backHTML;
+            renderActionButtons('show_answer');
+        }
+
+
+        function renderAnswerContent(card) {
             const mainChar = card.displayKanji || card.kanji;
             const langClass = currentLearningLanguage === 'jp' ? 'jp' : 'en';
             // Para o botão de som principal no verso, o áudio deve corresponder à palavra principal
             const textToSpeakOnBack = (currentLearningLanguage === 'en') ? card.kanji : mainChar;
             const escapedTextToSpeakOnBack = textToSpeakOnBack.replace(/['`]/g, "\\$&");
 
-            let geminiContent = ''; 
-            if (card.geminiInfo) { 
-                const info = card.geminiInfo; 
-                geminiContent += `<div class="w-full text-left mt-4 gemini-info-section">`; 
-                if (info.sentences && info.sentences.length > 0) { 
-                    geminiContent += `<h3 data-translate="example_sentences">${translations[currentUILanguage].example_sentences}</h3><ul>`; 
-                    info.sentences.forEach(s => { 
+            let geminiContent = '';
+            if (card.geminiInfo) {
+                const info = card.geminiInfo;
+                geminiContent += `<div class="w-full text-left mt-4 gemini-info-section">`;
+                if (info.sentences && info.sentences.length > 0) {
+                    geminiContent += `<h3 data-translate="example_sentences">${translations[currentUILanguage].example_sentences}</h3><ul>`;
+                    info.sentences.forEach(s => {
                         const sentenceKey = currentLearningLanguage === 'jp' ? 'japanese' : 'english';
                         const translationKey = currentLearningLanguage === 'jp' ? 'portuguese' : 'translation';
                         const readingKey = 'reading';
@@ -2090,20 +2696,20 @@
                         const originalSentence = s[sentenceKey];
                         const escapedSentence = originalSentence.replace(/['`]/g, "\\$&").replace(/\n/g, ' ');
                         const reading = s[readingKey] ? `<p class="reading">${s[readingKey]}</p>` : '';
-                        
-                        geminiContent += `<li class="sentence"><div class="flex items-center gap-2"><div class="flex-grow"><p class="${langClass}">${originalSentence}</p>${reading}<p>${s[translationKey]}</p></div><button class="sound-btn-sentence" onclick="window.speak(\`${escapedSentence}\`, \'${currentLearningLanguage}\')"><i class="ph ph-speaker-high text-xl"></i></button></div></li>`; 
-                    }); 
-                    geminiContent += `</ul>`; 
-                } 
-                if (info.curiosities) { geminiContent += `<h3 data-translate="curiosities">${translations[currentUILanguage].curiosities}</h3><p>${info.curiosities}</p>`; } 
-                if (info.grammar) { geminiContent += `<h3 data-translate="grammar_tip">${translations[currentUILanguage].grammar_tip}</h3><p>${info.grammar}</p>`; } 
-                geminiContent += `</div>`; 
-            } 
-            
+
+                        geminiContent += `<li class="sentence"><div class="flex items-center gap-2"><div class="flex-grow"><p class="${langClass}">${originalSentence}</p>${reading}<p>${s[translationKey]}</p></div><button class="sound-btn-sentence" onclick="window.speak(\`${escapedSentence}\`, \'${currentLearningLanguage}\')"><i class="ph ph-speaker-high text-xl"></i></button></div></li>`;
+                    });
+                    geminiContent += `</ul>`;
+                }
+                if (info.curiosities) { geminiContent += `<h3 data-translate="curiosities">${translations[currentUILanguage].curiosities}</h3><p>${info.curiosities}</p>`; }
+                if (info.grammar) { geminiContent += `<h3 data-translate="grammar_tip">${translations[currentUILanguage].grammar_tip}</h3><p>${info.grammar}</p>`; }
+                geminiContent += `</div>`;
+            }
+
             // No verso, para o inglês, mostramos a palavra principal que foi usada para gerar as frases.
             const mainDisplayOnBack = (currentLearningLanguage === 'en') ? card.kanji : mainChar;
 
-            return `<button class="sound-btn" onclick="window.speak('${escapedTextToSpeakOnBack}', '${currentLearningLanguage}')"><i class="ph ph-speaker-high text-2xl"></i></button><div class="flex-grow w-full flex flex-col items-center justify-start text-center"><p style="font-size: clamp(3.5rem, 12vw, 5rem);" class="${langClass}">${mainDisplayOnBack}</p><p class="text-2xl mt-4 font-bold">${card.meaning}</p><p class="text-lg text-gray-600 mt-2">${card.pronunciation}</p>${geminiContent}</div>`; 
+            return `<button class="sound-btn" onclick="window.speak('${escapedTextToSpeakOnBack}', '${currentLearningLanguage}')"><i class="ph ph-speaker-high text-2xl"></i></button><div class="flex-grow w-full flex flex-col items-center justify-start text-center"><p style="font-size: clamp(3.5rem, 12vw, 5rem);" class="${langClass}">${mainDisplayOnBack}</p><p class="text-2xl mt-4 font-bold">${card.meaning}</p><p class="text-lg text-gray-600 mt-2">${card.pronunciation}</p>${geminiContent}</div>`;
         }
 
         function renderActionButtons(state) {
@@ -2129,7 +2735,7 @@
                 });
             }
         }
-        
+
         function displayCompletion() {
             dom.cardFront.innerHTML = '';
             dom.cardBack.innerHTML = '';
@@ -2154,13 +2760,13 @@
             dom.cardFront.innerHTML = completionHTML;
 
             dom.feedbackButtons.innerHTML = ``;
-            
+
             if (wasSession) {
                 playVictorySound();
                 const scoreElement = document.getElementById('animated-score');
                 if (scoreElement) {
                     let currentScore = 0;
-                    const increment = Math.max(1, Math.ceil(totalPoints / 60)); 
+                    const increment = Math.max(1, Math.ceil(totalPoints / 60));
                     function animateScore() {
                         currentScore += increment;
                         if (currentScore >= totalPoints) {
@@ -2180,10 +2786,10 @@
             isCorrect ? playCorrectSound() : playIncorrectSound();
             if (isCorrect) srsSessionStats.correct++; else srsSessionStats.incorrect++;
             updateScore(isCorrect ? 10 : 0, isCorrect ? 1 : 0, isCorrect ? 0 : 1);
-            
+
             const cardToUpdate = { ...currentCard };
             dueCards.shift();
-            
+
             if (!isStudyMoreSession) {
                 let currentInterval = cardToUpdate.srsInterval || 0;
                 let newInterval;
@@ -2193,9 +2799,9 @@
                     else newInterval = Math.min(50, currentInterval + 2);
                 } else {
                     newInterval = 0;
-                    dueCards.push(cardToUpdate); 
+                    dueCards.push(cardToUpdate);
                 }
-                
+
                 const cardRef = ref(db, `${getDbPath('cards')}/${cardToUpdate.id}`);
                 const updatedData = { ...cardToUpdate, srsInterval: newInterval, lastReview: new Date().toISOString() };
                 delete updatedData.id;
@@ -2207,10 +2813,10 @@
             nextCard();
         }
         window.speak = speak;
-        
+
         // --- JOGOS ---
-        function renderGameUI(title, description, content) { dom.gameContainer.innerHTML = `<div class="text-center mb-8"><h2 class="text-3xl font-bold">${title}</h2><p class="text-gray-500 mt-2">${description}</p></div><div id="game-content">${content}</div>`; } 
-        
+        function renderGameUI(title, description, content) { dom.gameContainer.innerHTML = `<div class="text-center mb-8"><h2 class="text-3xl font-bold">${title}</h2><p class="text-gray-500 mt-2">${description}</p></div><div id="game-content">${content}</div>`; }
+
         function renderGameCompletion(playAgainFunction, correct, incorrect, points) {
             const totalPoints = points + 50;
             updateScore(totalPoints, correct, incorrect);
@@ -2247,7 +2853,7 @@
 
             const scoreElement = document.getElementById('animated-score-modal');
             let currentScore = 0;
-            const increment = Math.max(1, Math.ceil(totalPoints / 60)); 
+            const increment = Math.max(1, Math.ceil(totalPoints / 60));
 
             function animateScore() {
                 currentScore += increment;
@@ -2263,9 +2869,9 @@
 
         function getGameCards(count = 5) { const deck = getCurrentDeck(); if (deck.length < count) { dom.gameContainer.innerHTML = `<div class="text-center"><h2 class="text-2xl font-bold">${translations[currentUILanguage].insufficient_cards}</h2><p>${translations[currentUILanguage].need_at_least} ${count} ${currentLearningMode} ${translations[currentUILanguage].cards_to_play}</p></div>`; return null; } return [...deck].sort(() => 0.5 - Math.random()).slice(0, count); }
         function startMatchingGame() { showView('game-match'); const gameCards = getGameCards(5); if (!gameCards) return; let sessionCorrect = 0, sessionIncorrect = 0; const kanjis = gameCards.map(c => ({ id: c.id, text: c.kanji })).sort(() => 0.5 - Math.random()); const meanings = gameCards.map(c => ({ id: c.id, text: c.meaning })).sort(() => 0.5 - Math.random()); const content = `<div class="game-board" style="grid-template-columns: 1fr 1fr;"><div id="kanji-column" class="flex flex-col gap-4">${kanjis.map(k => `<div class="game-option jp" data-id="${k.id}">${k.text}</div>`).join('')}</div><div id="meaning-column" class="flex flex-col gap-4">${meanings.map(m => `<div class="game-option" data-id="${m.id}">${m.text}</div>`).join('')}</div></div>`; renderGameUI('Combine', 'Clique em um caractere e no seu significado correspondente.', content); let selectedKanji = null, selectedMeaning = null, correctPairs = 0; const kanjiItems = document.querySelectorAll('#kanji-column .game-option'); const meaningItems = document.querySelectorAll('#meaning-column .game-option'); function handleSelection(items, selectedItem, currentSelection) { if (currentSelection === selectedItem) { selectedItem.classList.remove('selected'); return null; } items.forEach(i => i.classList.remove('selected')); selectedItem.classList.add('selected'); return selectedItem; } function checkMatch() { if (!selectedKanji || !selectedMeaning) return; if (selectedKanji.dataset.id === selectedMeaning.dataset.id) { playCorrectSound(); speak(selectedKanji.textContent, 'jp'); selectedKanji.classList.add('correct'); selectedMeaning.classList.add('correct'); selectedKanji = null; selectedMeaning = null; correctPairs++; sessionCorrect++; if (correctPairs === gameCards.length) { setTimeout(() => renderGameCompletion(startMatchingGame, sessionCorrect, sessionIncorrect, sessionCorrect * 5), 500); } } else { playIncorrectSound(); sessionIncorrect++; selectedKanji.classList.add('incorrect'); selectedMeaning.classList.add('incorrect'); setTimeout(() => { selectedKanji?.classList.remove('incorrect', 'selected'); selectedMeaning?.classList.remove('incorrect', 'selected'); selectedKanji = null; selectedMeaning = null; }, 500); } } kanjiItems.forEach(item => item.addEventListener('click', () => { if (item.classList.contains('correct')) return; selectedKanji = handleSelection(kanjiItems, item, selectedKanji); checkMatch(); })); meaningItems.forEach(item => item.addEventListener('click', () => { if (item.classList.contains('correct')) return; selectedMeaning = handleSelection(meaningItems, item, selectedMeaning); checkMatch(); })); }
-        function startQuizGame() { showView('game-quiz'); const gameCards = getGameCards(10); if (!gameCards || gameCards.length < 4) { return; } let currentQuestionIndex = 0; let sessionCorrect = 0, sessionIncorrect = 0; function displayQuestion() { const card = gameCards[currentQuestionIndex]; const incorrectAnswers = getCurrentDeck().filter(c => c.id !== card.id).sort(() => 0.5 - Math.random()).slice(0, 3).map(c => c.meaning); const options = [card.meaning, ...incorrectAnswers].sort(() => 0.5 - Math.random()); const content = `<div class="text-center text-7xl font-bold font-['Noto_Sans_JP'] mb-8">${card.kanji}</div><div class="game-board" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">${options.map(opt => `<div class="game-option" data-correct="${opt === card.meaning}">${opt}</div>`).join('')}</div>`; renderGameUI('Quiz', `Qual o significado deste caractere? (${currentQuestionIndex + 1}/${gameCards.length})`, content); document.querySelectorAll('.game-option').forEach(option => { option.addEventListener('click', () => { document.querySelectorAll('.game-option').forEach(btn => btn.style.pointerEvents = 'none'); const isCorrect = option.dataset.correct === 'true'; option.classList.add(isCorrect ? 'correct' : 'incorrect'); if(isCorrect) { sessionCorrect++; playCorrectSound(); speak(card.kanji, 'jp'); } else { sessionIncorrect++; playIncorrectSound(); } if (!isCorrect) { document.querySelector('.game-option[data-correct="true"]').classList.add('correct'); } setTimeout(() => { currentQuestionIndex++; if (currentQuestionIndex < gameCards.length) { displayQuestion(); } else { renderGameCompletion(startQuizGame, sessionCorrect, sessionIncorrect, sessionCorrect * 5); } }, 1500); }); }); } displayQuestion(); }
+        function startQuizGame() { showView('game-quiz'); const gameCards = getGameCards(10); if (!gameCards || gameCards.length < 4) { return; } let currentQuestionIndex = 0; let sessionCorrect = 0, sessionIncorrect = 0; function displayQuestion() { const card = gameCards[currentQuestionIndex]; const incorrectAnswers = getCurrentDeck().filter(c => c.id !== card.id).sort(() => 0.5 - Math.random()).slice(0, 3).map(c => c.meaning); const options = [card.meaning, ...incorrectAnswers].sort(() => 0.5 - Math.random()); const content = `<div class="text-center text-7xl font-bold font-['Noto_Sans_JP'] mb-8">${card.kanji}</div><div class="game-board" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">${options.map(opt => `<div class="game-option" data-correct="${opt === card.meaning}">${opt}</div>`).join('')}</div>`; renderGameUI('Quiz', `Qual o significado deste caractere? (${currentQuestionIndex + 1}/${gameCards.length})`, content); document.querySelectorAll('.game-option').forEach(option => { option.addEventListener('click', () => { document.querySelectorAll('.game-option').forEach(btn => btn.style.pointerEvents = 'none'); const isCorrect = option.dataset.correct === 'true'; option.classList.add(isCorrect ? 'correct' : 'incorrect'); if (isCorrect) { sessionCorrect++; playCorrectSound(); speak(card.kanji, 'jp'); } else { sessionIncorrect++; playIncorrectSound(); } if (!isCorrect) { document.querySelector('.game-option[data-correct="true"]').classList.add('correct'); } setTimeout(() => { currentQuestionIndex++; if (currentQuestionIndex < gameCards.length) { displayQuestion(); } else { renderGameCompletion(startQuizGame, sessionCorrect, sessionIncorrect, sessionCorrect * 5); } }, 1500); }); }); } displayQuestion(); }
         function startTypingGame() { showView('game-type'); const gameCards = getGameCards(10); if (!gameCards) { return; } let currentQuestionIndex = 0; let sessionCorrect = 0, sessionIncorrect = 0; function displayQuestion() { const card = gameCards[currentQuestionIndex]; const content = `<div class="text-center"><div class="text-7xl font-bold font-['Noto_Sans_JP']">${card.kanji}</div><div class="text-2xl text-gray-500 mt-2">${card.meaning}</div><input type="text" id="typing-input" class="input mt-8 text-2xl text-center" placeholder="Digite a leitura (romaji)" autocomplete="off" autocorrect="off" spellcheck="false"><p id="typing-feedback" class="mt-4 h-6 font-bold"></p></div>`; renderGameUI('Digite a Leitura', `Escreva a pronúncia e pressione Enter (${currentQuestionIndex + 1}/${gameCards.length})`, content); const input = document.getElementById('typing-input'); input.focus(); input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { const feedback = document.getElementById('typing-feedback'); const isCorrect = input.value.toLowerCase().trim() === card.pronunciation.toLowerCase().trim(); if (isCorrect) { sessionCorrect++; input.classList.add('correct'); feedback.textContent = 'Correto!'; feedback.style.color = 'var(--success)'; playCorrectSound(); speak(card.kanji, 'jp'); } else { sessionIncorrect++; input.classList.add('incorrect'); feedback.innerHTML = `Incorreto. A resposta era: <strong>${card.pronunciation}</strong>`; feedback.style.color = 'var(--danger)'; playIncorrectSound(); } input.disabled = true; setTimeout(() => { currentQuestionIndex++; if (currentQuestionIndex < gameCards.length) { displayQuestion(); } else { renderGameCompletion(startTypingGame, sessionCorrect, sessionIncorrect, sessionCorrect * 5); } }, 1500); } }); } displayQuestion(); }
-        
+
         function startMemoryGame() {
             showView('game-memory');
             const gameCards = getGameCards(8);
@@ -2277,7 +2883,7 @@
                 items.push({ type: 'meaning', text: card.meaning, id: card.id });
             });
             items.sort(() => 0.5 - Math.random());
-            
+
             const gogoChanSVG = `<svg class="memory-card-gogo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g transform="translate(50, 50)"><path d="M0,-15 Q20,-10 20,10 Q20,25 0,33 Q-20,25 -20,10 Q-20,-10 0,-15 Z" fill="#fff"/><circle cx="0" cy="-18" r="16" fill="#fff"/><circle cx="-6" cy="-20" r="2" fill="#6D28D9"/><circle cx="6" cy="-20" r="2" fill="#6D28D9"/></g></svg>`;
 
             const content = `<div class="memory-grid">${items.map((item, index) => `
@@ -2286,9 +2892,9 @@
                     <div class="memory-card-face memory-card-back ${item.type === 'kanji' ? 'jp' : ''}">${item.text}</div>
                 </div>`).join('')}
             </div>`;
-            
+
             renderGameUI('Jogo da Memória', 'Encontre os pares de caractere e significado.', content);
-            
+
             let flippedCards = [];
             let matchedPairs = 0;
             let canFlip = true;
@@ -2306,14 +2912,14 @@
                         const kanjiText = card1.dataset.type === 'kanji' ? card1.dataset.text : card2.dataset.text;
                         speak(kanjiText, 'jp');
                         setTimeout(() => {
-                             card1.classList.add('matched');
-                             card2.classList.add('matched');
-                             matchedPairs++;
-                             flippedCards = [];
-                             canFlip = true;
-                             if (matchedPairs === gameCards.length) {
+                            card1.classList.add('matched');
+                            card2.classList.add('matched');
+                            matchedPairs++;
+                            flippedCards = [];
+                            canFlip = true;
+                            if (matchedPairs === gameCards.length) {
                                 setTimeout(() => renderGameCompletion(startMemoryGame, sessionCorrect, sessionIncorrect, sessionCorrect * 10), 500);
-                             }
+                            }
                         }, 500);
                     } else {
                         sessionIncorrect++;
@@ -2328,23 +2934,23 @@
                 }
             }));
         }
-        
+
         // --- GERENCIAMENTO E PAGINAÇÃO ---
-        dom.navManage.addEventListener('click', (e) => { e.preventDefault(); showView('manage'); }); dom.closeManageModalBtn.addEventListener('click', () => dom.manageModal.classList.remove('visible')); dom.addNewCardBtn.addEventListener('click', () => openAddEditModal()); dom.cancelEditBtn.addEventListener('click', () => dom.addEditModal.classList.remove('visible')); 
-        
-        dom.manageAccountBtn.addEventListener('click', (e) => { 
-            e.preventDefault(); 
+        dom.navManage.addEventListener('click', (e) => { e.preventDefault(); showView('manage'); }); dom.closeManageModalBtn.addEventListener('click', () => dom.manageModal.classList.remove('visible')); dom.addNewCardBtn.addEventListener('click', () => openAddEditModal()); dom.cancelEditBtn.addEventListener('click', () => dom.addEditModal.classList.remove('visible'));
+
+        dom.manageAccountBtn.addEventListener('click', (e) => {
+            e.preventDefault();
             dom.newUsernameInput.value = userProfile.username || '';
             dom.updatePasswordForm.reset();
             dom.updateKeywordForm.reset();
             dom.updateUsernameStatus.textContent = '';
             dom.updatePasswordStatus.textContent = '';
             dom.updateKeywordStatus.textContent = '';
-            dom.userManageModal.classList.add('visible'); 
-            dom.userMenuDropdown.classList.remove('visible'); 
-        }); 
-        dom.cancelUserManageBtn.addEventListener('click', () => dom.userManageModal.classList.remove('visible')); 
-        
+            dom.userManageModal.classList.add('visible');
+            dom.userMenuDropdown.classList.remove('visible');
+        });
+        dom.cancelUserManageBtn.addEventListener('click', () => dom.userManageModal.classList.remove('visible'));
+
         function renderPagination(container, currentPage, totalItems, itemsPerPage, onPageClick) {
             container.innerHTML = '';
             const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -2381,10 +2987,10 @@
             dom.manageModalTitle.textContent = `${translations[currentUILanguage].manage} ${modeName}`;
             const deck = getCurrentDeck();
             dom.cardListContainer.innerHTML = '';
-            
+
             if (deck.length === 0) {
                 dom.cardListContainer.innerHTML = `<p class="text-center text-gray-500">${translations[currentUILanguage].no_cards_yet} ${modeName}.</p>`;
-                renderPagination(dom.managePaginationContainer, 0, 0, ITEMS_PER_PAGE, () => {});
+                renderPagination(dom.managePaginationContainer, 0, 0, ITEMS_PER_PAGE, () => { });
                 return;
             }
 
@@ -2394,7 +3000,7 @@
             paginatedCards.forEach(card => {
                 const cardElement = document.createElement('div');
                 cardElement.className = 'flex items-center justify-between p-3 rounded-lg bg-white border border-gray-200';
-                
+
                 const mainDisplay = card.displayKanji || card.kanji;
                 const subDisplay = card.displayKanji && card.displayKanji !== card.kanji ? ` <span class="text-base text-gray-500">(${card.kanji})</span>` : '';
                 const langClass = currentLearningLanguage === 'jp' ? 'jp' : '';
@@ -2413,17 +3019,17 @@
                 cardElement.querySelector('.delete-btn').addEventListener('click', () => deleteCard(card.id));
                 dom.cardListContainer.appendChild(cardElement);
             });
-            
+
             renderPagination(dom.managePaginationContainer, manageCurrentPage, sortedCards.length, ITEMS_PER_PAGE, (page) => {
                 manageCurrentPage = page;
                 renderManageView();
             });
         }
 
-        function openAddEditModal(card = null) { 
-            dom.addEditForm.reset(); 
+        function openAddEditModal(card = null) {
+            dom.addEditForm.reset();
             let modeName, charType;
-            if(currentLearningLanguage === 'en'){
+            if (currentLearningLanguage === 'en') {
                 modeName = 'Inglês';
                 charType = translations[currentUILanguage].word;
                 dom.displayFormField.style.display = 'none';
@@ -2432,34 +3038,34 @@
                 modeName = currentLearningMode.charAt(0).toUpperCase() + currentLearningMode.slice(1);
                 charType = currentLearningMode === 'kanji' ? translations[currentUILanguage].kanji : translations[currentUILanguage].character;
                 dom.displayFormField.style.display = 'block';
-                 dom.pronunciationLabel.textContent = translations[currentUILanguage].reading_romaji;
+                dom.pronunciationLabel.textContent = translations[currentUILanguage].reading_romaji;
             }
-             
-            dom.mainCharLabel.textContent = charType; 
-            if (card) { 
+
+            dom.mainCharLabel.textContent = charType;
+            if (card) {
                 dom.addEditModalTitle.textContent = `${translations[currentUILanguage].edit_card} ${modeName}`;
-                dom.cardIdInput.value = card.id; 
-                dom.kanjiInput.value = card.kanji; 
+                dom.cardIdInput.value = card.id;
+                dom.kanjiInput.value = card.kanji;
                 dom.displayKanjiInput.value = card.displayKanji || '';
-                dom.pronunciationInput.value = card.pronunciation; 
-                dom.meaningInput.value = card.meaning; 
-                dom.geminiDataInput.value = card.geminiInfo ? JSON.stringify(card.geminiInfo) : ''; 
-            } else { 
+                dom.pronunciationInput.value = card.pronunciation;
+                dom.meaningInput.value = card.meaning;
+                dom.geminiDataInput.value = card.geminiInfo ? JSON.stringify(card.geminiInfo) : '';
+            } else {
                 dom.addEditModalTitle.textContent = `${translations[currentUILanguage].add_card} ${modeName}`;
-                dom.cardIdInput.value = ''; 
-                dom.geminiDataInput.value = ''; 
-            } 
-            dom.addEditModal.classList.add('visible'); 
-        } 
-        
-        async function deleteCard(cardId) { if (confirm(translations[currentUILanguage].confirm_delete)) { try { await remove(ref(db, `${getDbPath('cards')}/${cardId}`)); manageCurrentPage = 1; } catch(error) { console.error("Erro ao apagar card:", error); } } }
-        
+                dom.cardIdInput.value = '';
+                dom.geminiDataInput.value = '';
+            }
+            dom.addEditModal.classList.add('visible');
+        }
+
+        async function deleteCard(cardId) { if (confirm(translations[currentUILanguage].confirm_delete)) { try { await remove(ref(db, `${getDbPath('cards')}/${cardId}`)); manageCurrentPage = 1; } catch (error) { console.error("Erro ao apagar card:", error); } } }
+
         // --- PLACAR / LIGAS ---
-        dom.navLeaderboard.addEventListener('click', (e) => { e.preventDefault(); showView('leaderboard'); }); 
+        dom.navLeaderboard.addEventListener('click', (e) => { e.preventDefault(); showView('leaderboard'); });
         dom.closeLeaderboardModalBtn.addEventListener('click', () => dom.leaderboardModal.classList.remove('visible'));
-        
+
         function updateLeagueTimer() { const now = new Date(); const endOfWeek = new Date(now); endOfWeek.setDate(now.getDate() + (7 - now.getDay()) % 7); endOfWeek.setHours(23, 59, 59, 999); const diff = endOfWeek - now; const d = Math.floor(diff / (1000 * 60 * 60 * 24)); const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); dom.leagueTimer.textContent = `${translations[currentUILanguage].ends_in}: ${d}d ${h}h ${m}m`; }
-        
+
         function getPatentIcon(level) { const patent = patents[level]; return `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 6L8 14V34L24 42L40 34V14L24 6Z" fill="${patent.shadow}"/><path d="M24 8.25L9.5 15.1875V32.8125L24 39.75L38.5 32.8125V15.1875L24 8.25Z" fill="${patent.color}"/><path d="M24 20L15 15.5L24 11L33 15.5L24 20Z" fill="${patent.shadow}" opacity="0.5"/></svg>`; }
 
         async function openLeaderboard() {
@@ -2471,12 +3077,12 @@
             updateLeagueTimer();
             if (leagueTimerInterval) clearInterval(leagueTimerInterval);
             leagueTimerInterval = setInterval(updateLeagueTimer, 60000);
-            
+
             const leagueRef = ref(db, `${getDbPath('leagues')}/${userProfile.leagueWeek}/${userProfile.leagueId}/members`);
             onValue(leagueRef, (snapshot) => {
                 if (snapshot.exists()) {
                     const members = Object.values(snapshot.val());
-                    const sortedMembers = members.sort((a,b) => (b.weeklyScore || 0) - (a.weeklyScore || 0));
+                    const sortedMembers = members.sort((a, b) => (b.weeklyScore || 0) - (a.weeklyScore || 0));
                     renderLeague(sortedMembers);
                 }
             });
@@ -2485,7 +3091,7 @@
 
         function renderLeague(data) {
             dom.leaderboardList.innerHTML = '';
-            
+
             const paginatedData = data.slice((leagueCurrentPage - 1) * ITEMS_PER_PAGE, leagueCurrentPage * ITEMS_PER_PAGE);
 
             const createZone = (className, titleKey) => { const zone = document.createElement('div'); zone.className = `league-zone ${className}`; if (titleKey) { const titleEl = document.createElement('div'); titleEl.className = 'zone-title'; titleEl.textContent = translations[currentUILanguage][titleKey]; zone.appendChild(titleEl); } return zone; };
@@ -2515,9 +3121,9 @@
 
                 item.innerHTML = `<div class="rank">${rankContent}</div><div class="user-avatar">${userInitial}</div><div class="user-info"><div class="user-name">${userName}</div></div><div class="user-score">${user.weeklyScore || 0} pts</div>`;
                 item.addEventListener('click', () => openProfileModal(user.uid));
-                
-                if (rank <= promotionLimit) { promotionZone.appendChild(item); } 
-                else if (rank > demotionLimit && data.length > 10) { demotionZone.appendChild(item); } 
+
+                if (rank <= promotionLimit) { promotionZone.appendChild(item); }
+                else if (rank > demotionLimit && data.length > 10) { demotionZone.appendChild(item); }
                 else { normalZone.appendChild(item); }
             });
 
@@ -2530,7 +3136,7 @@
                 renderLeague(data);
             });
         }
-        
+
         // --- PERFIL DE USUÁRIO ---
         dom.myProfileBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -2541,9 +3147,9 @@
         async function openProfileModal(profileUserId) {
             dom.profileContent.innerHTML = `<div class="loader-icon">語</div>`;
             dom.profileModal.classList.add('visible');
-            
+
             const profilePath = getDbPath('profile', profileUserId);
-            if(!profilePath) {
+            if (!profilePath) {
                 dom.profileContent.innerHTML = `<p>${translations[currentUILanguage].error_loading_profile}</p>`;
                 return;
             }
@@ -2555,12 +3161,12 @@
                 } else {
                     dom.profileContent.innerHTML = `<p>${translations[currentUILanguage].profile_not_found}</p>`;
                 }
-            } catch(error) {
+            } catch (error) {
                 console.error("Erro ao buscar perfil:", error);
                 dom.profileContent.innerHTML = `<p>${translations[currentUILanguage].error_loading_profile}</p>`;
             }
         }
-        
+
         function renderProfile(profileData) {
             const patent = patents[profileData.patentLevel || 0];
             const joinDate = profileData.createdAt ? new Date(profileData.createdAt).toLocaleDateString(currentUILanguage) : 'Data não disponível';
@@ -2604,9 +3210,9 @@
                     const snapshot = await get(ref(db, modePath));
                     if (snapshot.exists()) {
                         const data = snapshot.val();
-                        allCards.push(...Object.values(data).map(c => ({...c, createdAt: c.createdAt || null})));
+                        allCards.push(...Object.values(data).map(c => ({ ...c, createdAt: c.createdAt || null })));
                     }
-                } catch(e) { console.error(`Erro ao buscar cards de ${mode}:`, e); }
+                } catch (e) { console.error(`Erro ao buscar cards de ${mode}:`, e); }
             }
             return allCards;
         }
@@ -2626,7 +3232,7 @@
 
             const allUserCards = await fetchAllUserData();
             const grid = document.getElementById('stats-grid');
-            grid.innerHTML = ''; 
+            grid.innerHTML = '';
 
             const totalCards = allUserCards.length;
             const learnedCards = allUserCards.filter(c => c.srsInterval && c.srsInterval > 21).length;
@@ -2634,11 +3240,11 @@
                 <div class="stat-card"> <div class="value">${totalCards}</div> <div class="label">${translations[currentUILanguage].cards_added}</div> </div>
                 <div class="stat-card"> <div class="value">${learnedCards}</div> <div class="label">${translations[currentUILanguage].cards_completed}</div> </div>
                 <div class="stat-card"> <div class="value">${(userProfile.totalScore || 0)}</div> <div class="label">${translations[currentUILanguage].total_xp}</div> </div>`;
-            
+
             const correct = userProfile.correctAnswers || 0;
             const incorrect = userProfile.incorrectAnswers || 0;
             const accuracy = (correct + incorrect > 0) ? ((correct / (correct + incorrect)) * 100).toFixed(1) : "0.0";
-            
+
             grid.innerHTML += `
                 <div class="stat-card md:col-span-2">
                     <h3 class="text-left font-bold mb-4">${translations[currentUILanguage].study_results}</h3>
@@ -2654,14 +3260,14 @@
 
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
-            tomorrow.setHours(0,0,0,0);
+            tomorrow.setHours(0, 0, 0, 0);
             let cardsTomorrow = 0;
             allUserCards.forEach(card => {
                 const interval = card.srsInterval === undefined ? 0 : card.srsInterval;
                 if (interval > 0 && card.lastReview) {
                     const lastReviewDate = new Date(card.lastReview);
                     lastReviewDate.setDate(lastReviewDate.getDate() + interval);
-                    lastReviewDate.setHours(0,0,0,0);
+                    lastReviewDate.setHours(0, 0, 0, 0);
                     if (lastReviewDate.getTime() <= tomorrow.getTime()) {
                         cardsTomorrow++;
                     }
@@ -2674,9 +3280,9 @@
                         <div> <p class="value">${cardsTomorrow}</p> <p class="label">${translations[currentUILanguage].cards_to_review_tomorrow}</p> </div>
                     </div>
                 </div>`;
-            
+
             const ctx = document.getElementById('studyResultsChart').getContext('2d');
-            if(studyResultsChart) studyResultsChart.destroy();
+            if (studyResultsChart) studyResultsChart.destroy();
             studyResultsChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -2695,79 +3301,143 @@
 
 
         // --- GEMINI API E FORMULÁRIO DE CARD ---
-        dom.generateAiBtn.addEventListener('click', async () => { 
-            const character = dom.kanjiInput.value; 
-            if (!character.trim()) { alert("Por favor, insira um caractere ou palavra."); return; } 
-            dom.generateAiBtn.disabled = true; 
-            dom.aiBtnText.style.display = 'none'; 
-            dom.aiBtnSpinner.style.display = 'block'; 
-            try { 
-                const geminiData = await fetchGeminiDataForFields(character, currentLearningLanguage, currentLearningMode); 
-                if (geminiData) { 
-                    dom.pronunciationInput.value = geminiData.pronunciation || ''; 
-                    dom.meaningInput.value = geminiData.meaning || ''; 
+        dom.generateAiBtn.addEventListener('click', async () => {
+            const character = dom.kanjiInput.value;
+            if (!character.trim()) { alert("Por favor, insira um caractere ou palavra."); return; }
+            dom.generateAiBtn.disabled = true;
+            dom.aiBtnText.style.display = 'none';
+            dom.aiBtnSpinner.style.display = 'block';
+            try {
+                const geminiData = await fetchGeminiDataForFields(character, currentLearningLanguage, currentLearningMode);
+                if (geminiData) {
+                    dom.pronunciationInput.value = geminiData.pronunciation || '';
+                    dom.meaningInput.value = geminiData.meaning || '';
                     dom.displayKanjiInput.value = geminiData.commonUsage || '';
-                    dom.geminiDataInput.value = JSON.stringify(geminiData); 
-                } else { 
-                    alert("Não foi possível gerar informações com a IA. Tente novamente."); 
-                } 
-            } catch (error) { 
-                console.error("Erro na geração com IA:", error); 
-                alert("Ocorreu um erro ao contatar a IA."); 
-            } finally { 
-                dom.generateAiBtn.disabled = false; 
-                dom.aiBtnText.style.display = 'inline'; 
-                dom.aiBtnSpinner.style.display = 'none'; 
-            } 
-        }); 
-        
+                    dom.geminiDataInput.value = JSON.stringify(geminiData);
+                } else {
+                    alert("Não foi possível gerar informações com a IA. Tente novamente.");
+                }
+            } catch (error) {
+                console.error("Erro na geração com IA:", error);
+                alert("Ocorreu um erro ao contatar a IA.");
+            } finally {
+                dom.generateAiBtn.disabled = false;
+                dom.aiBtnText.style.display = 'inline';
+                dom.aiBtnSpinner.style.display = 'none';
+            }
+        });
+
         async function fetchGeminiDataForFields(character, lang, mode) {
-            const apiKey = "AIzaSyCpNSwWWEbyWhklPL96AAweF2qhjeLrWlM"; 
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`; 
-            
-            let userQuery = ''; 
-            let systemPrompt = `Você é um professor de idiomas para falantes de português. Forneça informações concisas e úteis. Responda em JSON.`; 
+            const apiKey = "AIzaSyCpNSwWWEbyWhklPL96AAweF2qhjeLrWlM";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            let userQuery = '';
+            let systemPrompt = `Você é um professor de idiomas para falantes de português. Forneça informações concisas e úteis. Responda em JSON.`;
             let responseSchema;
 
-            if (lang === 'jp') { 
+            if (lang === 'jp') {
                 userQuery = `Analise o caractere de ${mode} "${character}". Quero informações para um flashcard. Forneça o seguinte em JSON: "pronunciation" (leitura romaji), "meaning" (significado principal), "commonUsage" (a palavra japonesa mais comum que usa este caractere, SEM romaji. Se for usado sozinho, retorne apenas o caractere), "sentences" (duas frases de exemplo com "japanese", "reading" e "portuguese"), "curiosities" (curiosidade sobre origem/uso ou dica de memorização), e "grammar" (dica gramatical ou de uso).`;
-                responseSchema = { type: "OBJECT", properties: { "pronunciation": { "type": "STRING" }, "meaning": { "type": "STRING" }, "commonUsage": { "type": "STRING" }, "sentences": { type: "ARRAY", items: { type: "OBJECT", properties: { "japanese": { "type": "STRING" }, "reading": { "type": "STRING" }, "portuguese": { "type": "STRING" } }, required: ["japanese", "reading", "portuguese"]}}, "curiosities": { "type": "STRING" }, "grammar": { "type": "STRING" } }, required: ["pronunciation", "meaning", "commonUsage", "sentences", "curiosities", "grammar"] };
+                responseSchema = { type: "OBJECT", properties: { "pronunciation": { "type": "STRING" }, "meaning": { "type": "STRING" }, "commonUsage": { "type": "STRING" }, "sentences": { type: "ARRAY", items: { type: "OBJECT", properties: { "japanese": { "type": "STRING" }, "reading": { "type": "STRING" }, "portuguese": { "type": "STRING" } }, required: ["japanese", "reading", "portuguese"] } }, "curiosities": { "type": "STRING" }, "grammar": { "type": "STRING" } }, required: ["pronunciation", "meaning", "commonUsage", "sentences", "curiosities", "grammar"] };
             } else { // English
                 userQuery = `Analise a palavra em inglês "${character}". Quero informações para um flashcard para um falante de português. Forneça o seguinte em JSON: "pronunciation" (pronúncia figurada ou fonética simplificada), "meaning" (significado principal em português), "commonUsage" (a própria palavra em inglês), "sentences" (duas frases de exemplo simples com "english" e sua "translation" para o português), "curiosities" (uma curiosidade sobre a origem, uso ou uma dica de memorização), e "grammar" (uma dica gramatical rápida sobre o uso da palavra, ex: se é verbo, substantivo, etc.).`;
-                responseSchema = { type: "OBJECT", properties: { "pronunciation": { "type": "STRING" }, "meaning": { "type": "STRING" }, "commonUsage": { "type": "STRING" }, "sentences": { type: "ARRAY", items: { type: "OBJECT", properties: { "english": { "type": "STRING" }, "translation": { "type": "STRING" } }, required: ["english", "translation"]}}, "curiosities": { "type": "STRING" }, "grammar": { "type": "STRING" } }, required: ["pronunciation", "meaning", "commonUsage", "sentences", "curiosities", "grammar"] };
+                responseSchema = { type: "OBJECT", properties: { "pronunciation": { "type": "STRING" }, "meaning": { "type": "STRING" }, "commonUsage": { "type": "STRING" }, "sentences": { type: "ARRAY", items: { type: "OBJECT", properties: { "english": { "type": "STRING" }, "translation": { "type": "STRING" } }, required: ["english", "translation"] } }, "curiosities": { "type": "STRING" }, "grammar": { "type": "STRING" } }, required: ["pronunciation", "meaning", "commonUsage", "sentences", "curiosities", "grammar"] };
             }
-            
-            const payload = { 
-                contents: [{ parts: [{ text: userQuery }] }], 
-                systemInstruction: { parts: [{ text: systemPrompt }] }, 
-                generationConfig: { responseMimeType: "application/json", responseSchema: responseSchema } 
-            }; 
-            try { 
-                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); 
-                if (!response.ok) throw new Error(`API error: ${response.status}`); 
-                const result = await response.json(); 
-                const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text; 
-                return JSON.parse(jsonText); 
-            } catch (error) { 
-                console.error("Erro ao chamar a API Gemini:", error); 
-                return null; 
-            } 
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: { responseMimeType: "application/json", responseSchema: responseSchema }
+            };
+            try {
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) throw new Error(`API error: ${response.status}`);
+                const result = await response.json();
+                const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                return JSON.parse(jsonText);
+            } catch (error) {
+                console.error("Erro ao chamar a API Gemini:", error);
+                return null;
+            }
         }
-        
+
+
+        async function fetchAnswerForQuestion(question) {
+            const apiKey = "AIzaSyCpNSwWWEbyWhklPL96AAweF2qhjeLrWlM"; // Sua chave de API
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            const systemPrompt = `Você é um assistente especialista em concursos públicos. Sua tarefa é responder à pergunta do usuário de forma direta, concisa e precisa, ideal para um flashcard de estudo. A resposta deve ser auto-contida e fácil de memorizar. Responda em formato JSON.`;
+
+            const userQuery = `Por favor, responda a seguinte pergunta de concurso: "${question}"`;
+
+            const responseSchema = {
+                type: "OBJECT",
+                properties: {
+                    "answer": { "type": "STRING", "description": "A resposta direta e concisa para a pergunta." }
+                },
+                required: ["answer"]
+            };
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: responseSchema,
+                    temperature: 0.2 // Reduz a "criatividade" para respostas mais factuais
+                }
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status} ${await response.text()}`);
+                }
+                const result = await response.json();
+                const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (jsonText) {
+                    return JSON.parse(jsonText);
+                }
+                return null;
+            } catch (error) {
+                console.error("Erro ao chamar a API Gemini para perguntas:", error);
+                return null;
+            }
+        }
+
+
         // --- AUTENTICAÇÃO E CONTA ---
         dom.addEditForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const cardData = {
-                kanji: dom.kanjiInput.value,
-                displayKanji: dom.displayKanjiInput.value,
-                pronunciation: dom.pronunciationInput.value,
-                meaning: dom.meaningInput.value,
-                srsInterval: 0,
-                lastReview: new Date().toISOString(),
-                geminiInfo: dom.geminiDataInput.value ? JSON.parse(dom.geminiDataInput.value) : null
-            };
+
+            const cardType = dom.cardTypeInput.value;
             const cardId = dom.cardIdInput.value;
-            
+            let cardData;
+
+            if (cardType === 'word') {
+                cardData = {
+                    type: 'word',
+                    kanji: dom.kanjiInput.value,
+                    displayKanji: dom.displayKanjiInput.value,
+                    pronunciation: dom.pronunciationInput.value,
+                    meaning: dom.meaningInput.value,
+                    srsInterval: 0,
+                    lastReview: new Date().toISOString(),
+                    geminiInfo: dom.geminiDataInput.value ? JSON.parse(dom.geminiDataInput.value) : null
+                };
+            } else { // type === 'question'
+                cardData = {
+                    type: 'question',
+                    question: dom.questionInput.value,
+                    answer: dom.answerInput.value,
+                    srsInterval: 0,
+                    lastReview: new Date().toISOString()
+                };
+            }
+
             try {
                 if (cardId) {
                     await set(ref(db, `${getDbPath('cards')}/${cardId}`), cardData);
@@ -2776,9 +3446,11 @@
                     await push(ref(db, getDbPath('cards')), cardData);
                 }
                 dom.addEditModal.classList.remove('visible');
-            } catch(error) { console.error("Erro ao salvar card:", error); }
+            } catch (error) {
+                console.error("Erro ao salvar card:", error);
+            }
         });
-        dom.logoutBtn.addEventListener('click', () => signOut(auth)); 
+        dom.logoutBtn.addEventListener('click', () => signOut(auth));
 
         const { authForm } = dom;
 
@@ -2791,15 +3463,15 @@
 
             authForm.authModalTitle.textContent = isLogin ? translations[currentUILanguage].login : isRegister ? translations[currentUILanguage].create_account : translations[currentUILanguage].recover_password;
             authForm.authBtn.textContent = isLogin ? translations[currentUILanguage].login : isRegister ? translations[currentUILanguage].create_account : translations[currentUILanguage].verify_and_send_email;
-            
+
             authForm.toggleAuthMode.textContent = isLogin ? translations[currentUILanguage].no_account_yet : translations[currentUILanguage].already_have_account;
-            
+
             authForm.usernameInput.style.display = isRegister ? 'block' : 'none';
             authForm.passwordInput.style.display = isRecover ? 'none' : 'block';
             authForm.confirmPasswordInput.style.display = isRegister ? 'block' : 'none';
             authForm.keywordInput.style.display = isRegister || isRecover ? 'block' : 'none';
 
-            if(isRegister) { authForm.keywordInput.placeholder = "Crie uma Palavra-chave de Segurança"; } 
+            if (isRegister) { authForm.keywordInput.placeholder = "Crie uma Palavra-chave de Segurança"; }
             else if (isRecover) { authForm.keywordInput.placeholder = "Sua Palavra-chave de Segurança"; }
 
             authForm.toggleAuthMode.style.display = isRecover ? 'none' : 'block';
@@ -2808,11 +3480,11 @@
 
         authForm.toggleAuthMode.addEventListener('click', () => { setAuthMode(currentAuthMode === 'login' ? 'register' : 'login'); });
         authForm.forgotPasswordLink.addEventListener('click', () => { setAuthMode(currentAuthMode === 'recover' ? 'login' : 'recover'); });
-        
-        authForm.authBtn.addEventListener('click', async () => { 
+
+        authForm.authBtn.addEventListener('click', async () => {
             authForm.authStatusMessage.textContent = `${translations[currentUILanguage].processing}`;
             authForm.authStatusMessage.style.color = 'var(--text-secondary)';
-            const email = authForm.emailInput.value; 
+            const email = authForm.emailInput.value;
 
             try {
                 switch (currentAuthMode) {
@@ -2848,11 +3520,11 @@
                         authForm.authStatusMessage.style.color = 'var(--success)';
                         return;
                 }
-            } catch (error) { 
-                authForm.authStatusMessage.textContent = `${translations[currentUILanguage].failure}: ` + error.message; 
+            } catch (error) {
+                authForm.authStatusMessage.textContent = `${translations[currentUILanguage].failure}: ` + error.message;
                 authForm.authStatusMessage.style.color = 'var(--danger)';
-            } 
-        }); 
+            }
+        });
 
         dom.updateUsernameForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -2894,14 +3566,16 @@
             }
         });
 
-        dom.updatePasswordForm.addEventListener('submit', async (e) => { e.preventDefault(); const newPassword = document.getElementById('new-password-input').value; const confirmPassword = document.getElementById('confirm-new-password-input').value; const statusEl = dom.updatePasswordStatus; if (newPassword !== confirmPassword) { statusEl.textContent = translations[currentUILanguage].passwords_dont_match; statusEl.style.color = 'var(--danger)'; return; } if(newPassword.length < 6) { statusEl.textContent = translations[currentUILanguage].password_min_length; statusEl.style.color = 'var(--danger)'; return; } statusEl.textContent = `${translations[currentUILanguage].updating}`; statusEl.style.color = 'var(--text-secondary)'; try { const user = auth.currentUser; await updatePassword(user, newPassword); statusEl.textContent = translations[currentUILanguage].password_updated; statusEl.style.color = 'var(--success)'; setTimeout(() => { dom.userManageModal.classList.remove('visible'); statusEl.textContent = ''; dom.updatePasswordForm.reset(); }, 2000); } catch (error) { console.error("Erro ao atualizar senha:", error); statusEl.textContent = translations[currentUILanguage].error_updating_password; statusEl.style.color = 'var(--danger)'; } });
-   
+        dom.updatePasswordForm.addEventListener('submit', async (e) => { e.preventDefault(); const newPassword = document.getElementById('new-password-input').value; const confirmPassword = document.getElementById('confirm-new-password-input').value; const statusEl = dom.updatePasswordStatus; if (newPassword !== confirmPassword) { statusEl.textContent = translations[currentUILanguage].passwords_dont_match; statusEl.style.color = 'var(--danger)'; return; } if (newPassword.length < 6) { statusEl.textContent = translations[currentUILanguage].password_min_length; statusEl.style.color = 'var(--danger)'; return; } statusEl.textContent = `${translations[currentUILanguage].updating}`; statusEl.style.color = 'var(--text-secondary)'; try { const user = auth.currentUser; await updatePassword(user, newPassword); statusEl.textContent = translations[currentUILanguage].password_updated; statusEl.style.color = 'var(--success)'; setTimeout(() => { dom.userManageModal.classList.remove('visible'); statusEl.textContent = ''; dom.updatePasswordForm.reset(); }, 2000); } catch (error) { console.error("Erro ao atualizar senha:", error); statusEl.textContent = translations[currentUILanguage].error_updating_password; statusEl.style.color = 'var(--danger)'; } });
+
         // Inicialização
         document.addEventListener('DOMContentLoaded', () => {
             translateUI('pt'); // Define o idioma inicial da UI
             setLearningLanguage('jp'); // Define o idioma inicial de aprendizado
+             setupCardTypeSelector(); 
         });
 
     </script>
 </body>
+
 </html>
