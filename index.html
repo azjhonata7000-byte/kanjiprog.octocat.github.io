@@ -1538,7 +1538,7 @@
             
             // Aumenta um pouco a velocidade para uma pronúncia mais natural em japonês
             if (utterance.lang === 'ja-JP') {
-                utterance.rate = 1.2;
+                utterance.rate = 1.0;
             }
 
             // A API de vozes pode ser assíncrona. Se as vozes não estiverem carregadas,
@@ -2048,6 +2048,7 @@
         function displayCard() { 
             let frontText, textToSpeak;
             const langClass = currentLearningLanguage === 'jp' ? 'jp' : 'en';
+            const classFontSize = currentLearningLanguage ===  'jp' ? 'clamp(8rem, 15vw, 20rem)' : 'clamp(1.5rem, 2.5vw, 4rem)';
 
             if (currentLearningLanguage === 'en' && currentCard.geminiInfo && currentCard.geminiInfo.sentences && currentCard.geminiInfo.sentences.length > 0) {
                 // Para inglês, mostra a primeira frase de exemplo na frente
@@ -2063,7 +2064,7 @@
             const escapedTextToSpeak = textToSpeak.replace(/['`]/g, "\\$&").replace(/\n/g, ' ');
 
             // Usa ícone em vez de imagem e ajusta o estilo para frases
-            dom.cardFront.innerHTML = `<button class="sound-btn" onclick="window.speak('${escapedTextToSpeak}', '${currentLearningLanguage}')"><i class="ph ph-speaker-high text-2xl"></i></button><p class="question-text ${langClass}" style="font-size: clamp(1.5rem, 5vw, 2.5rem); padding: 0 2rem;">${frontText}</p>`; 
+            dom.cardFront.innerHTML = `<button class="sound-btn" onclick="window.speak('${escapedTextToSpeak}', '${currentLearningLanguage}')"><i class="ph ph-speaker-high text-2xl"></i></button><p class="question-text ${langClass}" style="font-size: ${classFontSize}; padding: 0 2rem;">${frontText}</p>`; 
             dom.cardBack.innerHTML = renderAnswerContent(currentCard); 
             renderActionButtons('show_answer'); 
         } 
