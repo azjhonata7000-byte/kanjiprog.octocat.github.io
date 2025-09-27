@@ -459,6 +459,55 @@
             font-size: 2rem;
         }
 
+        /* ... (continuação do CSS) */
+
+        /* --- ESTILOS PARA CARD DE CONCURSO AVANÇADO --- */
+        .card-tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+            /* Impede que as abas encolham */
+        }
+
+        .tab-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--accent-primary);
+            background-color: var(--bg-accent);
+        }
+
+        .tab-btn.active {
+            color: var(--accent-primary);
+            font-weight: 700;
+            border-bottom-color: var(--accent-primary);
+        }
+
+        .tab-content {
+            display: none;
+            padding-top: 1rem;
+            flex-grow: 1;
+            /* Faz o conteúdo ocupar o espaço */
+            overflow-y: auto;
+            /* Permite rolar o conteúdo se for grande */
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+
+        /* ... (resto do seu CSS) */
+
         .game-option:hover {
             border-color: var(--accent-primary-light);
             transform: scale(1.03);
@@ -1200,8 +1249,14 @@
                 <div id="nav-lang-mobile-dropdown" class="pl-8 mt-1 space-y-1" style="display: none;">
                     <button data-lang="jp"
                         class="lang-learn-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left active">Japonês</button>
+                    <!-- ... -->
                     <button data-lang="en"
                         class="lang-learn-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left">Inglês</button>
+                    <!-- EXPLICAÇÃO: Aplicamos as mesmas classes de estilo dos botões "Japonês" e "Inglês"
+     ao botão "Concurso" para corrigir a aparência no menu do telemóvel. -->
+                    <button id="lang-learn-btn-mobile-concurso"
+                        class="lang-learn-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left">Concurso</button>
+                    <!-- ... -->
                 </div>
             </div>
 
@@ -1265,6 +1320,7 @@
                     <div id="lang-learn-dropdown" class="dropdown-content">
                         <button data-lang="jp" class="lang-learn-btn active">Japonês</button>
                         <button data-lang="en" class="lang-learn-btn">Inglês</button>
+                        <button id="lang-learn-btn-concurso" class="lang-learn-btn">Concurso</button>
                     </div>
                 </div>
 
@@ -1635,20 +1691,40 @@
                     </div>
                 </div>
 
-                <!-- Campos para o tipo "Pergunta" -->
+                <!-- ... -->
                 <div id="fields-for-question" style="display: none;">
                     <div>
                         <label for="question-input" class="font-bold text-sm" data-translate="question_label">Sua
                             Pergunta</label>
-                        <textarea id="question-input" class="textarea mt-1" rows="4"
+                        <textarea id="question-input" class="textarea mt-1" rows="3"
                             placeholder="Digite aqui a pergunta do concurso..."></textarea>
                     </div>
                     <div>
-                        <label for="answer-input" class="font-bold text-sm" data-translate="answer_label">Resposta (será
-                            gerada pela IA)</label>
-                        <textarea id="answer-input" class="textarea mt-1" rows="4" readonly></textarea>
+                        <label for="answer-input" class="font-bold text-sm"
+                            data-translate="answer_label">Resposta</label>
+                        <div class="flex items-end space-x-2">
+                            <textarea id="answer-input" class="textarea mt-1 flex-grow" rows="4"
+                                placeholder="A resposta aparecerá aqui..."></textarea>
+                            <!-- EXPLICAÇÃO: Adicionamos este botão, que será usado para chamar a IA. -->
+                            <button type="button" id="generate-answer-ai-btn" class="btn btn-secondary flex-shrink-0">
+                                <i class="ph ph-sparkle"></i>
+                                <span id="ai-answer-btn-text">Gerar</span>
+                                <svg id="ai-answer-btn-spinner" class="animate-spin h-5 w-5 text-purple-700"
+                                    style="display: none;"
+                                    xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" fill="none"
+                                    viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
+                <!-- ... -->
+
 
                 <input type="hidden" id="gemini-data-input">
 
@@ -1711,7 +1787,7 @@
 
 
 
-        // --- LÓGICA DO SELETOR DE TIPO DE CARD ---
+        // ...
         function setupCardTypeSelector() {
             const wordBtn = dom.typeSelectorWord;
             const questionBtn = dom.typeSelectorQuestion;
@@ -1722,22 +1798,22 @@
                 dom.fieldsForQuestion.style.display = 'none';
                 wordBtn.classList.add('bg-white', 'shadow', 'text-accent-primary');
                 questionBtn.classList.remove('bg-white', 'shadow', 'text-accent-primary');
-                // A função do botão de IA volta a ser para palavras
                 dom.generateAiBtn.style.display = 'flex';
             });
 
             questionBtn.addEventListener('click', () => {
                 dom.cardTypeInput.value = 'question';
+                // EXPLICAÇÃO: Restauramos a lógica que estava faltando.
+                // Agora, ao clicar em "Pergunta", o formulário de palavra é escondido
+                // e o formulário de pergunta é exibido.
                 dom.fieldsForWord.style.display = 'none';
                 dom.fieldsForQuestion.style.display = 'block';
                 questionBtn.classList.add('bg-white', 'shadow', 'text-accent-primary');
                 wordBtn.classList.remove('bg-white', 'shadow', 'text-accent-primary');
-                // O botão de IA agora fica dentro do campo de pergunta
-                // Movendo o botão para a lógica de geração de resposta
-                dom.generateAiBtn.style.display = 'flex';
             });
         }
-   
+        // ...
+
 
         // --- TRADUÇÃO DA UI ---
         const translations = {
@@ -2094,12 +2170,60 @@
         }
 
         function playCorrectSound() { playTone(600, 0.1, 'triangle'); setTimeout(() => playTone(900, 0.1, 'triangle'), 100); }
+
+
+
         function playIncorrectSound() { playTone(150, 0.2, 'sawtooth'); }
-        function playVictorySound() {
-            const notes = [261.63, 329.63, 392.00, 523.25];
-            notes.forEach((note, i) => {
-                setTimeout(() => playTone(note, 0.15, 'triangle'), i * 100);
-            });
+        function playVictorySound() { /* ... */ }
+
+        // EXPLICAÇÃO: Adicione estas duas funções. A primeira decodifica o áudio
+        // da API, e a segunda o converte para o formato WAV.
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        function pcmToWav(pcmData, sampleRate) {
+            const header = new ArrayBuffer(44);
+            const view = new DataView(header);
+            const pcmLength = pcmData.length * 2;
+            const totalLength = pcmLength + 36;
+            view.setUint32(0, 0x46464952, false); // "RIFF"
+            view.setUint32(4, totalLength, true);
+            view.setUint32(8, 0x45564157, false); // "WAVE"
+            view.setUint32(12, 0x20746d66, false); // "fmt "
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true); // PCM
+            view.setUint16(22, 1, true); // Mono
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true); // Byte rate
+            view.setUint16(32, 2, true); // Block align
+            view.setUint16(34, 16, true); // Bits per sample
+            view.setUint32(36, 0x61746164, false); // "data"
+            view.setUint32(40, pcmLength, true);
+
+            const wavData = new Int16Array(44 + pcmData.length * 2);
+            const headerBytes = new Uint8Array(header);
+            wavData.set(new Int16Array(headerBytes.buffer));
+            wavData.set(pcmData, 22);
+
+            // EXPLICAÇÃO DA CORREÇÃO: Adicionamos explicitamente o tipo 'audio/wav' ao criar o Blob.
+            // Isso resolve o erro 'NotSupportedError' ao garantir que o navegador
+            // sempre entenda o formato do áudio que está a tentar carregar.
+            return new Blob([wavData.buffer], { type: 'audio/wav' });
+        }
+        // ...
+
+        window.showTab = function (evt, tabName) {
+            document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(tb => tb.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
         }
 
         /**
@@ -2107,48 +2231,77 @@
          * @param {string} text O texto a ser falado.
          * @param {string} lang O código do idioma (ex: 'jp', 'en').
          */
-        function speak(text, lang) {
-            if (!text || !window.speechSynthesis) {
-                console.warn("Síntese de voz não suportada ou texto vazio.");
-                return;
+        async function speakGemini(text, lang, buttonElement) {
+            if (!text) return;
+
+            let icon, spinner;
+            if (buttonElement) {
+                icon = buttonElement.querySelector('i');
+                spinner = buttonElement.querySelector('svg');
+                buttonElement.disabled = true;
+                if (icon) icon.style.display = 'none';
+                if (spinner) spinner.style.display = 'block';
             }
 
-            // Garante que a fala anterior seja interrompida
-            window.speechSynthesis.cancel();
+            try {
+                const apiKey = "AIzaSyCpNSwWWEbyWhklPL96AAweF2qhjeLrWlM";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
 
-            const utterance = new SpeechSynthesisUtterance(text);
+                const langMap = { 'jp': 'ja-JP', 'en': 'en-US' };
 
-            // Mapeia nosso código de idioma para o padrão BCP 47 que a API usa
-            const langMap = {
-                'jp': 'ja-JP',
-                'en': 'en-US'
-            };
-            utterance.lang = langMap[lang] || lang;
-
-            // Aumenta um pouco a velocidade para uma pronúncia mais natural em japonês
-            if (utterance.lang === 'ja-JP') {
-                utterance.rate = 1.0;
-            }
-
-            // A API de vozes pode ser assíncrona. Se as vozes não estiverem carregadas,
-            // esperamos pelo evento onvoiceschanged.
-            let voices = window.speechSynthesis.getVoices();
-            if (voices.length > 0) {
-                // Tenta encontrar uma voz específica para o idioma para maior compatibilidade
-                utterance.voice = voices.find(voice => voice.lang === utterance.lang) || voices.find(voice => voice.lang.startsWith(lang));
-                window.speechSynthesis.speak(utterance);
-            } else {
-                // Fallback: se nenhuma voz for carregada, fala com a padrão e espera que o evento 'onvoiceschanged' resolva na próxima vez
-                window.speechSynthesis.onvoiceschanged = () => {
-                    voices = window.speechSynthesis.getVoices();
-                    utterance.voice = voices.find(voice => voice.lang === utterance.lang) || voices.find(voice => voice.lang.startsWith(lang));
-                    window.speechSynthesis.speak(utterance);
+                const payload = {
+                    contents: [{ parts: [{ text: `Fale em ${langMap[lang]}: ${text}` }] }],
+                    generationConfig: {
+                        responseModalities: ["AUDIO"],
+                        speechConfig: {
+                            voiceConfig: {
+                                prebuiltVoiceConfig: { voiceName: lang === 'jp' ? "Kore" : "Puck" }
+                            }
+                        }
+                    },
+                    model: "gemini-2.5-flash-preview-tts"
                 };
-                // Em alguns casos, mesmo sem vozes, a fala pode funcionar com a voz padrão do sistema
-                window.speechSynthesis.speak(utterance);
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`API error: ${response.status}`);
+
+                const result = await response.json();
+                const part = result?.candidates?.[0]?.content?.parts?.[0];
+                const audioData = part?.inlineData?.data;
+                const mimeType = part?.inlineData?.mimeType;
+
+                if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                    const sampleRate = parseInt(mimeType.match(/rate=(\d+)/)[1], 10);
+                    const pcmData = base64ToArrayBuffer(audioData);
+                    const pcm16 = new Int16Array(pcmData);
+                    const wavBlob = pcmToWav(pcm16, sampleRate);
+                    const audioUrl = URL.createObjectURL(wavBlob);
+                    const audio = new Audio(audioUrl);
+                    audio.play();
+                } else {
+                    throw new Error("Resposta da API de áudio inválida.");
+                }
+
+            } catch (error) {
+                console.error("Erro ao gerar áudio com Gemini TTS:", error);
+                playIncorrectSound(); // Toca um som de erro
+            } finally {
+                if (buttonElement) {
+                    setTimeout(() => {
+                        buttonElement.disabled = false;
+                        if (icon) icon.style.display = 'block';
+                        if (spinner) spinner.style.display = 'none';
+                    }, 500); // Pequeno delay para evitar cliques rápidos
+                }
             }
         }
-
+        window.speakGemini = speakGemini; // Exponha a função globalmente
+        // ...
 
         // Estado da aplicação
         let allCards = {};
@@ -2173,6 +2326,9 @@
 
         // Elementos do DOM
         const dom = {
+            langLearnBtnConcurso: document.getElementById('lang-learn-btn-concurso'),
+            langLearnBtnMobileConcurso: document.getElementById('lang-learn-btn-mobile-concurso'),
+            navLangMobileToggle: document.getElementById('nav-lang-mobile-toggle'),
             cardTypeInput: document.getElementById('card-type-input'),
             typeSelectorWord: document.getElementById('type-selector-word'),
             typeSelectorQuestion: document.getElementById('type-selector-question'),
@@ -2332,7 +2488,14 @@
             const uid = targetUserId || userId;
             if (!uid) return null;
 
-            const modePaths = { kanji: 'kanjiCards', hiragana: 'hiraganaCards', katakana: 'katakanaCards', english: 'englishCards' };
+            // ...
+            // EXPLICAÇÃO: Adicionamos 'concurso' ao mapeamento para que o sistema saiba 
+            // onde salvar e carregar os cards desta modalidade.
+            const modePaths = { kanji: 'kanjiCards', hiragana: 'hiraganaCards', katakana: 'katakanaCards', english: 'englishCards', concurso: 'concursoCards' };
+            if (type === 'cards') return `artifacts/${appId}/users/${uid}/${modePaths[currentLearningMode]}`;
+            // ...
+
+            // ...
             if (type === 'cards') return `artifacts/${appId}/users/${uid}/${modePaths[currentLearningMode]}`;
             if (type === 'profile') return `artifacts/${appId}/userProfiles/${uid}`;
             if (type === 'leagues') return `artifacts/${appId}/leagues`;
@@ -2520,8 +2683,6 @@
             gamesDropdown.innerHTML = '';
             gamesDropdownMobile.innerHTML = '';
 
-            const langPrefix = translations[currentUILanguage]['study_mode_select'] || 'Estudar';
-
             if (currentLearningLanguage === 'jp') {
                 const modes = [
                     { key: 'kanji', name: 'Kanji' },
@@ -2532,28 +2693,37 @@
                     studyDropdown.innerHTML += `<button data-mode="${mode.key}" class="mode-select-btn">${mode.name}</button>`;
                     studyDropdownMobile.innerHTML += `<button data-mode="${mode.key}" class="mode-select-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left">${mode.name}</button>`;
                 });
-
-                const games = [
-                    { id: 'match', name: 'Combine' },
-                    { id: 'quiz', name: 'Quiz' },
-                    { id: 'type', name: 'Digite a Leitura' },
-                    { id: 'memory', name: 'Jogo da Memória' },
-                ]
-                games.forEach(game => {
-                    gamesDropdown.innerHTML += `<a href="#" class="game-start-btn" data-game="${game.id}">${game.name}</a>`;
-                    gamesDropdownMobile.innerHTML += `<a href="#" class="game-start-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3" data-game="${game.id}">${game.name}</a>`;
-                });
-
-                setLearningMode(currentLearningMode === 'english' ? 'kanji' : currentLearningMode);
-            } else if (currentLearningLanguage === 'en') {
-                studyDropdown.innerHTML = `<button data-mode="english" class="mode-select-btn">Inglês</button>`;
-                studyDropdownMobile.innerHTML = `<button data-mode="english" class="mode-select-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left">Inglês</button>`;
-                gamesDropdown.innerHTML = `<p class="p-4 text-sm text-gray-500">Jogos para inglês em breve!</p>`;
-                gamesDropdownMobile.innerHTML = `<p class="p-4 text-sm text-gray-500">Jogos para inglês em breve!</p>`;
-                setLearningMode('english');
+                setLearningMode(currentLearningMode);
+            } else { // Cobre 'en' e 'concurso'
+                let modeKey, modeName;
+                if (currentLearningLanguage === 'en') {
+                    modeKey = 'english';
+                    modeName = 'Inglês';
+                } else { // concurso
+                    modeKey = 'concurso';
+                    modeName = 'Concurso';
+                }
+                studyDropdown.innerHTML = `<button data-mode="${modeKey}" class="mode-select-btn">${modeName}</button>`;
+                studyDropdownMobile.innerHTML += `<button data-mode="${modeKey}" class="mode-select-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3 w-full text-left">${modeName}</button>`;
+                setLearningMode(modeKey);
             }
 
-            // Re-add event listeners for the new buttons
+            // Lógica unificada para jogos
+            const games = [
+                { id: 'match', name: 'Combine' },
+                { id: 'quiz', name: 'Quiz' },
+                { id: 'memory', name: 'Jogo da Memória' },
+            ];
+            if (currentLearningLanguage !== 'concurso') {
+                games.push({ id: 'type', name: 'Digite a Leitura' });
+            }
+            games.forEach(game => {
+                gamesDropdown.innerHTML += `<a href="#" class="game-start-btn" data-game="${game.id}">${game.name}</a>`;
+                gamesDropdownMobile.innerHTML += `<a href="#" class="game-start-btn-mobile block text-sm py-2 text-gray-600 hover:text-accent-primary rounded-md px-3" data-game="${game.id}">${game.name}</a>`;
+            });
+
+
+            // Re-adiciona os event listeners
             document.querySelectorAll('.mode-select-btn, .mode-select-btn-mobile').forEach(btn => {
                 btn.addEventListener('click', () => {
                     setLearningMode(btn.dataset.mode);
@@ -2572,7 +2742,10 @@
         }
 
 
+
         function setLearningLanguage(lang) {
+            dom.langLearnBtnConcurso.classList.remove('active');
+            dom.langLearnBtnMobileConcurso.classList.remove('active');
             currentLearningLanguage = lang;
             const langName = lang === 'jp' ? 'Japonês' : 'Inglês';
             const text = `${translations[currentUILanguage]['learn_language_select'] || 'Aprender'}: ${langName}`;
@@ -2581,6 +2754,14 @@
             document.querySelectorAll('.lang-learn-btn, .lang-learn-btn-mobile').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.lang === lang);
             });
+
+            // EXPLICAÇÃO: Adicionamos esta linha. Se o novo idioma for 'jp',
+            // redefinimos o modo de estudo para 'kanji' como padrão. Isso corrige o bug
+            // de o modo 'concurso' persistir ao voltar para o japonês.
+            if (lang === 'jp') {
+                currentLearningMode = 'kanji';
+            }
+
             updateStudyModeUI();
         }
 
@@ -2639,6 +2820,46 @@
         function filterCardsDueToday() { isStudyMoreSession = false; srsSessionStats = { correct: 0, incorrect: 0 }; const now = new Date(); now.setHours(0, 0, 0, 0); const deck = getCurrentDeck(); dueCards = deck.filter(card => { const interval = card.srsInterval === undefined ? 0 : card.srsInterval; if (interval === 0) return true; const lastReviewDate = new Date(card.lastReview); lastReviewDate.setHours(0, 0, 0, 0); lastReviewDate.setDate(lastReviewDate.getDate() + interval); return now >= lastReviewDate; }); dueCards.sort(() => Math.random() - 0.5); sessionInitialCount = dueCards.length; updateProgress(); nextCard(); }
 
         function nextCard() { isCardFlipped = false; dom.reviewCard.classList.remove('is-flipped'); if (dueCards.length === 0) { currentCard = null; displayCompletion(); return; } currentCard = dueCards[0]; displayCard(); }
+        // EXPLICAÇÃO: Esta nova função centraliza a lógica para a modalidade "Concurso".
+        // Ela define o modo de aprendizado, atualiza a UI e carrega os cards corretos.
+        // EXPLICAÇÃO: Esta nova função centraliza a lógica para a modalidade "Concurso".
+        // Ela define o modo de aprendizado, atualiza a UI e carrega os cards corretos.
+        function startConcursoSession() {
+            currentLearningLanguage = 'concurso'; // Identificador para a lógica
+            currentLearningMode = 'concurso';
+
+            const text = `${translations[currentUILanguage]['learn_language_select'] || 'Aprender'}: Concurso`;
+            dom.langLearnText.textContent = text;
+            dom.langLearnTextMobile.textContent = text;
+
+            document.querySelectorAll('.lang-learn-btn, .lang-learn-btn-mobile').forEach(btn => btn.classList.remove('active'));
+            dom.langLearnBtnConcurso.classList.add('active');
+            dom.langLearnBtnMobileConcurso.classList.add('active');
+
+            updateStudyModeUI(); // Atualiza os menus de estudo e jogos
+            showView('srs'); // Mostra a tela de estudo
+            setupRealtimeCardListener(); // Carrega os cards de concurso
+        }
+
+        dom.langLearnBtnConcurso.addEventListener('click', () => {
+            startConcursoSession();
+            dom.langLearnDropdown.classList.remove('visible');
+        });
+
+        dom.langLearnBtnMobileConcurso.addEventListener('click', () => {
+            startConcursoSession();
+            closeMobileMenu();
+        });
+
+        dom.langLearnBtnConcurso.addEventListener('click', () => {
+            startConcursoSession();
+            dom.langLearnDropdown.classList.remove('visible');
+        });
+
+        dom.langLearnBtnMobileConcurso.addEventListener('click', () => {
+            startConcursoSession();
+            closeMobileMenu();
+        });
 
         // CORREÇÃO: Função modificada para exibir frases em inglês na frente do card
         function displayCard() {
@@ -2646,9 +2867,46 @@
             let backHTML = '';
 
             if (currentCard.type === 'question') {
-                // Lógica para card de pergunta
                 frontHTML = `<div class="p-6 text-center flex items-center justify-center h-full"><p class="question-text en" style="font-size: clamp(1.5rem, 5vw, 2.2rem); line-height: 1.4;">${currentCard.question}</p></div>`;
-                backHTML = `<div class="p-6 text-center flex flex-col items-center justify-center h-full"><p class="font-bold text-xl mb-4">${currentCard.question}</p><div class="w-full border-t border-gray-200 my-4"></div><p style="font-size: clamp(1.1rem, 4vw, 1.5rem); line-height: 1.6;">${currentCard.answer}</p></div>`;
+
+                // EXPLICAÇÃO: Todo o HTML abaixo é novo. Ele cria uma estrutura com abas
+                // para exibir dinamicamente os dados ricos do 'geminiInfo' do card.
+                const info = currentCard.geminiInfo;
+                if (info) {
+                    const imageUrl = `https://placehold.co/600x400/F4F0FF/7C3AED?text=${encodeURIComponent(info.image_query)}`;
+                    backHTML = `
+            <div class="w-full h-full flex flex-col p-4 text-left overflow-y-auto">
+                <img src="${imageUrl}" alt="${info.image_query}" class="w-full h-40 object-cover rounded-lg mb-4" onerror="this.style.display='none'"/>
+                <div class="card-tabs mb-3">
+                    <button class="tab-btn active" onclick="showTab(event, 'summary')">Resumo</button>
+                    <button class="tab-btn" onclick="showTab(event, 'analysis')">Análise</button>
+                    <button class="tab-btn" onclick="showTab(event, 'contexts')">Contextos</button>
+                    <button class="tab-btn" onclick="showTab(event, 'curiosity')">Curiosidade</button>
+                </div>
+                <div id="summary" class="tab-content active">
+                    <h3 class="font-bold text-lg mb-2">Resposta Essencial</h3>
+                    <p class="text-gray-700">${info.summary}</p>
+                </div>
+                <div id="analysis" class="tab-content">
+                    <h3 class="font-bold text-lg mb-2">Análise Detalhada</h3>
+                    <p class="text-gray-700">${info.analysis}</p>
+                </div>
+                <div id="contexts" class="tab-content">
+                    <h3 class="font-bold text-lg mb-2">Relevância em Provas</h3>
+                    <div class="space-y-3">
+                        ${info.contexts.map(c => `<div><h4 class="font-semibold text-accent-primary">${c.title}</h4><p class="text-sm text-gray-600">${c.text}</p></div>`).join('')}
+                    </div>
+                </div>
+                <div id="curiosity" class="tab-content">
+                    <h3 class="font-bold text-lg mb-2">Para Memorizar</h3>
+                    <p class="text-gray-700">${info.curiosity}</p>
+                </div>
+            </div>
+        `;
+                } else {
+                    // Fallback para cards antigos sem o 'geminiInfo'
+                    backHTML = `<div class="p-6 ..."><p class="font-bold ...">${currentCard.question}</p><div class="w-full ..."></div><p style="...">${currentCard.answer}</p></div>`;
+                }
 
             } else {
                 // Lógica original para card de palavra
@@ -2665,7 +2923,14 @@
                 }
 
                 const escapedTextToSpeak = textToSpeak ? textToSpeak.replace(/['`]/g, "\\$&").replace(/\n/g, ' ') : '';
-                frontHTML = `<button class="sound-btn" onclick="window.speak('${escapedTextToSpeak}', '${currentLearningLanguage}')"><i class="ph ph-speaker-high text-2xl"></i></button><p class="question-text ${langClass}" style="font-size: ${classFontSize}; padding: 0 2rem;">${frontText}</p>`;
+                // EXPLICAÇÃO: Atualizamos o botão para incluir um spinner e chamar a nova função 'speakGemini', passando 'this' como referência.
+                frontHTML = `
+    <button class="sound-btn" onclick="window.speakGemini('${escapedTextToSpeak}', '${currentLearningLanguage}', this)">
+        <i class="ph ph-speaker-high text-2xl"></i>
+        <svg class="animate-spin h-6 w-6" style="display: none;" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+    </button>
+    <p class="question-text ${langClass}" style="font-size: ${classFontSize}; padding: 0 2rem;">${frontText}</p>`;
+                // ...
                 backHTML = renderAnswerContent(currentCard);
             }
 
@@ -2678,9 +2943,14 @@
         function renderAnswerContent(card) {
             const mainChar = card.displayKanji || card.kanji;
             const langClass = currentLearningLanguage === 'jp' ? 'jp' : 'en';
-            // Para o botão de som principal no verso, o áudio deve corresponder à palavra principal
             const textToSpeakOnBack = (currentLearningLanguage === 'en') ? card.kanji : mainChar;
             const escapedTextToSpeakOnBack = textToSpeakOnBack.replace(/['`]/g, "\\$&");
+
+            const mainSoundBtnHTML = `
+        <button class="sound-btn" onclick="window.speakGemini('${escapedTextToSpeakOnBack}', '${currentLearningLanguage}', this)">
+            <i class="ph ph-speaker-high text-2xl"></i>
+            <svg class="animate-spin h-6 w-6" style="display: none;" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+        </button>`;
 
             let geminiContent = '';
             if (card.geminiInfo) {
@@ -2697,7 +2967,13 @@
                         const escapedSentence = originalSentence.replace(/['`]/g, "\\$&").replace(/\n/g, ' ');
                         const reading = s[readingKey] ? `<p class="reading">${s[readingKey]}</p>` : '';
 
-                        geminiContent += `<li class="sentence"><div class="flex items-center gap-2"><div class="flex-grow"><p class="${langClass}">${originalSentence}</p>${reading}<p>${s[translationKey]}</p></div><button class="sound-btn-sentence" onclick="window.speak(\`${escapedSentence}\`, \'${currentLearningLanguage}\')"><i class="ph ph-speaker-high text-xl"></i></button></div></li>`;
+                        const sentenceSoundBtnHTML = `
+                    <button class="sound-btn-sentence" onclick="window.speakGemini(\`${escapedSentence}\`, '${currentLearningLanguage}', this)">
+                        <i class="ph ph-speaker-high text-xl"></i>
+                        <svg class="animate-spin h-5 w-5" style="display: none;" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    </button>`;
+
+                        geminiContent += `<li class="sentence"><div class="flex items-center gap-2"><div class="flex-grow"><p class="${langClass}">${originalSentence}</p>${reading}<p>${s[translationKey]}</p></div>${sentenceSoundBtnHTML}</div></li>`;
                     });
                     geminiContent += `</ul>`;
                 }
@@ -2706,12 +2982,10 @@
                 geminiContent += `</div>`;
             }
 
-            // No verso, para o inglês, mostramos a palavra principal que foi usada para gerar as frases.
             const mainDisplayOnBack = (currentLearningLanguage === 'en') ? card.kanji : mainChar;
 
-            return `<button class="sound-btn" onclick="window.speak('${escapedTextToSpeakOnBack}', '${currentLearningLanguage}')"><i class="ph ph-speaker-high text-2xl"></i></button><div class="flex-grow w-full flex flex-col items-center justify-start text-center"><p style="font-size: clamp(3.5rem, 12vw, 5rem);" class="${langClass}">${mainDisplayOnBack}</p><p class="text-2xl mt-4 font-bold">${card.meaning}</p><p class="text-lg text-gray-600 mt-2">${card.pronunciation}</p>${geminiContent}</div>`;
+            return `${mainSoundBtnHTML}<div class="flex-grow w-full flex flex-col items-center justify-start text-center"><p style="font-size: clamp(3.5rem, 12vw, 5rem);" class="${langClass}">${mainDisplayOnBack}</p><p class="text-2xl mt-4 font-bold">${card.meaning}</p><p class="text-lg text-gray-600 mt-2">${card.pronunciation}</p>${geminiContent}</div>`;
         }
-
         function renderActionButtons(state) {
             if (state === 'show_answer') {
                 dom.feedbackButtons.innerHTML = `<button id="check-btn" class="btn btn-primary col-span-2" data-translate="show_answer">${translations[currentUILanguage].show_answer}</button>`;
@@ -2812,7 +3086,7 @@
             updateProgress();
             nextCard();
         }
-        window.speak = speak;
+
 
         // --- JOGOS ---
         function renderGameUI(title, description, content) { dom.gameContainer.innerHTML = `<div class="text-center mb-8"><h2 class="text-3xl font-bold">${title}</h2><p class="text-gray-500 mt-2">${description}</p></div><div id="game-content">${content}</div>`; }
@@ -2867,9 +3141,169 @@
             setTimeout(() => requestAnimationFrame(animateScore), 300);
         }
 
-        function getGameCards(count = 5) { const deck = getCurrentDeck(); if (deck.length < count) { dom.gameContainer.innerHTML = `<div class="text-center"><h2 class="text-2xl font-bold">${translations[currentUILanguage].insufficient_cards}</h2><p>${translations[currentUILanguage].need_at_least} ${count} ${currentLearningMode} ${translations[currentUILanguage].cards_to_play}</p></div>`; return null; } return [...deck].sort(() => 0.5 - Math.random()).slice(0, count); }
-        function startMatchingGame() { showView('game-match'); const gameCards = getGameCards(5); if (!gameCards) return; let sessionCorrect = 0, sessionIncorrect = 0; const kanjis = gameCards.map(c => ({ id: c.id, text: c.kanji })).sort(() => 0.5 - Math.random()); const meanings = gameCards.map(c => ({ id: c.id, text: c.meaning })).sort(() => 0.5 - Math.random()); const content = `<div class="game-board" style="grid-template-columns: 1fr 1fr;"><div id="kanji-column" class="flex flex-col gap-4">${kanjis.map(k => `<div class="game-option jp" data-id="${k.id}">${k.text}</div>`).join('')}</div><div id="meaning-column" class="flex flex-col gap-4">${meanings.map(m => `<div class="game-option" data-id="${m.id}">${m.text}</div>`).join('')}</div></div>`; renderGameUI('Combine', 'Clique em um caractere e no seu significado correspondente.', content); let selectedKanji = null, selectedMeaning = null, correctPairs = 0; const kanjiItems = document.querySelectorAll('#kanji-column .game-option'); const meaningItems = document.querySelectorAll('#meaning-column .game-option'); function handleSelection(items, selectedItem, currentSelection) { if (currentSelection === selectedItem) { selectedItem.classList.remove('selected'); return null; } items.forEach(i => i.classList.remove('selected')); selectedItem.classList.add('selected'); return selectedItem; } function checkMatch() { if (!selectedKanji || !selectedMeaning) return; if (selectedKanji.dataset.id === selectedMeaning.dataset.id) { playCorrectSound(); speak(selectedKanji.textContent, 'jp'); selectedKanji.classList.add('correct'); selectedMeaning.classList.add('correct'); selectedKanji = null; selectedMeaning = null; correctPairs++; sessionCorrect++; if (correctPairs === gameCards.length) { setTimeout(() => renderGameCompletion(startMatchingGame, sessionCorrect, sessionIncorrect, sessionCorrect * 5), 500); } } else { playIncorrectSound(); sessionIncorrect++; selectedKanji.classList.add('incorrect'); selectedMeaning.classList.add('incorrect'); setTimeout(() => { selectedKanji?.classList.remove('incorrect', 'selected'); selectedMeaning?.classList.remove('incorrect', 'selected'); selectedKanji = null; selectedMeaning = null; }, 500); } } kanjiItems.forEach(item => item.addEventListener('click', () => { if (item.classList.contains('correct')) return; selectedKanji = handleSelection(kanjiItems, item, selectedKanji); checkMatch(); })); meaningItems.forEach(item => item.addEventListener('click', () => { if (item.classList.contains('correct')) return; selectedMeaning = handleSelection(meaningItems, item, selectedMeaning); checkMatch(); })); }
-        function startQuizGame() { showView('game-quiz'); const gameCards = getGameCards(10); if (!gameCards || gameCards.length < 4) { return; } let currentQuestionIndex = 0; let sessionCorrect = 0, sessionIncorrect = 0; function displayQuestion() { const card = gameCards[currentQuestionIndex]; const incorrectAnswers = getCurrentDeck().filter(c => c.id !== card.id).sort(() => 0.5 - Math.random()).slice(0, 3).map(c => c.meaning); const options = [card.meaning, ...incorrectAnswers].sort(() => 0.5 - Math.random()); const content = `<div class="text-center text-7xl font-bold font-['Noto_Sans_JP'] mb-8">${card.kanji}</div><div class="game-board" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">${options.map(opt => `<div class="game-option" data-correct="${opt === card.meaning}">${opt}</div>`).join('')}</div>`; renderGameUI('Quiz', `Qual o significado deste caractere? (${currentQuestionIndex + 1}/${gameCards.length})`, content); document.querySelectorAll('.game-option').forEach(option => { option.addEventListener('click', () => { document.querySelectorAll('.game-option').forEach(btn => btn.style.pointerEvents = 'none'); const isCorrect = option.dataset.correct === 'true'; option.classList.add(isCorrect ? 'correct' : 'incorrect'); if (isCorrect) { sessionCorrect++; playCorrectSound(); speak(card.kanji, 'jp'); } else { sessionIncorrect++; playIncorrectSound(); } if (!isCorrect) { document.querySelector('.game-option[data-correct="true"]').classList.add('correct'); } setTimeout(() => { currentQuestionIndex++; if (currentQuestionIndex < gameCards.length) { displayQuestion(); } else { renderGameCompletion(startQuizGame, sessionCorrect, sessionIncorrect, sessionCorrect * 5); } }, 1500); }); }); } displayQuestion(); }
+
+        // ...
+        function getGameCards(count = 5) {
+            const deck = allCards[currentLearningMode] || [];
+            if (deck.length < count) {
+                // EXPLICAÇÃO: A lógica para obter o nome do modo foi aprimorada
+                // para incluir "Concurso" e ser mais precisa.
+                let modeName = currentLearningMode;
+                if (translations[currentUILanguage][currentLearningMode]) {
+                    modeName = translations[currentUILanguage][currentLearningMode];
+                } else {
+                    modeName = currentLearningMode.charAt(0).toUpperCase() + currentLearningMode.slice(1);
+                }
+                if (currentLearningMode === 'english') modeName = 'Inglês';
+                if (currentLearningMode === 'concurso') modeName = 'Concurso';
+
+                showView('game-insufficient'); // Mostra a view do jogo
+                dom.gameContainer.innerHTML = `
+            <div class="text-center p-8 bg-white rounded-2xl shadow-lg max-w-md mx-auto">
+                <h2 class="text-2xl font-bold text-accent-primary">${translations[currentUILanguage].insufficient_cards}</h2>
+                <p class="mt-2 text-gray-600">${translations[currentUILanguage].need_at_least} ${count} ${modeName} cards ${translations[currentUILanguage].cards_to_play}</p>
+                 <button onclick="showView('srs'); filterCardsDueToday();" class="btn btn-primary mt-6">Voltar</button>
+            </div>
+        `;
+                return null;
+            }
+            return [...deck].sort(() => 0.5 - Math.random()).slice(0, count);
+        }
+        // ...
+
+
+        function startMatchingGame() {
+            const gameCards = getGameCards(5);
+            if (!gameCards) return;
+
+            showView('game-match');
+            const isConcurso = currentLearningMode === 'concurso';
+
+            const sideA = gameCards.map(c => ({ id: c.id, text: isConcurso ? c.question : (c.displayKanji || c.kanji) })).sort(() => 0.5 - Math.random());
+            const sideB = gameCards.map(c => ({ id: c.id, text: isConcurso ? c.answer : c.meaning })).sort(() => 0.5 - Math.random());
+            const classA = isConcurso ? '' : (currentLearningLanguage === 'jp' ? 'jp' : '');
+
+            const content = `<div class="game-board grid grid-cols-2 gap-4"><div id="sideA-column" class="flex flex-col gap-4">${sideA.map(item => `<div class="game-option ${classA}" data-id="${item.id}">${item.text}</div>`).join('')}</div><div id="sideB-column" class="flex flex-col gap-4">${sideB.map(item => `<div class="game-option" data-id="${item.id}">${item.text}</div>`).join('')}</div></div>`;
+
+            renderGameUI('Combine os Pares', 'Conecte o item da esquerda com seu par correspondente na direita.', content);
+
+            let selectedA = null, selectedB = null;
+            let correctPairs = 0;
+            let sessionCorrect = 0, sessionIncorrect = 0;
+            const sideAOptions = document.querySelectorAll('#sideA-column .game-option');
+            const sideBOptions = document.querySelectorAll('#sideB-column .game-option');
+
+            sideAOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    if (selectedA) selectedA.classList.remove('selected');
+                    selectedA = option;
+                    selectedA.classList.add('selected');
+                    checkForMatch();
+                });
+            });
+
+            sideBOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    if (selectedB) selectedB.classList.remove('selected');
+                    selectedB = option;
+                    selectedB.classList.add('selected');
+                    checkForMatch();
+                });
+            });
+
+            function checkForMatch() {
+                if (!selectedA || !selectedB) return;
+
+                if (selectedA.dataset.id === selectedB.dataset.id) {
+                    sessionCorrect++;
+                    playCorrectSound();
+                    selectedA.classList.add('correct');
+                    selectedB.classList.add('correct');
+                    selectedA.style.pointerEvents = 'none';
+                    selectedB.style.pointerEvents = 'none';
+                    correctPairs++;
+                    selectedA = null;
+                    selectedB = null;
+                    if (correctPairs === gameCards.length) {
+                        setTimeout(() => renderGameCompletion(startMatchingGame, sessionCorrect, sessionIncorrect, sessionCorrect * 10, gameCards), 500);
+                    }
+                } else {
+                    sessionIncorrect++;
+                    playIncorrectSound();
+                    selectedA.classList.add('incorrect');
+                    selectedB.classList.add('incorrect');
+                    setTimeout(() => {
+                        if (selectedA) selectedA.classList.remove('selected', 'incorrect');
+                        if (selectedB) selectedB.classList.remove('selected', 'incorrect');
+                        selectedA = null;
+                        selectedB = null;
+                    }, 800);
+                }
+            }
+        }
+        function startQuizGame() {
+            const gameCards = getGameCards(5);
+            if (!gameCards) return;
+
+            showView('game-quiz');
+            let currentQuestionIndex = 0;
+            let sessionCorrect = 0, sessionIncorrect = 0;
+
+            function displayQuestion() {
+                const card = gameCards[currentQuestionIndex];
+                const isConcurso = currentLearningMode === 'concurso';
+                const questionText = isConcurso ? card.question : (card.displayKanji || card.kanji);
+                const correctAnswer = isConcurso ? card.answer : card.meaning;
+
+                const otherCards = gameCards.filter(c => c.id !== card.id);
+                const wrongAnswers = otherCards.map(c => isConcurso ? c.answer : c.meaning);
+
+                let options = [correctAnswer, ...wrongAnswers.slice(0, 3)];
+                options.sort(() => 0.5 - Math.random());
+
+                const questionClass = isConcurso ? '' : (currentLearningLanguage === 'jp' ? 'jp' : '');
+                const questionStyle = isConcurso ? 'font-size: 1.5rem;' : '';
+
+                const content = `
+            <div class="text-center ${questionClass} font-bold mb-8 text-4xl" style="${questionStyle}">${questionText}</div>
+            <div class="game-board grid grid-cols-1 md:grid-cols-2 gap-4">
+                ${options.map(opt => `<div class="game-option" data-answer="${opt === correctAnswer}">${opt}</div>`).join('')}
+            </div>
+        `;
+
+                renderGameUI('Quiz', `Escolha a resposta correta (${currentQuestionIndex + 1}/${gameCards.length})`, content);
+
+                document.querySelectorAll('.game-option').forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        const isCorrect = e.target.dataset.answer === 'true';
+                        if (isCorrect) {
+                            sessionCorrect++;
+                            playCorrectSound();
+                            e.target.classList.add('correct');
+                        } else {
+                            sessionIncorrect++;
+                            playIncorrectSound();
+                            e.target.classList.add('incorrect');
+                            // Mostra a resposta correta
+                            document.querySelector('[data-answer="true"]').classList.add('correct');
+                        }
+
+                        document.querySelectorAll('.game-option').forEach(opt => opt.style.pointerEvents = 'none');
+
+                        setTimeout(() => {
+                            currentQuestionIndex++;
+                            if (currentQuestionIndex < gameCards.length) {
+                                displayQuestion();
+                            } else {
+                                renderGameCompletion(startQuizGame, sessionCorrect, sessionIncorrect, sessionCorrect * 15, gameCards);
+                            }
+                        }, 1500);
+                    });
+                });
+            }
+
+            displayQuestion();
+        }
         function startTypingGame() { showView('game-type'); const gameCards = getGameCards(10); if (!gameCards) { return; } let currentQuestionIndex = 0; let sessionCorrect = 0, sessionIncorrect = 0; function displayQuestion() { const card = gameCards[currentQuestionIndex]; const content = `<div class="text-center"><div class="text-7xl font-bold font-['Noto_Sans_JP']">${card.kanji}</div><div class="text-2xl text-gray-500 mt-2">${card.meaning}</div><input type="text" id="typing-input" class="input mt-8 text-2xl text-center" placeholder="Digite a leitura (romaji)" autocomplete="off" autocorrect="off" spellcheck="false"><p id="typing-feedback" class="mt-4 h-6 font-bold"></p></div>`; renderGameUI('Digite a Leitura', `Escreva a pronúncia e pressione Enter (${currentQuestionIndex + 1}/${gameCards.length})`, content); const input = document.getElementById('typing-input'); input.focus(); input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { const feedback = document.getElementById('typing-feedback'); const isCorrect = input.value.toLowerCase().trim() === card.pronunciation.toLowerCase().trim(); if (isCorrect) { sessionCorrect++; input.classList.add('correct'); feedback.textContent = 'Correto!'; feedback.style.color = 'var(--success)'; playCorrectSound(); speak(card.kanji, 'jp'); } else { sessionIncorrect++; input.classList.add('incorrect'); feedback.innerHTML = `Incorreto. A resposta era: <strong>${card.pronunciation}</strong>`; feedback.style.color = 'var(--danger)'; playIncorrectSound(); } input.disabled = true; setTimeout(() => { currentQuestionIndex++; if (currentQuestionIndex < gameCards.length) { displayQuestion(); } else { renderGameCompletion(startTypingGame, sessionCorrect, sessionIncorrect, sessionCorrect * 5); } }, 1500); } }); } displayQuestion(); }
 
         function startMemoryGame() {
@@ -2878,9 +3312,15 @@
             if (!gameCards) { return; }
             let sessionCorrect = 0, sessionIncorrect = 0;
             let items = [];
+            const isConcurso = currentLearningMode === 'concurso';
             gameCards.forEach(card => {
-                items.push({ type: 'kanji', text: card.kanji, id: card.id });
-                items.push({ type: 'meaning', text: card.meaning, id: card.id });
+                if (isConcurso) {
+                    items.push({ type: 'question', text: card.question, id: card.id });
+                    items.push({ type: 'answer', text: card.answer, id: card.id });
+                } else {
+                    items.push({ type: 'kanji', text: card.kanji, id: card.id });
+                    items.push({ type: 'meaning', text: card.meaning, id: card.id });
+                }
             });
             items.sort(() => 0.5 - Math.random());
 
@@ -2937,7 +3377,15 @@
 
         // --- GERENCIAMENTO E PAGINAÇÃO ---
         dom.navManage.addEventListener('click', (e) => { e.preventDefault(); showView('manage'); }); dom.closeManageModalBtn.addEventListener('click', () => dom.manageModal.classList.remove('visible')); dom.addNewCardBtn.addEventListener('click', () => openAddEditModal()); dom.cancelEditBtn.addEventListener('click', () => dom.addEditModal.classList.remove('visible'));
+        dom.langLearnBtnConcurso.addEventListener('click', () => {
+            startConcursoSession();
+            dom.langLearnDropdown.classList.remove('visible'); // Fecha o dropdown
+        });
 
+        dom.langLearnBtnMobileConcurso.addEventListener('click', () => {
+            startConcursoSession();
+            closeMobileMenu(); // Fecha o menu lateral
+        });
         dom.manageAccountBtn.addEventListener('click', (e) => {
             e.preventDefault();
             dom.newUsernameInput.value = userProfile.username || '';
@@ -2994,62 +3442,100 @@
                 return;
             }
 
-            const sortedCards = [...deck].sort((a, b) => a.kanji.localeCompare(b.kanji, currentLearningLanguage === 'jp' ? 'ja' : 'en'));
-            const paginatedCards = sortedCards.slice((manageCurrentPage - 1) * ITEMS_PER_PAGE, manageCurrentPage * ITEMS_PER_PAGE);
+            // ...
+            // EXPLICAÇÃO: Agora, a função de ordenação verifica o tipo de cada card.
+            // Se for um card de pergunta ('question'), usa a propriedade 'question' para ordenar.
+            // Caso contrário, usa a propriedade 'kanji', como antes. Isso evita o erro.
+            const sortedCards = [...deck].sort((a, b) => {
+                const textA = a.type === 'question' ? a.question : a.kanji;
+                const textB = b.type === 'question' ? b.question : b.kanji;
 
+                // Fallback para caso algum card não tenha o campo esperado
+                if (typeof textA !== 'string' || typeof textB !== 'string') {
+                    return 0;
+                }
+
+                return textA.localeCompare(textB, currentLearningLanguage === 'jp' ? 'ja' : 'en');
+            });
+
+            const paginatedCards = sortedCards.slice((manageCurrentPage - 1) * ITEMS_PER_PAGE, manageCurrentPage * ITEMS_PER_PAGE);
+            // ...
+
+            // ...
+            // EXPLICAÇÃO: Esta é a versão corrigida. Removemos o código duplicado e garantimos
+            // que o HTML correto seja gerado para cada tipo de card, sem misturar as variáveis.
             paginatedCards.forEach(card => {
                 const cardElement = document.createElement('div');
                 cardElement.className = 'flex items-center justify-between p-3 rounded-lg bg-white border border-gray-200';
 
-                const mainDisplay = card.displayKanji || card.kanji;
-                const subDisplay = card.displayKanji && card.displayKanji !== card.kanji ? ` <span class="text-base text-gray-500">(${card.kanji})</span>` : '';
+                let cardContentHTML = '';
                 const langClass = currentLearningLanguage === 'jp' ? 'jp' : '';
 
+                if (card.type === 'question') {
+                    const truncatedQuestion = card.question.length > 80 ? card.question.substring(0, 80) + '...' : card.question;
+                    cardContentHTML = `
+            <div class="flex-grow">
+                <p class="text-lg font-bold">${truncatedQuestion}</p>
+                <p class="text-sm text-gray-600">Tipo: Pergunta</p>
+            </div>
+        `;
+                } else {
+                    const mainDisplay = card.displayKanji || card.kanji;
+                    const subDisplay = card.displayKanji && card.displayKanji !== card.kanji ? ` <span class="text-base text-gray-500">(${card.kanji})</span>` : '';
+                    cardContentHTML = `
+            <div class="flex-grow">
+                <p class="text-xl font-bold ${langClass}">${mainDisplay}${subDisplay}</p>
+                <p class="text-sm text-gray-600">${card.meaning}</p>
+            </div>
+        `;
+                }
+
+                // Agora, combinamos o conteúdo gerado com os botões de ação
                 cardElement.innerHTML = `
-                    <div class="flex-grow">
-                        <p class="text-xl font-bold ${langClass}">${mainDisplay}${subDisplay}</p>
-                        <p class="text-sm text-gray-600">${card.meaning}</p>
-                    </div>
-                    <div class="flex items-center gap-2 flex-shrink-0">
-                        <button class="edit-btn btn btn-secondary !py-1 !px-3 !text-xs">${translations[currentUILanguage].edit}</button>
-                        <button class="delete-btn btn btn-danger !py-1 !px-3 !text-xs">${translations[currentUILanguage].delete}</button>
-                    </div>
-                `;
+        ${cardContentHTML}
+        <div class="flex items-center gap-2 flex-shrink-0">
+            <button class="edit-btn btn btn-secondary !py-1 !px-3 !text-xs">${translations[currentUILanguage].edit}</button>
+            <button class="delete-btn btn btn-danger !py-1 !px-3 !text-xs">${translations[currentUILanguage].delete}</button>
+        </div>
+    `;
+
                 cardElement.querySelector('.edit-btn').addEventListener('click', () => openAddEditModal(card));
                 cardElement.querySelector('.delete-btn').addEventListener('click', () => deleteCard(card.id));
                 dom.cardListContainer.appendChild(cardElement);
             });
-
+            // ...
             renderPagination(dom.managePaginationContainer, manageCurrentPage, sortedCards.length, ITEMS_PER_PAGE, (page) => {
                 manageCurrentPage = page;
                 renderManageView();
             });
         }
-
+        // ...
         function openAddEditModal(card = null) {
             dom.addEditForm.reset();
             let modeName, charType;
-            if (currentLearningLanguage === 'en') {
-                modeName = 'Inglês';
-                charType = translations[currentUILanguage].word;
-                dom.displayFormField.style.display = 'none';
-                dom.pronunciationLabel.textContent = translations[currentUILanguage].pronunciation;
+            // ... (lógica de definição de modeName e charType)
+            dom.mainCharLabel.textContent = charType;
+
+            // EXPLICAÇÃO: Adicionamos esta lógica condicional.
+            // Se o modo for 'concurso', ele força a aba "Pergunta" e esconde o seletor.
+            // Caso contrário, ele redefine para a aba "Palavra" e mostra o seletor.
+            const typeSelectorContainer = document.querySelector('#add-edit-form > .flex.bg-gray-200');
+            if (currentLearningMode === 'concurso') {
+                dom.cardTypeInput.value = 'question';
+                dom.fieldsForWord.style.display = 'none';
+                dom.fieldsForQuestion.style.display = 'block';
+                if (typeSelectorContainer) typeSelectorContainer.style.display = 'none';
             } else {
-                modeName = currentLearningMode.charAt(0).toUpperCase() + currentLearningMode.slice(1);
-                charType = currentLearningMode === 'kanji' ? translations[currentUILanguage].kanji : translations[currentUILanguage].character;
-                dom.displayFormField.style.display = 'block';
-                dom.pronunciationLabel.textContent = translations[currentUILanguage].reading_romaji;
+                dom.cardTypeInput.value = 'word';
+                dom.fieldsForWord.style.display = 'block';
+                dom.fieldsForQuestion.style.display = 'none';
+                dom.typeSelectorWord.classList.add('bg-white', 'shadow', 'text-accent-primary');
+                dom.typeSelectorQuestion.classList.remove('bg-white', 'shadow', 'text-accent-primary');
+                if (typeSelectorContainer) typeSelectorContainer.style.display = 'flex';
             }
 
-            dom.mainCharLabel.textContent = charType;
             if (card) {
-                dom.addEditModalTitle.textContent = `${translations[currentUILanguage].edit_card} ${modeName}`;
-                dom.cardIdInput.value = card.id;
-                dom.kanjiInput.value = card.kanji;
-                dom.displayKanjiInput.value = card.displayKanji || '';
-                dom.pronunciationInput.value = card.pronunciation;
-                dom.meaningInput.value = card.meaning;
-                dom.geminiDataInput.value = card.geminiInfo ? JSON.stringify(card.geminiInfo) : '';
+                // ... (lógica de edição existente)
             } else {
                 dom.addEditModalTitle.textContent = `${translations[currentUILanguage].add_card} ${modeName}`;
                 dom.cardIdInput.value = '';
@@ -3057,7 +3543,6 @@
             }
             dom.addEditModal.classList.add('visible');
         }
-
         async function deleteCard(cardId) { if (confirm(translations[currentUILanguage].confirm_delete)) { try { await remove(ref(db, `${getDbPath('cards')}/${cardId}`)); manageCurrentPage = 1; } catch (error) { console.error("Erro ao apagar card:", error); } } }
 
         // --- PLACAR / LIGAS ---
@@ -3329,7 +3814,7 @@
 
         async function fetchGeminiDataForFields(character, lang, mode) {
             const apiKey = "AIzaSyCpNSwWWEbyWhklPL96AAweF2qhjeLrWlM";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
             let userQuery = '';
             let systemPrompt = `Você é um professor de idiomas para falantes de português. Forneça informações concisas e úteis. Responda em JSON.`;
@@ -3361,58 +3846,71 @@
         }
 
 
+        // ... (após a função fetchGeminiDataForFields)
+
+        // EXPLICAÇÃO: Esta função é dedicada a obter respostas para perguntas de concurso.
+        // EXPLICAÇÃO: Esta função é dedicada a obter respostas para perguntas de concurso.
         async function fetchAnswerForQuestion(question) {
-            const apiKey = "AIzaSyCpNSwWWEbyWhklPL96AAweF2qhjeLrWlM"; // Sua chave de API
+            const apiKey = "AIzaSyCpNSwWWEbyWhklPL96AAweF2qhjeLrWlM";
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
-            const systemPrompt = `Você é um assistente especialista em concursos públicos. Sua tarefa é responder à pergunta do usuário de forma direta, concisa e precisa, ideal para um flashcard de estudo. A resposta deve ser auto-contida e fácil de memorizar. Responda em formato JSON.`;
-
-            const userQuery = `Por favor, responda a seguinte pergunta de concurso: "${question}"`;
-
+            const systemPrompt = `Você é um tutor especialista em concursos públicos para falantes de português. Sua tarefa é analisar uma pergunta e fornecer um material de estudo completo em formato JSON.`;
+            const userQuery = `Analise a seguinte pergunta de concurso: "${question}". Gere um material de estudo detalhado.`;
             const responseSchema = {
                 type: "OBJECT",
                 properties: {
-                    "answer": { "type": "STRING", "description": "A resposta direta e concisa para a pergunta." }
+                    "summary": { "type": "STRING", "description": "Uma resposta-resumo, direta e concisa para a pergunta inicial." },
+                    "analysis": { "type": "STRING", "description": "Uma análise mais profunda do tópico, explicando o porquê da resposta e os conceitos chave." },
+                    "contexts": {
+                        "type": "ARRAY",
+                        "description": "Exatamente 4 contextos onde este tópico é relevante ou cobrado em provas, cada um com um título curto e uma breve explicação.",
+                        "items": {
+                            "type": "OBJECT",
+                            "properties": {
+                                "title": { "type": "STRING" },
+                                "text": { "type": "STRING" }
+                            }
+                        }
+                    },
+                    "curiosity": { "type": "STRING", "description": "Uma curiosidade ou fato interessante relacionado ao tema para ajudar na memorização." },
+                    "image_query": { "type": "STRING", "description": "Um termo de busca em inglês, simples e eficaz, para encontrar uma imagem representativa do tópico na web." }
                 },
-                required: ["answer"]
+                required: ["summary", "analysis", "contexts", "curiosity", "image_query"]
             };
 
+            // EXPLICAÇÃO: O código abaixo estava em falta. Ele constrói o 'payload'
+            // e faz a chamada 'fetch' para a API. A chave '}' extra foi removida.
             const payload = {
                 contents: [{ parts: [{ text: userQuery }] }],
                 systemInstruction: { parts: [{ text: systemPrompt }] },
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: responseSchema,
-                    temperature: 0.2 // Reduz a "criatividade" para respostas mais factuais
-                }
+                generationConfig: { responseMimeType: "application/json", responseSchema: responseSchema }
             };
 
             try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.status} ${await response.text()}`);
-                }
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) throw new Error(`API error: ${response.status}`);
                 const result = await response.json();
                 const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (jsonText) {
-                    return JSON.parse(jsonText);
-                }
-                return null;
+                return JSON.parse(jsonText);
             } catch (error) {
                 console.error("Erro ao chamar a API Gemini para perguntas:", error);
                 return null;
             }
         }
 
+        // ...
 
-        // --- AUTENTICAÇÃO E CONTA ---
+
+
+
+
+        // ...
         dom.addEditForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            // EXPLICAÇÃO: Adicionamos uma lógica para verificar qual tipo de card está sendo salvo.
+            // Se for "word", ele pega os dados dos campos de palavra.
+            // Se for "question", ele pega os dados dos campos de pergunta. Isso corrige o salvamento.
             const cardType = dom.cardTypeInput.value;
             const cardId = dom.cardIdInput.value;
             let cardData;
@@ -3429,12 +3927,16 @@
                     geminiInfo: dom.geminiDataInput.value ? JSON.parse(dom.geminiDataInput.value) : null
                 };
             } else { // type === 'question'
+                // type === 'question'
                 cardData = {
                     type: 'question',
+                    // EXPLICAÇÃO: Garantimos que 'question' seja sempre o valor do campo de pergunta.
+                    // O campo 'answer' agora guarda o resumo da IA, e o resto fica em 'geminiInfo'.
                     question: dom.questionInput.value,
                     answer: dom.answerInput.value,
                     srsInterval: 0,
-                    lastReview: new Date().toISOString()
+                    lastReview: new Date().toISOString(),
+                    geminiInfo: dom.geminiDataInput.value ? JSON.parse(dom.geminiDataInput.value) : null
                 };
             }
 
@@ -3450,6 +3952,7 @@
                 console.error("Erro ao salvar card:", error);
             }
         });
+        // ...
         dom.logoutBtn.addEventListener('click', () => signOut(auth));
 
         const { authForm } = dom;
@@ -3569,13 +4072,65 @@
         dom.updatePasswordForm.addEventListener('submit', async (e) => { e.preventDefault(); const newPassword = document.getElementById('new-password-input').value; const confirmPassword = document.getElementById('confirm-new-password-input').value; const statusEl = dom.updatePasswordStatus; if (newPassword !== confirmPassword) { statusEl.textContent = translations[currentUILanguage].passwords_dont_match; statusEl.style.color = 'var(--danger)'; return; } if (newPassword.length < 6) { statusEl.textContent = translations[currentUILanguage].password_min_length; statusEl.style.color = 'var(--danger)'; return; } statusEl.textContent = `${translations[currentUILanguage].updating}`; statusEl.style.color = 'var(--text-secondary)'; try { const user = auth.currentUser; await updatePassword(user, newPassword); statusEl.textContent = translations[currentUILanguage].password_updated; statusEl.style.color = 'var(--success)'; setTimeout(() => { dom.userManageModal.classList.remove('visible'); statusEl.textContent = ''; dom.updatePasswordForm.reset(); }, 2000); } catch (error) { console.error("Erro ao atualizar senha:", error); statusEl.textContent = translations[currentUILanguage].error_updating_password; statusEl.style.color = 'var(--danger)'; } });
 
         // Inicialização
+        // Inicialização
+
+        // Inicialização
+        // EXPLICAÇÃO: Esta é a versão final e correta. Removemos todos os blocos duplicados.
+        // Agora, temos um único listener 'DOMContentLoaded' que chama a função para configurar
+        // o seletor "Palavra/Pergunta" e também configura o listener para o botão "Gerar com IA",
+        // garantindo que ambos funcionem como esperado.
+        // ... (final do arquivo)
+        // Inicialização
+        // EXPLICAÇÃO: Esta é a versão final e correta. Removemos todos os blocos duplicados.
+        // Agora, temos um único listener 'DOMContentLoaded' que chama a função para configurar
+        // o seletor "Palavra/Pergunta" e também configura o listener para o botão "Gerar com IA",
+        // garantindo que ambos funcionem como esperado.
         document.addEventListener('DOMContentLoaded', () => {
-            translateUI('pt'); // Define o idioma inicial da UI
-            setLearningLanguage('jp'); // Define o idioma inicial de aprendizado
-             setupCardTypeSelector(); 
+            translateUI('pt');
+            setLearningLanguage('jp');
+            setupCardTypeSelector(); // Ativa o seletor "Palavra/Pergunta"
+
+            // Ativa o botão "Gerar com IA" para as perguntas
+            const generateAnswerBtn = document.getElementById('generate-answer-ai-btn');
+            if (generateAnswerBtn) {
+                generateAnswerBtn.addEventListener('click', async () => {
+                    const question = dom.questionInput.value;
+                    if (!question.trim()) {
+                        alert("Por favor, digite uma pergunta.");
+                        return;
+                    }
+
+                    const answerBtnText = document.getElementById('ai-answer-btn-text');
+                    const answerBtnSpinner = document.getElementById('ai-answer-btn-spinner');
+
+                    generateAnswerBtn.disabled = true;
+                    answerBtnText.style.display = 'none';
+                    answerBtnSpinner.style.display = 'block';
+
+                    try {
+                        const result = await fetchAnswerForQuestion(question);
+
+                        if (result && result.summary) {
+                            dom.answerInput.value = result.summary;
+                            dom.geminiDataInput.value = JSON.stringify(result);
+                        } else {
+                            alert("Não foi possível gerar uma resposta. Tente novamente.");
+                        }
+                    } catch (error) {
+                        console.error("Erro ao gerar resposta:", error);
+                        alert("Ocorreu um erro ao contatar a IA.");
+                    } finally {
+                        generateAnswerBtn.disabled = false;
+                        answerBtnText.style.display = 'inline';
+                        answerBtnSpinner.style.display = 'none';
+                    }
+                });
+            }
         });
 
+
     </script>
+
 </body>
 
 </html>
